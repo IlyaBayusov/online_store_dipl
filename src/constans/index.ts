@@ -3,6 +3,8 @@ import img_warm from "../../public/main/category/img_warm.png";
 import img_business from "../../public/main/category/img_business.png";
 import img_test_shoes1 from "../../public/testImg/img_test_shoes1.png";
 
+export const mainPage = "/";
+
 export const modalNav = "modalNav";
 export const modalNavCategory = "modalNavCategory";
 export const modalCartDeleteProduct = "modalCartDeleteProduct";

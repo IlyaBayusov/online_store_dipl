@@ -2,20 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: "Post No Bills Jaffna Bold";
-  font-style: normal;
-  font-weight: normal;
-  src: url("./fonts/PostNoBillsJaffna-Bold.ttf") format("woff");
-}
-
-@font-face {
-  font-family: "Oswald";
-  font-style: normal;
-  font-weight: normal;
-  src: url("./fonts/Oswald-Regular.ttf") format("woff");
-}
-
 *,
 *:before,
 *:after {
@@ -24,14 +10,14 @@
 
 body {
   margin: 0;
-  font-family: "Oswald", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 400;
-  font-size: 18px;
+  font-size: 16px;
   font-optical-sizing: auto;
   font-style: normal;
   line-height: normal;
-  color: #ffffff;
-  background-color: #2b2525;
+  color: #333232;
+  background-color: #fbfbfb;
 }
 
 h1,
@@ -66,10 +52,6 @@ select {
 
 .container {
   margin: 0 auto;
-}
-
-#headerTitle {
-  font-family: "Post No Bills Jaffna Bold", sans-serif;
 }
 
 #mainIntroBlock {

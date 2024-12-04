@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
-// import { Oswald } from "next/font/google";
+import { Roboto } from "next/font/google";
 import Footer from "@/components/Footer";
 import ModalNav from "@/components/Modals/ModalNav";
 import ModalNavCategory from "@/components/Modals/ModalNavCategory";
@@ -16,6 +16,12 @@ import ModalDeleteEditNewProduct from "@/components/Modals/ModalDeleteEditNewPro
 //   display: "swap", // Оптимизация отображения шрифта
 // });
 
+const roboto = Roboto({
+  weight: ["400", "500", "700"], // Указываем нужные толщины шрифта
+  subsets: ["latin"], // Указываем поддерживаемые наборы символов
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Главная",
   description: "Главная страница",
@@ -27,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru">
+    <html lang="ru" className={roboto.className}>
       <body>
         <div className="wrapper flex flex-col">
           <Header />

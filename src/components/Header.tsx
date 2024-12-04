@@ -1,7 +1,7 @@
 "use client";
 
 import { getProductsCart } from "@/api";
-import { modalNav } from "@/constans";
+import { mainPage, modalNav } from "@/constans";
 import { IProductInCart } from "@/interfaces";
 import { useModalStore } from "@/stores/useModalStore";
 import Link from "next/link";
@@ -11,13 +11,24 @@ import { FiMenu } from "react-icons/fi";
 import { RiShoppingBasketLine } from "react-icons/ri";
 import { MdOutlineShoppingBag, MdFavorite } from "react-icons/md";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+import img_logo from "../../public/main/img_logo.png";
+import {
+  CiUser,
+  CiShoppingBasket,
+  CiHeart,
+  CiShoppingCart,
+} from "react-icons/ci";
+
+import { IoIosSearch } from "react-icons/io";
+import { HiMenuAlt2 } from "react-icons/hi";
 
 export default function Header() {
   const [products, setProducts] = useState<IProductInCart[]>([]);
   const path = usePathname();
   const noHeaderPages = ["/adminMenu"];
 
-  const showFooter = !noHeaderPages.includes(path);
+  const showHeader = !noHeaderPages.includes(path);
 
   useEffect(() => {
     const getProducts = async () => {
@@ -35,40 +46,95 @@ export default function Header() {
 
   return (
     <>
-      {showFooter && (
-        <div className="bg-black w-full">
-          <div className="container px-3">
-            <div className="relative -mx-1.5 flex justify-between items-center">
-              <div onClick={() => openModal(modalNav)}>
-                <FiMenu className="h-9 w-9 p-1.5" />
+      {showHeader && (
+        <div className="container px-2.5 pt-2.5">
+          <div className="flex justify-between items-end flex-wrap">
+            <Link href={mainPage} className="max-w-[110px] max-h-[42px]">
+              <Image src={img_logo} alt="logo" className="" />
+            </Link>
+
+            <nav>
+              <ul className="flex items-center gap-3 text-[10px]">
+                <li className="">
+                  <Link href="#" className="flex gap-1 flex-col items-center">
+                    <div className="relative">
+                      <CiUser className="h-5 w-5" />
+                      <div className="py-0.5 px-1 absolute -top-1 -right-3.5 z-10 bg-greenT text-white rounded-full">
+                        12
+                      </div>
+                    </div>
+
+                    <p className="leading-none">Войти</p>
+                  </Link>
+                </li>
+
+                <li className="">
+                  <Link
+                    href="#"
+                    className="relative flex gap-1 flex-col items-center"
+                  >
+                    <div className="relative">
+                      <CiShoppingBasket className="h-5 w-5" />
+                      <div className="py-0.5 px-1 absolute -top-1 -right-3.5 z-10 bg-greenT text-white rounded-full">
+                        5
+                      </div>
+                    </div>
+
+                    <p className="leading-none">Заказы</p>
+                  </Link>
+                </li>
+
+                <li className="">
+                  <Link
+                    href="#"
+                    className="relative flex gap-1 flex-col items-center"
+                  >
+                    <div className="relative">
+                      <CiHeart className="h-5 w-5" />
+                      <div className="py-0.5 px-1 absolute -top-1 -right-3.5 z-10 bg-greenT text-white rounded-full">
+                        5
+                      </div>
+                    </div>
+
+                    <p className="leading-none">Избранные</p>
+                  </Link>
+                </li>
+
+                <li className="">
+                  <Link
+                    href="#"
+                    className="relative flex gap-1 flex-col items-center"
+                  >
+                    <div className="relative">
+                      <CiShoppingCart className="h-5 w-5" />
+                      <div className="py-0.5 px-1 absolute -top-1 -right-3.5 z-10 bg-greenT text-white rounded-full">
+                        {products.length}
+                      </div>
+                    </div>
+
+                    <p className="leading-none">Корзина</p>
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+
+            <div className="mt-3 w-full flex justify-between items-center gap-10 ">
+              <div
+                className="py-1 px-2  bg-greenT rounded-sm"
+                onClick={() => openModal(modalNav)}
+              >
+                <HiMenuAlt2 className="h-4 w-4 text-white" />
               </div>
 
-              <h1
-                id="headerTitle"
-                className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2  text-xl text-white font-bold leading-5"
-              >
-                MAN&apos;S
-              </h1>
-
-              <div className="flex items-center gap-2">
-                <Link href="/cart">
-                  <div className="relative">
-                    <RiShoppingBasketLine className="h-8 w-8 p-1.5" />
-                    <div className="flex justify-center items-center absolute bottom-0 right-0 z-10 w-4 h-4 bg-white rounded-full text-[11px] text-black font-bold border-2 border-black">
-                      {products.length}
-                    </div>
-                  </div>
-                </Link>
-
-                <Link href="/orders">
-                  <MdOutlineShoppingBag className="h-8 w-8 p-1.5" />
-                </Link>
-
-                <Link href="/favorites">
-                  <MdFavorite className="h-8 w-8 p-1.5" />
-                </Link>
-
-                <CgProfile className="h-8 w-8 p-1.5" />
+              <div className="h-6 flex-grow flex items-center rounded-md">
+                <input
+                  type="text"
+                  placeholder="Я ищу..."
+                  className="h-full max-w-96 w-full py-1 px-4 rounded-s-md text-xs border border-greenT"
+                />
+                <button className="h-full px-1  bg-greenT rounded-e-md">
+                  <IoIosSearch className="h-4 w-4 text-white" />
+                </button>
               </div>
             </div>
           </div>
