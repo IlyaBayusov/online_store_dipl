@@ -11,15 +11,17 @@ export default function ProductCardList({ productsCard, nameTitle }: Props) {
       <div className="flex justify-start mt-3 mb-5">
         <h2 className="text-lg font-semibold">{nameTitle}</h2>
       </div>
-      <div className="my-2 w-full grid grid-cols-2 gap-3 auto-rows-fr">
+      <div className="my-2 w-full grid grid-cols-2 gap-3">
         {productsCard &&
           productsCard.map((product) => (
             <Link
               key={product.productId}
               href={`/${product.categoryName}/${product.productId}`}
-              className="flex w-full"
+              className="flex h-full"
             >
-              <ProductCardItem productCard={product} />
+              <div className="h-full">
+                <ProductCardItem productCard={product} />
+              </div>
             </Link>
           ))}
       </div>
