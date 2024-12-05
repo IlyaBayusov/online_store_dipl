@@ -211,7 +211,7 @@ export default function Registr() {
   };
 
   return (
-    <div className="container px-3 flex flex-col justify-center items-center">
+    <div className="flex flex-col justify-center items-center">
       <h1 className="text-lg uppercase text-center mt-3">Регистрация</h1>
       {error && <p className="text-red-700">{error}</p>}
 

@@ -10,15 +10,9 @@ import ModalSuccessOrder from "@/components/Modals/ModalSuccessOrder";
 import ModalNewProductAdmin from "@/components/Modals/ModalNewProductAdmin";
 import ModalDeleteEditNewProduct from "@/components/Modals/ModalDeleteEditNewProduct";
 
-// const oswald = Oswald({
-//   subsets: ["latin"],
-//   weight: ["200", "300", "400", "500", "600", "700"],
-//   display: "swap", // Оптимизация отображения шрифта
-// });
-
 const roboto = Roboto({
-  weight: ["400", "500", "700"], // Указываем нужные толщины шрифта
-  subsets: ["latin"], // Указываем поддерживаемые наборы символов
+  weight: ["400", "500", "700"],
+  subsets: ["latin"],
   display: "swap",
 });
 
@@ -39,7 +33,9 @@ export default function RootLayout({
           <Header />
           {/* <Nav /> */}
 
-          <main className="flex-grow">{children}</main>
+          <main className="flex-grow">
+            <div className="container px-2.5">{children}</div>
+          </main>
 
           <ModalNav />
           <ModalNavCategory />

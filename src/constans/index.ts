@@ -1,6 +1,8 @@
 import img_shoes from "../../public/main/category/img_shoes.png";
-import img_warm from "../../public/main/category/img_warm.png";
-import img_business from "../../public/main/category/img_business.png";
+import img_categoryBig from "../../public/main/category/img_categoryBig.png";
+import img_household from "../../public/main/category/img_household.png";
+import img_books from "../../public/main/category/img_books.png";
+import img_eat from "../../public/main/category/img_eat.png";
 import img_test_shoes1 from "../../public/testImg/img_test_shoes1.png";
 
 export const mainPage = "/";
@@ -11,6 +13,8 @@ export const modalCartDeleteProduct = "modalCartDeleteProduct";
 export const modalSuccessOrder = "modalSuccessOrder";
 export const modalNewProductAdmin = "modalNewProductAdmin";
 export const modalDeleteEditNewProduct = "modalDeleteEditNewProduct";
+
+export const nameTitlePopularProducts = "Популярные товары";
 
 // Chelsea - id - 1
 // Sneakers - id - 2
@@ -67,13 +71,29 @@ export const categoriesPages = [
 export const categories = [
   {
     id: 1,
-    name: "Новинки",
-    img: img_shoes,
+    name: "Электроника",
+    urlName: "electronics",
+    img: img_categoryBig,
+    next: [
+      {
+        id: 1,
+        name: "Мобильные телефоны и планшеты",
+        urlName: "mobiles",
+        img: img_shoes,
+      },
+      {
+        id: 2,
+        name: "Рубашки",
+        urlName: "shirts",
+        img: img_shoes,
+      },
+    ],
   },
   {
     id: 2,
-    name: "Одежда",
-    img: img_warm,
+    name: "Бытовая техника",
+    urlName: "household",
+    img: img_household,
     next: [
       {
         id: 1,
@@ -91,8 +111,9 @@ export const categories = [
   },
   {
     id: 3,
-    name: "Обувь",
-    img: img_business,
+    name: "Книги, хобби, канцелярия",
+    urlName: "books",
+    img: img_books,
     next: [
       {
         id: 1,
@@ -110,8 +131,9 @@ export const categories = [
   },
   {
     id: 4,
-    name: "Аксессуары",
-    img: img_shoes,
+    name: "Продукты питания",
+    urlName: "eat",
+    img: img_eat,
     next: [
       {
         id: 1,
@@ -130,10 +152,10 @@ export const categories = [
 ];
 
 export const categoriesList = [
-  { id: 1, name: "Челси", url_name: "chelsea" },
-  { id: 2, name: "Кеды", url_name: "sneakers" },
-  { id: 3, name: "Брюки", url_name: "trousers" },
-  { id: 4, name: "Рубашки", url_name: "shirts" },
+  { id: 1, name: "Электроника", url_name: "electronics" },
+  { id: 2, name: "Бытовая техника", url_name: "household" },
+  { id: 3, name: "Книги, хобби, канцелярия", url_name: "books" },
+  { id: 4, name: "Продукты питания", url_name: "eat" },
   { id: 5, name: "Галстуки", url_name: "ties" },
   { id: 6, name: "Ремни", url_name: "belts" },
 ];

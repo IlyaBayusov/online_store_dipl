@@ -15,7 +15,7 @@ export default function NewArrivalsItem({ arrival }: Props) {
           alt={arrival.name}
           height={200}
           width={200}
-          className="rounded-md"
+          className="rounded-md h-auto w-auto"
         />
       </div>
 

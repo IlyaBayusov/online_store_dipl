@@ -1,16 +1,16 @@
 import Image, { StaticImageData } from "next/image";
 import React from "react";
 
-type Props = { id: number; name: string; img: StaticImageData };
+type Props = { name: string; img: StaticImageData };
 
-export default function CategoryItem({ id, name, img }: Props) {
+export default function CategoryItem({ name, img }: Props) {
   return (
-    <div className="flex flex-col justify-center">
-      <div>
+    <div className="h-full w-full flex flex-col items-center gap-2 p-2 rounded-md shadow-md ">
+      <div className="max-w-24">
         <Image src={img} alt={name} className="rounded-md" />
       </div>
 
-      <p className="text-sm text-center">{name}</p>
+      <p className="text-xs text-center">{name}</p>
     </div>
   );
 }
