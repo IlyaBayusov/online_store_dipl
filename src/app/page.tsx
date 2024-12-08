@@ -1,13 +1,13 @@
 "use client";
 
 import CategoryList from "@/components/Category/CategoryList/CategoryList";
-import NewArrivalsList from "@/components/NewArrivals/NewArrivalsList/NewArrivalsList";
 import EmblaCarousel from "@/components/Carousels/EmblaCarousel";
 import { EmblaOptionsType } from "embla-carousel";
 import { useEffect, useState } from "react";
 import { api } from "@/axios";
 import ProductCardList from "@/components/ProductCard/ProductCardList/ProductCardList";
 import { nameTitlePopularProducts } from "@/constans";
+import Brands from "@/components/Brands/Brands";
 
 const OPTIONS: EmblaOptionsType = {};
 
@@ -47,11 +47,7 @@ export default function Home() {
         />
       )}
 
-      <div className="flex justify-start mt-3 mb-5">
-        <h2 className="text-lg font-semibold">Бренды</h2>
-      </div>
-
-      <EmblaCarousel options={OPTIONS} />
+      <Brands />
     </div>
   );
 }

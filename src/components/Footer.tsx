@@ -19,7 +19,7 @@ export default function Footer() {
   return (
     <>
       {showFooter && (
-        <footer className="bg-[#EEF1F2] mt-3 py-3 w-full">
+        <footer className="bg-[#EEF1F2] py-3 w-full mt-3">
           <div className="container px-2.5">
             <div className="flex flex-col items-center">
               <div className="flex flex-col items-center">
