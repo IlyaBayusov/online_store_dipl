@@ -1,15 +1,12 @@
 "use client";
 
 import CategoryList from "@/components/Category/CategoryList/CategoryList";
-import EmblaCarousel from "@/components/Carousels/EmblaCarousel";
-import { EmblaOptionsType } from "embla-carousel";
 import { useEffect, useState } from "react";
 import { api } from "@/axios";
 import ProductCardList from "@/components/ProductCard/ProductCardList/ProductCardList";
 import { nameTitlePopularProducts } from "@/constans";
 import Brands from "@/components/Brands/Brands";
-
-const OPTIONS: EmblaOptionsType = {};
+import Viewed from "@/components/Viewed/Viewed";
 
 export default function Home() {
   const [newArrivals, setNewArrivals] = useState([]);
@@ -38,8 +35,8 @@ export default function Home() {
 
       <CategoryList />
 
-      {!newArrivals ? (
-        <h1>Loading</h1>
+      {isLoading ? (
+        <h1>Loading...</h1>
       ) : (
         <ProductCardList
           productsCard={newArrivals}
@@ -48,6 +45,8 @@ export default function Home() {
       )}
 
       <Brands />
+
+      <Viewed />
     </div>
   );
 }
