@@ -158,6 +158,7 @@ export const categoriesList = [
   { id: 4, name: "Продукты питания", url_name: "eat" },
   { id: 5, name: "Галстуки", url_name: "ties" },
   { id: 6, name: "Ремни", url_name: "belts" },
+  { id: 7, name: "Рубашки", url_name: "shirts" },
 ];
 
 export const newArrivals = [

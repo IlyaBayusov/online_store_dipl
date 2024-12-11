@@ -29,8 +29,10 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
   );
   // const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const [selectedSize, setSelectedSize] = useState<number>(
-    Number(nowProduct.sizes[0])
+  const [selectedSize, setSelectedSize] = useState<string | number>(
+    nowProduct.sizes[0] !== "NoSize"
+      ? Number(nowProduct.sizes[0])
+      : nowProduct.sizes[0]
   );
   const [selectedColor, setSelectedColor] = useState<string>(nowProduct.color);
 
@@ -43,68 +45,82 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
   const params = useParams();
 
   useEffect(() => {
-    const setActiveBtnCart = async () => {
-      try {
-        const data: IProductInCart[] | undefined = await getProductsCart();
-
-        if (data) {
-          data.map((item) => {
-            if (item.productId === nowProduct.id) {
-              setIsActiveCart(true);
-              setNowCartItem(item);
-            }
-          });
-        }
-      } catch (error) {
-        console.error("Ошибка запроса получения корзины", error);
-      }
-    };
-
     setActiveBtnCart();
-  }, [nowProduct]);
+  }, []);
 
   useEffect(() => {
-    const setActiveBtnFav = async () => {
-      try {
-        const data: IGetFav[] | undefined = await getFav();
-
-        if (data) {
-          data.map((item) => {
-            if (item.productId === nowProduct.id) {
-              setIsActiveFav(true);
-              setNowFavItem(item);
-            }
-          });
-        }
-      } catch (error) {
-        console.error("Ошибка запроса получения избранных", error);
-      }
-    };
-
     setActiveBtnFav();
-  }, [nowProduct]);
+  }, []);
 
-  console.log("nowproduct", nowProduct);
+  async function setActiveBtnCart() {
+    try {
+      const data: IProductInCart[] | undefined = await getProductsCart();
+
+      if (!data) return;
+
+      for (const item of data) {
+        if (item.productId === nowProduct.id) {
+          setIsActiveCart(true);
+          setNowCartItem(item);
+          return item.cartItemId;
+        }
+      }
+
+      return;
+    } catch (error) {
+      console.error("Ошибка запроса получения корзины", error);
+      return;
+    }
+  }
+
+  async function setActiveBtnFav() {
+    try {
+      const data: IGetFav[] | undefined = await getFav();
+
+      if (!data) return;
+
+      for (const item of data) {
+        if (item.productId === nowProduct.id) {
+          setIsActiveFav(true);
+          setNowFavItem(item);
+          return item.favoriteId;
+        }
+      }
+
+      return;
+    } catch (error) {
+      console.error("Ошибка запроса получения избранных", error);
+      return;
+    }
+  }
 
   const handleClickCart = async () => {
     try {
+      const cartItemId = await setActiveBtnCart();
+
       const decodedToken: IDecodedToken = decodeToken();
 
-      if (isActiveCart && nowCartItem) {
+      if (isActiveCart) {
         setIsActiveCart(false);
         //удаление из корзины
-        await api.delete(`/v1/cart/${nowCartItem.cartItemId}`);
+        await api.delete(`/v1/cart/${cartItemId}`);
       } else {
         setIsActiveCart(true);
         //добавление в корзину
-        const response = await api.post("/v1/cart", {
+
+        console.log({
           userId: decodedToken.id,
           productId: nowProduct.id,
           quantity: 1,
           size: String(selectedSize),
         });
-        const data = await response.data;
-        setNowCartItem(data);
+
+        await api.post("/v1/cart", {
+          userId: decodedToken.id,
+          productId: nowProduct.id,
+          quantity: 1,
+          size: String(selectedSize),
+        });
       }
     } catch (error) {
       console.error("Ошибка запроса добавления/удаления в корзину: ", error);
@@ -113,20 +129,18 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
 
   const handleClickFav = async () => {
     try {
+      const favoriteId = await setActiveBtnFav();
+
       const decodedToken: IDecodedToken = decodeToken();
 
-      if (isActiveFav && nowFavItem) {
+      if (isActiveFav && favoriteId) {
         setIsActiveFav(false);
         //удаление из избранных
-        await api.delete(`/v1/favorites/${nowFavItem.favoriteId}`);
+        await api.delete(`/v1/favorites/${favoriteId}`);
       } else {
         setIsActiveFav(true);
         //добавление в избранные
         await postFav({
-          userId: decodedToken.id,
-          productId: nowProduct.id,
-        });
-        console.log({
           userId: decodedToken.id,
           productId: nowProduct.id,
         });
@@ -142,19 +156,42 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
         <div className="flex flex-col items-center gap-3">
           {/* 1 блок */}
           <div className="flex flex-col items-center gap-3 mt-3 text-base">
-            <div className="flex items-center justify-start gap-1 w-full">
-              <Link href="/" className="hover:text-orange-200 transition-all">
+            <div className="flex items-center justify-start gap-1 w-full ">
+              <Link
+                href="/"
+                className="text-gray-400 hover:text-black transition-all"
+              >
                 Главная{" "}
               </Link>
               <p>/</p>
               <Link
                 href={`/${params.products}`}
-                className="hover:text-orange-200 transition-all"
+                className="text-gray-400 hover:text-black transition-all"
               >
                 {getCategoryRu(String(params.products)).name}
               </Link>
               <p>/</p>
-              <span className="text-orange-200">{nowProduct.name}</span>
+              <span className="text-black leading-none">
+                {nowProduct.name.toLowerCase()}
+              </span>
+            </div>
+
+            <div className="flex flex-col justify-start w-full">
+              <h1 className="text-base font-bold">{nowProduct.name}</h1>
+
+              <div className="flex justify-end w-full">
+                <button
+                  className="flex justify-center items-center gap-1 py-1"
+                  onClick={handleClickFav}
+                >
+                  {isActiveFav ? (
+                    <MdFavorite className="h-5 w-5 " />
+                  ) : (
+                    <MdFavoriteBorder className="h-5 w-5" />
+                  )}
+                  <p className="text-sm">Избранные</p>
+                </button>
+              </div>
             </div>
 
             <Image

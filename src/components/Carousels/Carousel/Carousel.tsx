@@ -47,13 +47,13 @@ export const Carousel: React.FC<PropType> = (props) => {
 
   return (
     <section className="embla">
-      <div className="embla__viewport relative" ref={emblaRef}>
-        <div className="embla__container relative">{children}</div>
+      <div className="mb-2 flex justify-end items-center gap-3 w-full">
+        <PrevButton onClick={onPrevButtonClick} disabled={prevBtnDisabled} />
+        <NextButton onClick={onNextButtonClick} disabled={nextBtnDisabled} />
+      </div>
 
-        <div className="flex justify-between w-full absolute top-1/2 -translate-y-1/2 z-10">
-          <PrevButton onClick={onPrevButtonClick} disabled={prevBtnDisabled} />
-          <NextButton onClick={onNextButtonClick} disabled={nextBtnDisabled} />
-        </div>
+      <div className="embla__viewport relative" ref={emblaRef}>
+        <div className="embla__container">{children}</div>
       </div>
 
       <div className="embla__dots">

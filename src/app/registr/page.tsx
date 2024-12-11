@@ -236,7 +236,7 @@ export default function Registr() {
               handleChange(e);
             }}
             onBlur={() => firstname.onBlur()}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 text-white bg-transparent border border-[#6F00FF]"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#6F00FF]"
           />
           {errorsValidation(firstname, { minLength: 2, maxLength: 50 })}
         </div>
@@ -258,7 +258,7 @@ export default function Registr() {
               handleChange(e);
             }}
             onBlur={() => lastname.onBlur()}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 text-white bg-transparent border border-[#6F00FF]"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#6F00FF]"
           />
           {errorsValidation(lastname, { minLength: 2, maxLength: 50 })}
         </div>
@@ -280,7 +280,7 @@ export default function Registr() {
               handleChange(e);
             }}
             onBlur={() => username.onBlur()}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 text-white bg-transparent border border-[#6F00FF]"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#6F00FF]"
           />
           {errorMessageUsername && (
             <span className="text-red-600 text-xs">{errorMessageUsername}</span>
@@ -305,7 +305,7 @@ export default function Registr() {
               handleChange(e);
             }}
             onBlur={() => email.onBlur()}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 text-white bg-transparent border border-[#6F00FF]"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#6F00FF]"
           />
           {errorMessageEmailValid && (
             <span className="text-red-600 text-xs">
@@ -335,7 +335,7 @@ export default function Registr() {
               handleChange(e);
             }}
             onBlur={() => password.onBlur()}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 text-white bg-transparent border border-[#6F00FF]"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#6F00FF]"
           />
           {errorsValidation(password, { minLength: 6, maxLength: 50 })}
         </div>
@@ -354,7 +354,7 @@ export default function Registr() {
             value={secondPassword.value}
             onChange={(e) => secondPassword.onChange(e)}
             onBlur={() => secondPassword.onBlur()}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 text-white bg-transparent border border-[#6F00FF]"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#6F00FF]"
           />
           {errorMessagePassword && (
             <span className="text-red-600 text-xs">{errorMessagePassword}</span>

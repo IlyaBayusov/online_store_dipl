@@ -149,8 +149,6 @@ export default function FormByModalNewProductAdmin() {
     }
   };
 
-  console.log(price.inputValid);
-
   const validateForm = () => {
     let isValid = true;
 

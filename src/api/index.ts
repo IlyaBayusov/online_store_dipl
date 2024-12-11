@@ -8,7 +8,6 @@ import {
   IProductInCart,
 } from "@/interfaces";
 import { decodeToken } from "@/utils";
-import { AxiosResponse } from "axios";
 
 export const getProductsCart = async () => {
   try {
