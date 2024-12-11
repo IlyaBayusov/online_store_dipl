@@ -126,6 +126,8 @@ export default function Registr() {
         </span>
       );
     }
+
+    return <span className="text-red-600 text-xs mb-4"></span>;
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -212,20 +214,16 @@ export default function Registr() {
 
   return (
     <div className="flex flex-col justify-center items-center">
-      <h1 className="text-lg uppercase text-center mt-3">Регистрация</h1>
+      <h1 className="text-lg font-bold uppercase text-center mt-3">
+        Регистрация
+      </h1>
       {error && <p className="text-red-700">{error}</p>}
 
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col w-full items-center mt-1 text-black"
+        className="flex flex-col w-full items-center text-black"
       >
         <div className="flex flex-col justify-center text-base items-center w-full max-w-64">
-          <label
-            htmlFor=""
-            className="text-start mt-2 text-white flex justify-start w-full"
-          >
-            Имя
-          </label>
           <input
             type="text"
             placeholder="Имя"
@@ -236,18 +234,12 @@ export default function Registr() {
               handleChange(e);
             }}
             onBlur={() => firstname.onBlur()}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#6F00FF]"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#EAEAEA]"
           />
           {errorsValidation(firstname, { minLength: 2, maxLength: 50 })}
         </div>
 
         <div className="flex flex-col justify-center text-base items-center w-full max-w-64">
-          <label
-            htmlFor=""
-            className="text-start mt-2 text-white flex justify-start w-full"
-          >
-            Фамилия
-          </label>
           <input
             type="text"
             placeholder="Фамилия"
@@ -258,18 +250,12 @@ export default function Registr() {
               handleChange(e);
             }}
             onBlur={() => lastname.onBlur()}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#6F00FF]"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#EAEAEA]"
           />
           {errorsValidation(lastname, { minLength: 2, maxLength: 50 })}
         </div>
 
         <div className="flex flex-col justify-center text-base items-center w-full max-w-64">
-          <label
-            htmlFor=""
-            className="text-start mt-2 text-white flex justify-start w-full"
-          >
-            Логин
-          </label>
           <input
             type="text"
             placeholder="Логин"
@@ -280,7 +266,7 @@ export default function Registr() {
               handleChange(e);
             }}
             onBlur={() => username.onBlur()}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#6F00FF]"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#EAEAEA]"
           />
           {errorMessageUsername && (
             <span className="text-red-600 text-xs">{errorMessageUsername}</span>
@@ -289,12 +275,6 @@ export default function Registr() {
         </div>
 
         <div className="flex flex-col justify-center text-base items-center w-full max-w-64">
-          <label
-            htmlFor=""
-            className="text-start mt-2 text-white flex justify-start w-full"
-          >
-            Email
-          </label>
           <input
             type="email"
             placeholder="Email"
@@ -305,7 +285,7 @@ export default function Registr() {
               handleChange(e);
             }}
             onBlur={() => email.onBlur()}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#6F00FF]"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#EAEAEA]"
           />
           {errorMessageEmailValid && (
             <span className="text-red-600 text-xs">
@@ -319,12 +299,6 @@ export default function Registr() {
         </div>
 
         <div className="flex flex-col justify-center text-base items-center w-full max-w-64">
-          <label
-            htmlFor=""
-            className="text-start mt-2 text-white flex justify-start w-full"
-          >
-            Пароль
-          </label>
           <input
             type="password"
             placeholder="Пароль"
@@ -335,18 +309,12 @@ export default function Registr() {
               handleChange(e);
             }}
             onBlur={() => password.onBlur()}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#6F00FF]"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#EAEAEA]"
           />
           {errorsValidation(password, { minLength: 6, maxLength: 50 })}
         </div>
 
         <div className="flex flex-col justify-center text-base items-center w-full max-w-64">
-          <label
-            htmlFor=""
-            className="text-start mt-2 text-white flex justify-start w-full"
-          >
-            Повторить пароль
-          </label>
           <input
             type="password"
             placeholder="Повторить пароль"
@@ -354,7 +322,7 @@ export default function Registr() {
             value={secondPassword.value}
             onChange={(e) => secondPassword.onChange(e)}
             onBlur={() => secondPassword.onBlur()}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#6F00FF]"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#EAEAEA]"
           />
           {errorMessagePassword && (
             <span className="text-red-600 text-xs">{errorMessagePassword}</span>
@@ -362,12 +330,15 @@ export default function Registr() {
           {errorsValidation(secondPassword, { minLength: 6, maxLength: 50 })}
         </div>
 
-        <button className="bg-white py-2 px-5 rounded-md mt-3" type="submit">
+        <button
+          className="bg-greenT text-white py-2 px-6 rounded-md mt-3"
+          type="submit"
+        >
           Зарегистрироваться
         </button>
       </form>
 
-      <Link href={"/auth"} className="text-gray-400 text-base mt-1">
+      <Link href={"/auth"} className="text-greenT text-base mt-1">
         Войти в аккаунт
       </Link>
     </div>

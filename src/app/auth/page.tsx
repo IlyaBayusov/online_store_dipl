@@ -49,6 +49,8 @@ export default function Auth() {
         </span>
       );
     }
+
+    return <span className="text-red-600 text-xs mb-4"></span>;
   };
 
   const validateForm = () => {
@@ -110,7 +112,9 @@ export default function Auth() {
 
   return (
     <div className="flex flex-col justify-center items-center">
-      <h1 className="text-lg uppercase text-center mt-3">Авторизация</h1>
+      <h1 className="text-lg font-bold uppercase text-center mt-3">
+        Авторизация
+      </h1>
       {error && <p className="text-red-700">{error}</p>}
 
       <form
@@ -118,12 +122,6 @@ export default function Auth() {
         className="flex flex-col w-full items-center mt-1 text-black"
       >
         <div className="flex flex-col justify-center text-base items-center w-full max-w-64">
-          <label
-            htmlFor=""
-            className="text-start mt-2 text-white flex justify-start w-full"
-          >
-            Логин
-          </label>
           <input
             type="text"
             placeholder="Логин"
@@ -134,18 +132,12 @@ export default function Auth() {
               handleChange(e);
             }}
             onBlur={() => username.onBlur()}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 text-white bg-transparent border border-[#6F00FF]"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#EAEAEA]"
           />
           {errorsValidation(username, { minLength: 2, maxLength: 50 })}
         </div>
 
         <div className="flex flex-col justify-center text-base items-center w-full max-w-64">
-          <label
-            htmlFor=""
-            className="text-start mt-2 text-white flex justify-start w-full"
-          >
-            Пароль
-          </label>
           <input
             type="password"
             placeholder="Пароль"
@@ -156,21 +148,24 @@ export default function Auth() {
               handleChange(e);
             }}
             onBlur={() => password.onBlur()}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 text-white bg-transparent border border-[#6F00FF]"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#EAEAEA]"
           />
           {errorsValidation(password, { minLength: 6, maxLength: 50 })}
         </div>
 
-        <Link href={"/forgotPass"} className="text-gray-400 text-base mt-1">
+        <Link href={"/forgotPass"} className="text-greenT text-base">
           Забыли пароль?
         </Link>
 
-        <button className="bg-white py-2 px-5 rounded-md mt-3" type="submit">
+        <button
+          className="bg-greenT text-white py-2 px-6 rounded-md mt-3"
+          type="submit"
+        >
           Войти
         </button>
       </form>
 
-      <Link href={"/registr"} className="text-gray-400 text-base mt-1">
+      <Link href={"/registr"} className="text-greenT text-base mt-1">
         Зарегистрироваться
       </Link>
     </div>
