@@ -1,12 +1,67 @@
-import { IProductCategory } from "@/interfaces";
+"use client";
+
+import { IDecodedToken, IGetFav, IProductCategory } from "@/interfaces";
 import Image from "next/image";
-import React from "react";
-import { CiHeart } from "react-icons/ci";
+import React, { useEffect, useState } from "react";
 import img_test from "../../../../public/testImg/img_test.png";
+import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
+import { getFav, postFav } from "@/api";
+import { decodeToken } from "@/utils";
+import { api } from "@/axios";
+import Link from "next/link";
 
 type Props = { productCard: IProductCategory };
 
 export default function ProductCardItem({ productCard }: Props) {
+  const [isActiveFav, setIsActiveFav] = useState(false);
+
+  useEffect(() => {
+    setActiveBtnFav();
+  }, []);
+
+  async function setActiveBtnFav() {
+    try {
+      const data: IGetFav[] | undefined = await getFav();
+
+      if (!data) return;
+
+      for (const item of data) {
+        if (item.productId === productCard.productId) {
+          setIsActiveFav(true);
+          return item.favoriteId;
+        }
+      }
+
+      return;
+    } catch (error) {
+      console.error("Ошибка запроса получения избранных", error);
+      return;
+    }
+  }
+
+  const handleClickFav = async () => {
+    try {
+      const favoriteId = await setActiveBtnFav();
+
+      const decodedToken: IDecodedToken = decodeToken();
+
+      if (isActiveFav && favoriteId) {
+        setIsActiveFav(false);
+        //удаление из избранных
+        await api.delete(`/v1/favorites/${favoriteId}`);
+      } else {
+        setIsActiveFav(true);
+        //добавление в избранные
+        await postFav({
+          userId: decodedToken.id,
+          productId: productCard.productId,
+        });
+      }
+    } catch (error) {
+      console.error("Ошибка запроса добавления/удаления в избранных: ", error);
+    }
+  };
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex justify-between items-center">
@@ -14,26 +69,40 @@ export default function ProductCardItem({ productCard }: Props) {
           <p className="text-white">Новинки</p>
         </div>
 
-        <CiHeart className="h-5 w-5 text-[#B9B9B9]" />
+        <button
+          className="flex justify-center items-center gap-1 py-1"
+          onClick={handleClickFav}
+        >
+          {isActiveFav ? (
+            <MdFavorite className="h-5 w-5 " />
+          ) : (
+            <MdFavoriteBorder className="h-5 w-5" />
+          )}
+        </button>
       </div>
 
-      <div className="mt-3">
-        <Image
-          // src={productCard.image}
-          src={img_test}
-          alt={productCard.name}
-          className="rounded-md w-full h-auto object-cover"
-        />
-      </div>
+      <Link
+        href={`/${productCard.categoryName}/${productCard.productId}`}
+        className="flex flex-col h-full"
+      >
+        <div className="mt-3">
+          <Image
+            // src={productCard.image}
+            src={img_test}
+            alt={productCard.name}
+            className="rounded-md w-full h-auto object-cover"
+          />
+        </div>
 
-      <div className="mt-3 flex flex-grow  flex-col items-start gap-3">
-        <p className="text-base font-bold text-start">{`${productCard.price} РУБ.`}</p>
-        <p className="text-sm text-start">{productCard.name}</p>
-      </div>
+        <div className="mt-3 flex flex-grow  flex-col items-start gap-3">
+          <p className="text-base font-bold text-start">{`${productCard.price} РУБ.`}</p>
+          <p className="text-sm text-start">{productCard.name}</p>
+        </div>
 
-      <button className="bg-greenT px-3 p-1 text-sm text-white rounded-md mt-3">
-        Купить
-      </button>
+        <button className="bg-greenT px-3 p-1 text-sm text-white rounded-md mt-3">
+          Купить
+        </button>
+      </Link>
     </div>
   );
 }

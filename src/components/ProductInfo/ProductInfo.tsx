@@ -16,6 +16,7 @@ import { RiShoppingBasketLine, RiShoppingBasketFill } from "react-icons/ri";
 import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
 import { api } from "@/axios";
 import { getFav, getProductsCart, postFav } from "@/api";
+import * as Tabs from "@radix-ui/react-tabs";
 
 type Props = {
   arrProduct: IProductInfo[];
@@ -156,7 +157,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
         <div className="flex flex-col items-center gap-3">
           {/* 1 блок */}
           <div className="flex flex-col items-center gap-3 mt-3 text-base">
-            <div className="flex items-center justify-start gap-1 w-full ">
+            <div className="flex items-center justify-start gap-x-1 w-full flex-wrap">
               <Link
                 href="/"
                 className="text-gray-400 hover:text-black transition-all"
@@ -171,9 +172,6 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
                 {getCategoryRu(String(params.products)).name}
               </Link>
               <p>/</p>
-              <span className="text-black leading-none">
-                {nowProduct.name.toLowerCase()}
-              </span>
             </div>
 
             <div className="flex flex-col justify-start w-full">
@@ -218,15 +216,22 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
 
           {/* 2 блок */}
           <div className="flex flex-col w-full">
-            <div className="flex flex-col items-center text-[#FFE4E4] text-center">
-              <h1>{nowProduct.name}</h1>
-              <p>{`${nowProduct.price} РУБ`}</p>
-            </div>
-
             <div className="flex flex-col items-start mt-3">
               <div className="full">
-                <p>Цвет: {selectedColor}</p>
-                <div className="flex items-center gap-2 mt-1">
+                <div>
+                  <p>
+                    <span className="text-[#B9B9B9]">Артикул:</span>{" "}
+                    {nowProduct.id}
+                  </p>
+
+                  <p className="text-greenT mt-1">Все характеристики</p>
+                </div>
+
+                <div className="flex flex-col mt-3">
+                  <p className="font-bold">Цвет: </p>
+                  <p className="text-[#B9B9B9] mt-1">{selectedColor}</p>
+                </div>
+                <div className="flex items-center gap-3 mt-1">
                   {arrProducts.map((item) => (
                     <Link
                       key={item.id}
@@ -238,9 +243,9 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
                           background: getCodeColor(item.color.toLowerCase()),
                         }}
                         className={
-                          "w-6 h-6 rounded-full " +
+                          "w-9 h-12 rounded-md " +
                           (item.color == selectedColor
-                            ? "border-2 border-white"
+                            ? "border border-greenT"
                             : "")
                         }
                         onClick={() => setSelectedColor(nowProduct.color)}
@@ -250,66 +255,90 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
                 </div>
               </div>
 
-              <div className="mt-1 w-full">
-                <p>
-                  Размер:{" "}
-                  {Number.isNaN(selectedSize) ? "Стандартный" : selectedSize}
-                </p>
-                <div className="flex justify-between items-center mt-1 w-full">
-                  {nowProduct.sizes.map((size, index) => (
-                    <button
-                      key={index}
-                      className={
-                        "py-2 px-5 rounded-md text-base " +
-                        (Number(size) == selectedSize
-                          ? "bg-[#895D5D] text-white"
-                          : "bg-white text-black")
-                      }
-                      onClick={() => setSelectedSize(Number(size))}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
+              <div className="flex justify-between items-center w-full bg-white px-3 py-6 gap-3 mt-3 shadow-md drop-shadow-md rounded-md">
+                <p className="font-bold text-nowrap">{nowProduct.price} руб.</p>
+
+                <button
+                  className={
+                    "flex justify-center items-center gap-1 py-2 px-4 w-full rounded-md transition-all" +
+                    (isActiveCart
+                      ? " bg-white text-greenT outline outline-1 outline-greenT"
+                      : " bg-greenT text-white")
+                  }
+                  onClick={handleClickCart}
+                >
+                  <p>Купить</p>
+
+                  {isActiveCart ? (
+                    <RiShoppingBasketFill className="h-5 w-5" />
+                  ) : (
+                    <RiShoppingBasketLine className="h-5 w-5" />
+                  )}
+                </button>
               </div>
             </div>
           </div>
 
           {/* 3 блок */}
-          <div className="flex justify-between items-center w-full gap-3">
-            <button
-              className={
-                "flex justify-center items-center gap-1 py-2 w-full rounded-md text-white border border-[#895D5D] " +
-                (isActiveCart ? "bg-[#895D5D]" : "border border-[#895D5D]")
-              }
-              onClick={handleClickCart}
-            >
-              {isActiveCart ? (
-                <RiShoppingBasketFill className="h-5 w-5 ml-px" />
-              ) : (
-                <RiShoppingBasketLine className="h-5 w-5" />
-              )}
-            </button>
-            <button
-              className={
-                "flex justify-center items-center gap-1 py-2 w-full rounded-md text-white border border-[#895D5D] " +
-                (isActiveFav ? "bg-[#895D5D]" : "")
-              }
-              onClick={handleClickFav}
-            >
-              {isActiveFav ? (
-                <MdFavorite className="h-5 w-5 mr-px" />
-              ) : (
-                <MdFavoriteBorder className="h-5 w-5" />
-              )}
-            </button>
-          </div>
+          <Tabs.Root
+            className="flex flex-col w-full mt-3"
+            defaultValue="characteristics"
+          >
+            <Tabs.List className="flex justify-between items-center gap-3 py-2 px-4 rounded-md bg-white shadow-sm drop-shadow-md">
+              <Tabs.Trigger
+                className="data-[state=active]:text-greenT rounded-md"
+                value="characteristics"
+              >
+                Характеристики
+              </Tabs.Trigger>
+              <Tabs.Trigger
+                className="data-[state=active]:text-greenT rounded-md"
+                value="graphPrice"
+              >
+                График цен
+              </Tabs.Trigger>
+            </Tabs.List>
 
-          {/* 4 блок */}
-          <ProductTabs
-            category={nowProduct.categoryName}
-            description={nowProduct.description}
-          />
+            <Tabs.Content
+              className="mt-3 w-full outline outline-1 outline-[#E5E5E5] rounded-md p-2"
+              value="characteristics"
+            >
+              {nowProduct ? (
+                <table className="text-black uppercase text-xs text-start w-full">
+                  <tbody>
+                    <th className="text-start">Данные о товаре</th>
+                    <tr className="border-b border-slate-300 border-none">
+                      <td className="text-[#B9B9B9]">Артикул производителя</td>
+                      <td className="">{nowProduct.id}</td>
+                    </tr>
+                    <tr className="border-b border-slate-300 border-none">
+                      <td className="text-[#B9B9B9]">Код производителя</td>
+                      <td className="">12415</td>
+                    </tr>
+
+                    <th className="text-start pt-3">Данные о товаре</th>
+                    <tr className="border-b border-slate-300 border-none">
+                      <td className="text-[#B9B9B9]">Артикул производителя</td>
+                      <td className="">{nowProduct.id}</td>
+                    </tr>
+                    <tr className="border-b border-slate-300 border-none">
+                      <td className="text-[#B9B9B9]">Код производителя</td>
+                      <td className="">12415</td>
+                    </tr>
+                  </tbody>
+                </table>
+              ) : (
+                <div>Loading...</div>
+              )}
+            </Tabs.Content>
+
+            <Tabs.Content
+              className="mt-3 w-full outline outline-1 outline-[#E5E5E5] rounded-md p-2"
+              value="graphPrice"
+            >
+              график цен
+            </Tabs.Content>
+          </Tabs.Root>
         </div>
       </div>
     </div>

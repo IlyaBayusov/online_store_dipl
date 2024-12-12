@@ -1,5 +1,4 @@
 import { IProductCategory } from "@/interfaces";
-import Link from "next/link";
 import React from "react";
 import ProductCardItem from "../ProductCardItem/ProductCardItem";
 
@@ -14,15 +13,9 @@ export default function ProductCardList({ productsCard, nameTitle }: Props) {
       <div className="my-2 w-full grid grid-cols-2 gap-3">
         {productsCard &&
           productsCard.map((product) => (
-            <Link
-              key={product.productId}
-              href={`/${product.categoryName}/${product.productId}`}
-              className="flex h-full"
-            >
-              <div className="h-full">
-                <ProductCardItem productCard={product} />
-              </div>
-            </Link>
+            <div key={product.productId} className="h-full">
+              <ProductCardItem productCard={product} />
+            </div>
           ))}
       </div>
     </>
