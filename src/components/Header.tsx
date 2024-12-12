@@ -1,7 +1,7 @@
 "use client";
 
 import { getProductsCart } from "@/api";
-import { mainPage, modalNav } from "@/constans";
+import { cartPage, favPage, mainPage, modalNav, ordersPage } from "@/constans";
 import { IProductInCart } from "@/interfaces";
 import { useModalStore } from "@/stores/useModalStore";
 import Link from "next/link";
@@ -18,10 +18,13 @@ import {
 
 import { IoIosSearch } from "react-icons/io";
 import { HiMenuAlt2 } from "react-icons/hi";
+import { useCartStore } from "@/stores/useCartStore";
 
 export default function Header() {
   const [products, setProducts] = useState<IProductInCart[]>([]);
+
   const path = usePathname();
+  const { cart } = useCartStore();
   const noHeaderPages = ["/adminMenu"];
 
   const showHeader = !noHeaderPages.includes(path);
@@ -66,7 +69,7 @@ export default function Header() {
 
                 <li className="">
                   <Link
-                    href="#"
+                    href={ordersPage}
                     className="relative flex gap-1 flex-col items-center"
                   >
                     <div className="relative">
@@ -82,7 +85,7 @@ export default function Header() {
 
                 <li className="">
                   <Link
-                    href="#"
+                    href={favPage}
                     className="relative flex gap-1 flex-col items-center"
                   >
                     <div className="relative">
@@ -98,13 +101,13 @@ export default function Header() {
 
                 <li className="">
                   <Link
-                    href="#"
+                    href={cartPage}
                     className="relative flex gap-1 flex-col items-center"
                   >
                     <div className="relative">
                       <CiShoppingCart className="h-5 w-5" />
                       <div className="py-0.5 px-1 absolute -top-1 -right-3.5 z-10 bg-greenT text-white rounded-full">
-                        {products.length}
+                        {cart.length}
                       </div>
                     </div>
 

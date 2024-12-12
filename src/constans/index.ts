@@ -6,6 +6,10 @@ import img_eat from "../../public/main/category/img_eat.png";
 import img_test_shoes1 from "../../public/testImg/img_test_shoes1.png";
 
 export const mainPage = "/";
+export const cartPage = "/cart";
+export const favPage = "/favorites";
+export const ordersPage = "/orders";
+export const profilePage = "/profile";
 
 export const modalNav = "modalNav";
 export const modalNavCategory = "modalNavCategory";

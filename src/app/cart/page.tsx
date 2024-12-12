@@ -2,9 +2,9 @@
 
 import { getProductsCart } from "@/api";
 import CartList from "@/components/Cart/CartList/CartList";
+import FormByCart from "@/components/Forms/FormByCart/FormByCart";
 import { modalCartDeleteProduct } from "@/constans";
 import { IProductInCart } from "@/interfaces";
-import { useByProductsStore } from "@/stores/useByProducts";
 import { useCartStore } from "@/stores/useCartStore";
 import { useModalStore } from "@/stores/useModalStore";
 import { useRouter } from "next/navigation";
@@ -14,7 +14,6 @@ export default function Cart() {
   const [products, setProducts] = useState<IProductInCart[]>([]);
   const { sum } = useCartStore();
   const { modalsProps } = useModalStore();
-  const { updateProducts } = useByProductsStore();
 
   const router = useRouter();
 
@@ -35,39 +34,15 @@ export default function Cart() {
     }
   };
 
-  const handleBuy = () => {
-    updateProducts(products);
-    router.push("/cart/buyProducts");
-  };
-
   return (
-    <div className="container px-3">
-      <div className="flex flex-col justify-center items-center w-full">
-        <div className="mt-3 w-full bg-black rounded-t-2xl rounded-b-md">
-          <h1 className="py-2 px-3 text-xl uppercase">Корзина</h1>
-        </div>
+    <div className="container px-2.5">
+      <div className="flex flex-col justify-start">
+        <h1 className="text-lg font-semibold mt-3 mb-3">Оформление товаров</h1>
 
-        <CartList products={products} />
+        {!products ? <h1>Loading...</h1> : <CartList products={products} />}
+
+        <FormByCart />
       </div>
-
-      {products.length ? (
-        <button
-          className="flex flex-col items-center fixed bottom-7 left-1/2 -translate-x-1/2 z-[1000] w-[calc(100%-1.5rem)] py-2 rounded-md bg-orange-400"
-          onClick={handleBuy}
-        >
-          <span className="text-base leading-none">К оформлению</span>
-          <span className="text-base leading-none">{`${products.length} шт., ${sum} руб.`}</span>
-        </button>
-      ) : (
-        <button
-          disabled
-          className="flex flex-col items-center fixed bottom-7 left-1/2 -translate-x-1/2 z-[1000] w-[calc(100%-1.5rem)] py-2 rounded-md bg-[#3A3A3A]"
-        >
-          <span className="text-base leading-none text-[#B3B3B3]">
-            Корзина пуста
-          </span>
-        </button>
-      )}
     </div>
   );
 }

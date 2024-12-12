@@ -36,16 +36,16 @@ export default function ModalCartDeleteProduct() {
       onClick={() => closeModal(modalCartDeleteProduct)}
     >
       <div
-        className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-md flex flex-col bg-[#121212] p-3"
+        className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-md flex flex-col bg-white p-3"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-end">
-          <div onClick={() => closeModal(modalCartDeleteProduct)}>
+          <button onClick={() => closeModal(modalCartDeleteProduct)}>
             <IoClose
-              className="text-[#B3B3B3] w-5 h-5"
+              className="text-[#B3B3B3] w-5 h-5 hover:text-greenT transition-all cu"
               viewBox="75 75 350 350"
             />
-          </div>
+          </button>
         </div>
 
         <div className="mt-3 flex justify-center text-center">
@@ -54,13 +54,13 @@ export default function ModalCartDeleteProduct() {
 
         <div className="mt-3 flex justify-around items-center">
           <button
-            className="py-2 px-4 text-[#B3B3B3]"
+            className="py-2 px-4 hover:text-greenT transition-all"
             onClick={handleDeleteProduct}
           >
             Да
           </button>
           <button
-            className="py-2 px-4 text-[#B3B3B3]"
+            className="py-2 px-4 hover:text-greenT transition-all"
             onClick={() => closeModal(modalCartDeleteProduct)}
           >
             Нет

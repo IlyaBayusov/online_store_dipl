@@ -15,6 +15,9 @@ type Props = { product: IProductInCart };
 
 export default function CartItem({ product }: Props) {
   const [quantity, setQuantity] = useState(product.quantity);
+  const [isDisabledPlus, setIsDisabledPlus] = useState(false);
+  const [isDisabledMinus, setIsDisabledMinus] = useState(false);
+
   const { plusSum, minusSum } = useCartStore();
   const { openModal, addModalProps } = useModalStore();
 
@@ -25,6 +28,20 @@ export default function CartItem({ product }: Props) {
 
     updateQuantity();
   }, [product, quantity]);
+
+  useEffect(() => {
+    if (quantity <= 1) {
+      setIsDisabledMinus(true);
+    } else {
+      setIsDisabledMinus(false);
+    }
+
+    if (quantity >= 99) {
+      setIsDisabledPlus(true);
+    } else {
+      setIsDisabledPlus(false);
+    }
+  }, [quantity]);
 
   const handleClickMinus = () => {
     if (quantity > 1) {
@@ -52,7 +69,7 @@ export default function CartItem({ product }: Props) {
   return (
     <div
       key={product.productId}
-      className="flex flex-col justify-center items-center w-full p-3 bg-black mb-3 rounded-md"
+      className="flex flex-col justify-center items-center w-full p-3 mb-3 rounded-md outline outline-1 outline-[#B3B3B3]"
     >
       <div className="flex justify-between w-full mb-2">
         <div className="flex justify-start gap-3 w-full">
@@ -79,46 +96,57 @@ export default function CartItem({ product }: Props) {
             </Link>
 
             <div className="text-sm text-start mt-1">
-              <p>Размер: {product.size}</p>
               <p>Артикул: {product.productId}</p>
-            </div>
-
-            <div className="flex justify-start items-center mt-2">
-              <button
-                disabled={quantity <= 1}
-                className="w-6 h-6 flex justify-center items-center disabled:bg-[#3A3A3A] bg-fuchsia-700 rounded-md"
-                onClick={handleClickMinus}
-              >
-                <FaMinus className="w-4 h-4 text-white" />
-              </button>
-              <div className="flex justify-center items-center w-6 h-6">
-                <p className="text-base text-center">{quantity}</p>
-              </div>
-              <button
-                disabled={quantity >= 99}
-                className="w-6 h-6 flex justify-center items-center disabled:bg-[#3A3A3A] bg-fuchsia-700 rounded-md"
-                onClick={handleClickPlus}
-              >
-                <FaPlus className="w-4 h-4 text-white" />
-              </button>
             </div>
           </div>
         </div>
 
-        <div className="w-4 h-4">
+        <button className="w-4 h-4">
           <RiDeleteBin6Line
-            className="w-4 h-4 mt-0.5"
+            className="w-4 h-4 mt-0.5 hover:text-greenT transition-all"
             onClick={handleOpenModal}
           />
-        </div>
+        </button>
       </div>
 
       <div className="flex justify-between items-center w-full border-t border-[#B3B3B3] pt-2">
-        <p className="text-base">{`${product.price} руб.`}</p>
+        <p className="text-base font-bold">{`${product.price} руб.`}</p>
 
-        <button className="py-1 px-3 text-sm text-orange-400 border border-orange-400 rounded-md">
-          Купить
-        </button>
+        <div className="flex justify-start items-center">
+          <button
+            disabled={isDisabledMinus}
+            className={
+              "w-6 h-6 flex justify-center items-center border rounded-sm transition-all" +
+              (isDisabledMinus ? " border-[#B3B3B3]" : " border-greenT ")
+            }
+            onClick={handleClickMinus}
+          >
+            <FaMinus
+              className={
+                "w-4 h-4 transition-all" +
+                (isDisabledMinus ? " text-[#B3B3B3]" : "  text-greenT")
+              }
+            />
+          </button>
+          <div className="flex justify-center items-center w-6 h-6 px-0.5">
+            <p className="text-base text-center">{quantity}</p>
+          </div>
+          <button
+            disabled={isDisabledPlus}
+            className={
+              "w-6 h-6 flex justify-center items-center border rounded-sm transition-all" +
+              (isDisabledPlus ? " border-[#B3B3B3]" : " border-greenT ")
+            }
+            onClick={handleClickPlus}
+          >
+            <FaPlus
+              className={
+                "w-4 h-4 transition-all" +
+                (isDisabledPlus ? " text-[#B3B3B3]" : "  text-greenT")
+              }
+            />
+          </button>
+        </div>
       </div>
     </div>
   );

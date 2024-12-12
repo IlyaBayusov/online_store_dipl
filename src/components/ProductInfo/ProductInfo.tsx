@@ -17,6 +17,7 @@ import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
 import { api } from "@/axios";
 import { getFav, getProductsCart, postFav } from "@/api";
 import * as Tabs from "@radix-ui/react-tabs";
+import { useCartStore } from "@/stores/useCartStore";
 
 type Props = {
   arrProduct: IProductInfo[];
@@ -42,6 +43,8 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
 
   const [nowCartItem, setNowCartItem] = useState<IProductInCart>();
   const [nowFavItem, setNowFavItem] = useState<IGetFav>();
+
+  const { addProduct, removeProduct } = useCartStore();
 
   const params = useParams();
 
@@ -74,6 +77,41 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
     }
   }
 
+  const handleClickCart = async () => {
+    try {
+      const cartItemId = await setActiveBtnCart();
+
+      const decodedToken: IDecodedToken = decodeToken();
+
+      if (isActiveCart) {
+        setIsActiveCart(false);
+        //удаление из корзины
+        await api.delete(`/v1/cart/${cartItemId}`);
+        removeProduct(nowProduct);
+      } else {
+        setIsActiveCart(true);
+        //добавление в корзину
+
+        console.log({
+          userId: decodedToken.id,
+          productId: nowProduct.id,
+          quantity: 1,
+          size: String(selectedSize),
+        });
+
+        await api.post("/v1/cart", {
+          userId: decodedToken.id,
+          productId: nowProduct.id,
+          quantity: 1,
+          size: String(selectedSize),
+        });
+        addProduct(nowProduct);
+      }
+    } catch (error) {
+      console.error("Ошибка запроса добавления/удаления в корзину: ", error);
+    }
+  };
+
   async function setActiveBtnFav() {
     try {
       const data: IGetFav[] | undefined = await getFav();
@@ -94,39 +132,6 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
       return;
     }
   }
-
-  const handleClickCart = async () => {
-    try {
-      const cartItemId = await setActiveBtnCart();
-
-      const decodedToken: IDecodedToken = decodeToken();
-
-      if (isActiveCart) {
-        setIsActiveCart(false);
-        //удаление из корзины
-        await api.delete(`/v1/cart/${cartItemId}`);
-      } else {
-        setIsActiveCart(true);
-        //добавление в корзину
-
-        console.log({
-          userId: decodedToken.id,
-          productId: nowProduct.id,
-          quantity: 1,
-          size: String(selectedSize),
-        });
-
-        await api.post("/v1/cart", {
-          userId: decodedToken.id,
-          productId: nowProduct.id,
-          quantity: 1,
-          size: String(selectedSize),
-        });
-      }
-    } catch (error) {
-      console.error("Ошибка запроса добавления/удаления в корзину: ", error);
-    }
-  };
 
   const handleClickFav = async () => {
     try {
@@ -300,13 +305,19 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
             </Tabs.List>
 
             <Tabs.Content
-              className="mt-3 w-full outline outline-1 outline-[#E5E5E5] rounded-md p-2"
+              className="mt-3 w-full outline outline-1 outline-[#B3B3B3] rounded-md p-2"
               value="characteristics"
             >
               {nowProduct ? (
-                <table className="text-black uppercase text-xs text-start w-full">
+                <table className="text-black text-xs text-start w-full">
+                  <thead>
+                    <tr>
+                      <th className="text-start" colSpan={2}>
+                        Данные о товаре
+                      </th>
+                    </tr>
+                  </thead>
                   <tbody>
-                    <th className="text-start">Данные о товаре</th>
                     <tr className="border-b border-slate-300 border-none">
                       <td className="text-[#B9B9B9]">Артикул производителя</td>
                       <td className="">{nowProduct.id}</td>
@@ -315,8 +326,15 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
                       <td className="text-[#B9B9B9]">Код производителя</td>
                       <td className="">12415</td>
                     </tr>
-
-                    <th className="text-start pt-3">Данные о товаре</th>
+                  </tbody>
+                  <thead>
+                    <tr>
+                      <th className="text-start pt-3" colSpan={2}>
+                        Данные о товаре
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
                     <tr className="border-b border-slate-300 border-none">
                       <td className="text-[#B9B9B9]">Артикул производителя</td>
                       <td className="">{nowProduct.id}</td>
