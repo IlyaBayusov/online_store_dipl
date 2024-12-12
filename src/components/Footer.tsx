@@ -12,7 +12,7 @@ import { mainPage } from "@/constans";
 
 export default function Footer() {
   const path = usePathname();
-  const noFooterPages = ["/cart", "/cart/buyProducts", "/adminMenu"];
+  const noFooterPages = ["/adminMenu"];
 
   const showFooter = !noFooterPages.includes(path);
 

@@ -247,33 +247,78 @@ export default function FormByCart() {
   };
 
   return (
-    <div className="mt-3">
-      <h1 className="text-lg font-semibold mt-3 mb-3">Оформление товаров</h1>
+    <>
+      <h1 className="text-lg font-semibold mt-3 mb-3">Адрес доставки</h1>
 
-      <form onSubmit={handleSubmit} className="text-base flex flex-col gap-3">
-        <div className="flex flex-col">
-          <div className="flex items-start gap-1">
-            <label htmlFor="name">Название</label>
-            {errorsValidation(name)}
+      <form
+        onSubmit={handleSubmit}
+        className="text-sm flex flex-col gap-3 mb-3"
+      >
+        <input
+          type="text"
+          placeholder="Адрес"
+          name="name"
+          className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
+          value={formData.name}
+          onChange={(e) => {
+            name.onChange(e);
+            handleChange(e);
+          }}
+          onBlur={() => name.onBlur()}
+        />
+
+        <div className="grid grid-cols-3 grid-rows-1 gap-2">
+          <div className="flex flex-col">
+            <label htmlFor="description">Дом</label>
+            <input
+              type="text"
+              placeholder="Дом"
+              name="name"
+              className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
+              value={formData.name}
+              onChange={(e) => {
+                name.onChange(e);
+                handleChange(e);
+              }}
+              onBlur={() => name.onBlur()}
+            />
           </div>
 
-          <input
-            type="text"
-            placeholder="Название"
-            name="name"
-            className="px-2 py-1 rounded-md text-black"
-            value={formData.name}
-            onChange={(e) => {
-              name.onChange(e);
-              handleChange(e);
-            }}
-            onBlur={() => name.onBlur()}
-          />
+          <div className="flex flex-col">
+            <label htmlFor="description">Квартира</label>
+            <input
+              type="text"
+              placeholder="Квартира"
+              name="name"
+              className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
+              value={formData.name}
+              onChange={(e) => {
+                name.onChange(e);
+                handleChange(e);
+              }}
+              onBlur={() => name.onBlur()}
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="description">Подъезд</label>
+            <input
+              type="text"
+              placeholder="Подъезд"
+              name="name"
+              className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
+              value={formData.name}
+              onChange={(e) => {
+                name.onChange(e);
+                handleChange(e);
+              }}
+              onBlur={() => name.onBlur()}
+            />
+          </div>
         </div>
 
         <div className="flex flex-col">
           <div className="flex items-start gap-1">
-            <label htmlFor="description">Описание</label>
+            <label htmlFor="description">Комментарий</label>
             {errorsValidation(description)}
           </div>
           <textarea
@@ -281,8 +326,8 @@ export default function FormByCart() {
             name="description"
             rows={5}
             cols={50}
-            placeholder="Описание"
-            className="p-2 rounded-md text-black"
+            placeholder="Комментарий"
+            className="p-2 rounded-md text-black border border-[#B3B3B3]"
             value={formData.description}
             onChange={(e) => {
               description.onChange(e);
@@ -292,191 +337,66 @@ export default function FormByCart() {
           ></textarea>
         </div>
 
-        <div className="flex justify-between items-start">
-          <div className="flex flex-col">
-            <div className="flex items-start gap-1">
-              <label htmlFor="price">Цена</label>
-              {errorsValidation(price)}
-            </div>
+        <div>
+          <h1 className="text-lg font-semibold mt-3 mb-3">Получатель</h1>
+
+          <div className="grid grid-cols-1 grid-rows-4 gap-2">
             <input
-              id="price"
-              type="number"
-              name="price"
-              placeholder="Цена"
-              maxLength={4}
-              className="px-2 py-1 rounded-md max-w-20 text-black"
-              value={formData.price}
+              type="text"
+              placeholder="Дом"
+              name="name"
+              className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
+              value={formData.name}
               onChange={(e) => {
-                price.onChange(e);
+                name.onChange(e);
                 handleChange(e);
               }}
-              onBlur={() => price.onBlur()}
+              onBlur={() => name.onBlur()}
             />
-          </div>
 
-          <div className="flex flex-col">
-            <div className="flex items-start gap-1">
-              <label htmlFor="color">Цвет</label>
-              {errorsValidation(color)}
-            </div>
+            <input
+              type="text"
+              placeholder="Квартира"
+              name="name"
+              className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
+              value={formData.name}
+              onChange={(e) => {
+                name.onChange(e);
+                handleChange(e);
+              }}
+              onBlur={() => name.onBlur()}
+            />
 
-            <div className="flex items-center gap-1">
-              <select
-                id="color"
-                className="rounded-md text-black px-2 py-[3px] text-base max-h-10 overflow-auto"
-                name="color"
-                value={formData.color}
-                onChange={(e) => {
-                  color.onChange(e);
-                  handleChange(e);
-                }}
-                onBlur={() => color.onBlur()}
-              >
-                <option value="">Выбрать</option>
+            <input
+              type="text"
+              placeholder="Подъезд"
+              name="name"
+              className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
+              value={formData.name}
+              onChange={(e) => {
+                name.onChange(e);
+                handleChange(e);
+              }}
+              onBlur={() => name.onBlur()}
+            />
 
-                {colors.map((item) => (
-                  <option key={item.value} value={item.value}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-
-              <div
-                className="h-6 w-6 rounded-full border-2 border-white"
-                style={{
-                  backgroundColor: color.value,
-                }}
-              ></div>
-            </div>
-          </div>
-
-          <div className="flex flex-col">
-            <div className="flex items-start gap-1">
-              <label htmlFor="category">Категория</label>
-              {errorsValidation(categoryName)}
-            </div>
-
-            <div className="flex items-center gap-3">
-              <select
-                id="category"
-                className="rounded-md text-black px-2 py-[3px] text-base"
-                name="categoryName"
-                value={formData.categoryName}
-                onChange={(e) => {
-                  categoryName.onChange(e);
-                  handleChange(e);
-                }}
-                onBlur={() => categoryName.onBlur()}
-              >
-                <option value="">Выбрать</option>
-
-                {selectCategoryies.map((category) => (
-                  <option key={category.value} value={category.value}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-3">
-          <div className="flex justify-between items-start gap-3">
-            <div className="flex flex-col w-1/2">
-              <div className="flex items-start gap-1">
-                <label htmlFor="size">Размер</label>
-                {errorsValidation(size)}
-              </div>
-
-              <select
-                id="size"
-                className="rounded-md text-black px-2 py-[3px] text-base"
-                name="size"
-                value={size.value}
-                onChange={(e) => {
-                  size.onChange(e);
-                }}
-                onBlur={() => size.onBlur()}
-              >
-                <option value="">Выбрать</option>
-
-                {selectSiziesCloth.map((size) => (
-                  <option key={size.name} value={size.name}>
-                    {size.name}
-                  </option>
-                ))}
-              </select>
-
-              {errorSizeAndQuantity && (
-                <p className="text-red-500 text-sm">{errorSizeAndQuantity}</p>
-              )}
-            </div>
-
-            <div className="flex flex-col w-1/2">
-              <div className="flex items-start gap-1">
-                <label htmlFor="quantity">Количество</label>
-                {errorsValidation(quantity)}
-              </div>
-
-              <input
-                id="quantity"
-                type="number"
-                name="quantities"
-                placeholder="Размер"
-                maxLength={4}
-                className="px-2 py-1 rounded-md text-black"
-                value={quantity.value}
-                onChange={(e) => {
-                  quantity.onChange(e);
-                }}
-                onBlur={() => quantity.onBlur()}
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-center">
-            <button
-              className="px-3 py-1 rounded-md bg-green-400 text-sm"
-              onClick={addSizeAndQuantity}
-            >
-              Добавить размер | количество
-            </button>
-          </div>
-
-          <div className="flex justify-start items-center gap-1 flex-wrap">
-            {[...sizeAndQuantity]
-              .sort((a, b) => +a.size - +b.size)
-              .map((item, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  className="flex rounded-md max-w-20 bg-white text-black"
-                  onClick={() => handleAddPropsModal(index)}
-                >
-                  <div className="text-center px-2 py-1 border-r">
-                    {item.size}
-                  </div>
-                  <div className="text-center px-2 py-1">{item.quantity}</div>
-                </button>
-              ))}
+            <input
+              type="text"
+              placeholder="Подъезд"
+              name="name"
+              className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
+              value={formData.name}
+              onChange={(e) => {
+                name.onChange(e);
+                handleChange(e);
+              }}
+              onBlur={() => name.onBlur()}
+            />
           </div>
         </div>
 
         <div>
-          <div className="flex items-start gap-1">
-            <label htmlFor="files">Фото</label>
-            {(!selectedFiles || selectedFiles.length === 0) && (
-              <span className="text-red-600 text-base">Выберите фото</span>
-            )}
-          </div>
-
-          <input
-            id="files"
-            name="files"
-            type="file"
-            multiple
-            onChange={handleFileChange}
-          />
+          <h1 className="text-lg font-semibold mt-3 mb-3">Способ оплаты</h1>
         </div>
 
         {errorSubmit && (
@@ -485,11 +405,11 @@ export default function FormByCart() {
 
         <button
           type="submit"
-          className="mt-3 px-3 py-1 rounded-md bg-green-400 text-sm"
+          className="mt-3 px-4 py-2 rounded-md bg-greenT text-white text-sm"
         >
-          Создать товар
+          Оформить заказ
         </button>
       </form>
-    </div>
+    </>
   );
 }
