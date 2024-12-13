@@ -12,11 +12,12 @@ export interface IProductInfo {
   id: number;
   name: string;
   color: string;
+  isActive: boolean;
   description: string;
   price: number;
-  sizes: string[];
-  quantities: number[];
+  quantities: number;
   images: string[];
+  characteristics: string;
 }
 
 export interface IDecodedToken {
@@ -37,7 +38,6 @@ export interface IProductInCart {
   productName: string;
   image: string;
   price: number;
-  size: string;
   quantity: number;
 }
 
@@ -53,14 +53,6 @@ export interface IByProductsForm {
   paymentMethod: string;
 }
 
-// export interface IByProductsItems {
-//   cartItemId: number;
-//   productId: number;
-//   quantity: number;
-//   price: number;
-//   size: string;
-// }
-
 export interface IOrderPost {
   orderDetailsRequest: IByProductsForm;
   orderItemRequest: IProductInCart[];
@@ -72,7 +64,7 @@ export interface IOrdersGet {
   productName: string;
   image: string;
   price: number;
-  size: string;
+  characteristics: string;
   quantity: number;
   totalPrice: number;
   paymentMethod: string;
@@ -106,6 +98,10 @@ export interface IGetFav {
   image: string;
 }
 
+export interface IProductCharacteristics {
+  [key: string]: string;
+}
+
 export interface IPostNewProduct {
   categoryName: string;
   groupId: null;
@@ -113,11 +109,6 @@ export interface IPostNewProduct {
   color: string;
   description: string;
   price: number;
-  sizes: string[];
-  quantities: number[];
-}
-
-export interface ISizeAndQuantity {
-  size: string;
-  quantity: number;
+  characteristics: string;
+  quantities: number;
 }

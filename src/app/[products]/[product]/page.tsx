@@ -38,7 +38,7 @@ export default async function Product({
   const arrProduct: IProductInfo[] = await fetchProducts(product);
 
   const productIdInArray = arrProduct
-    .map((item) => item.id)
+    ?.map((item) => item.id)
     .indexOf(Number(product));
 
   if (
@@ -56,4 +56,6 @@ export default async function Product({
         arrProduct={arrProduct}
       />
     );
+
+  return <h1>Loading</h1>;
 }

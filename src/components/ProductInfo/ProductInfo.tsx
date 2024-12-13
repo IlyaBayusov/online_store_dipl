@@ -31,11 +31,6 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
   );
   // const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const [selectedSize, setSelectedSize] = useState<string | number>(
-    nowProduct.sizes[0] !== "NoSize"
-      ? Number(nowProduct.sizes[0])
-      : nowProduct.sizes[0]
-  );
   const [selectedColor, setSelectedColor] = useState<string>(nowProduct.color);
 
   const [isActiveCart, setIsActiveCart] = useState(false);
@@ -96,14 +91,12 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
           userId: decodedToken.id,
           productId: nowProduct.id,
           quantity: 1,
-          size: String(selectedSize),
         });
 
         await api.post("/v1/cart", {
           userId: decodedToken.id,
           productId: nowProduct.id,
           quantity: 1,
-          size: String(selectedSize),
         });
         addProduct(nowProduct);
       }

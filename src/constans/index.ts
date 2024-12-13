@@ -163,6 +163,7 @@ export const categoriesList = [
   { id: 5, name: "Галстуки", url_name: "ties" },
   { id: 6, name: "Ремни", url_name: "belts" },
   { id: 7, name: "Рубашки", url_name: "shirts" },
+  { id: 7, name: "Челси", url_name: "chelsea" },
 ];
 
 export const newArrivals = [

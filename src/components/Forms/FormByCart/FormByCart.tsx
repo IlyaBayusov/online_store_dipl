@@ -1,29 +1,21 @@
 "use client";
 
 import { postProductAdmin } from "@/api";
-import {
-  colors,
-  modalDeleteEditNewProduct,
-  selectCategoryies,
-  selectSiziesCloth,
-} from "@/constans";
+import { modalDeleteEditNewProduct } from "@/constans";
 import { IUseInput, useInput } from "@/hooks/useInput";
-import { IPostNewProduct, ISizeAndQuantity } from "@/interfaces";
+import { IPostNewProduct } from "@/interfaces";
 import { useFormNewProductStore } from "@/stores/useFormNewProduct";
-import {
-  defaultDeleteEditNewProductProps,
-  useModalStore,
-} from "@/stores/useModalStore";
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useModalStore } from "@/stores/useModalStore";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 
 export default function FormByCart() {
-  const { data, updateData, updateIsValid } = useFormNewProductStore();
-  const { openModal, addModalProps, modalsProps } = useModalStore();
+  const { data, updateData } = useFormNewProductStore();
+  const { openModal } = useModalStore();
 
   const [formData, setFormData] = useState<IPostNewProduct>(data);
 
   const name = useInput("", { empty: true, minLength: 2, maxLength: 50 });
-  const color = useInput("", { empty: true, minLength: 2, maxLength: 50 });
+  const color = useInput("123", { empty: true, minLength: 2, maxLength: 50 });
   const description = useInput("", {
     empty: true,
     minLength: 50,
@@ -35,44 +27,12 @@ export default function FormByCart() {
     maxLength: 50,
   });
   const price = useInput("", { empty: true, minLength: 1, maxLength: 5 });
-  const size = useInput("", {
-    empty: true,
-  });
-  const quantity = useInput("", { empty: true, minLength: 1, maxLength: 5 });
 
-  const [sizeAndQuantity, setSizeAndQuantity] = useState<ISizeAndQuantity[]>(
-    []
-  );
-  const [errorSizeAndQuantity, setErrorSizeAndQuantity] = useState("");
+  const quantity = useInput("", { empty: true, minLength: 1, maxLength: 5 });
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   const [errorSubmit, setErrorSubmit] = useState<string>("");
-
-  useEffect(() => {
-    const modalProps = modalsProps[modalDeleteEditNewProduct];
-
-    if (modalProps?.isDeleted) {
-      const props =
-        modalsProps[modalDeleteEditNewProduct] ??
-        defaultDeleteEditNewProductProps();
-
-      addModalProps(modalDeleteEditNewProduct, {
-        ...props,
-        isDeleted: false,
-      });
-
-      setSizeAndQuantity(modalProps.arrSizeAndQuantity);
-    }
-
-    if (modalProps?.isChanged) {
-      modalProps.arrSizeAndQuantity[modalProps.nowIndex].size = modalProps.size;
-      modalProps.arrSizeAndQuantity[modalProps.nowIndex].quantity =
-        +modalProps.quantity;
-
-      setSizeAndQuantity(modalProps.arrSizeAndQuantity);
-    }
-  }, [modalsProps, size, quantity]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -95,8 +55,8 @@ export default function FormByCart() {
     setFormData((prev) => {
       const newFormData = {
         ...prev,
-        sizes: sizeAndQuantity.map((item) => item.size),
-        quantities: sizeAndQuantity.map((item) => item.quantity),
+        quantities: quantity.value,
+        characteristics: JSON.stringify({ age: "12", text: "text" }),
       };
 
       return newFormData;
@@ -138,7 +98,7 @@ export default function FormByCart() {
   // доделать
   const errorsValidation = (inputName: IUseInput) => {
     if (!inputName.inputValid) {
-      <span className="text-red-600 text-base">*</span>; // привести к этому виду
+      <span className="text-red-600 text-base">*</span>;
     }
 
     if (inputName.dirty && (inputName.empty || inputName.minLength)) {
@@ -167,9 +127,6 @@ export default function FormByCart() {
     if (!price.inputValid) {
       isValid = false;
     }
-    if (!sizeAndQuantity) {
-      isValid = false;
-    }
     if (!selectedFiles.length) {
       isValid = false;
     }
@@ -180,66 +137,6 @@ export default function FormByCart() {
     }
 
     return isValid;
-  };
-
-  const addSizeAndQuantity = () => {
-    const props =
-      modalsProps[modalDeleteEditNewProduct] ??
-      defaultDeleteEditNewProductProps();
-
-    addModalProps(modalDeleteEditNewProduct, {
-      ...props,
-      isChanged: false,
-    });
-
-    if (!size.value || !quantity.value) {
-      console.error("size или quantity не заданы");
-
-      return;
-    }
-
-    const isDuplicate = sizeAndQuantity.some(
-      (item) => item.size === size.value
-    );
-
-    if (isDuplicate) {
-      setErrorSizeAndQuantity("Такой размер уже существует");
-      return;
-    }
-
-    const newSizeAndQuantity = [
-      ...sizeAndQuantity,
-      { size: size.value, quantity: +quantity.value },
-    ];
-
-    setSizeAndQuantity(newSizeAndQuantity);
-
-    size.setValueExternally("");
-    quantity.setValueExternally("");
-
-    setErrorSizeAndQuantity("");
-  };
-
-  const handleAddPropsModal = (index: number) => {
-    const props =
-      modalsProps[modalDeleteEditNewProduct] ??
-      defaultDeleteEditNewProductProps();
-
-    addModalProps(modalDeleteEditNewProduct, {
-      ...props,
-      size: sizeAndQuantity[index].size,
-      quantity: String(sizeAndQuantity[index].quantity),
-      arrSizeAndQuantity: sizeAndQuantity,
-      nowIndex: index,
-      isChanged: false,
-    });
-
-    console.log({
-      size: sizeAndQuantity[index].size,
-      quantity: String(sizeAndQuantity[index].quantity),
-    });
-
-    handleOpenModalDeleteEdit();
   };
 
   const handleOpenModalDeleteEdit = () => {

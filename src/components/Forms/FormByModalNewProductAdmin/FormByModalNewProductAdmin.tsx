@@ -5,20 +5,16 @@ import {
   colors,
   modalDeleteEditNewProduct,
   selectCategoryies,
-  selectSiziesCloth,
 } from "@/constans";
 import { IUseInput, useInput } from "@/hooks/useInput";
-import { IPostNewProduct, ISizeAndQuantity } from "@/interfaces";
+import { IPostNewProduct } from "@/interfaces";
 import { useFormNewProductStore } from "@/stores/useFormNewProduct";
-import {
-  defaultDeleteEditNewProductProps,
-  useModalStore,
-} from "@/stores/useModalStore";
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useModalStore } from "@/stores/useModalStore";
+import React, { ChangeEvent, FormEvent, useState } from "react";
 
 export default function FormByModalNewProductAdmin() {
-  const { data, updateData, updateIsValid } = useFormNewProductStore();
-  const { openModal, addModalProps, modalsProps } = useModalStore();
+  const { data, updateData } = useFormNewProductStore();
+  const { openModal } = useModalStore();
 
   const [formData, setFormData] = useState<IPostNewProduct>(data);
 
@@ -26,7 +22,7 @@ export default function FormByModalNewProductAdmin() {
   const color = useInput("", { empty: true, minLength: 2, maxLength: 50 });
   const description = useInput("", {
     empty: true,
-    minLength: 50,
+    minLength: 2,
     maxLength: 300,
   });
   const categoryName = useInput("", {
@@ -35,44 +31,12 @@ export default function FormByModalNewProductAdmin() {
     maxLength: 50,
   });
   const price = useInput("", { empty: true, minLength: 1, maxLength: 5 });
-  const size = useInput("", {
-    empty: true,
-  });
-  const quantity = useInput("", { empty: true, minLength: 1, maxLength: 5 });
 
-  const [sizeAndQuantity, setSizeAndQuantity] = useState<ISizeAndQuantity[]>(
-    []
-  );
-  const [errorSizeAndQuantity, setErrorSizeAndQuantity] = useState("");
+  const quantity = useInput("", { empty: true, minLength: 1, maxLength: 5 });
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   const [errorSubmit, setErrorSubmit] = useState<string>("");
-
-  useEffect(() => {
-    const modalProps = modalsProps[modalDeleteEditNewProduct];
-
-    if (modalProps?.isDeleted) {
-      const props =
-        modalsProps[modalDeleteEditNewProduct] ??
-        defaultDeleteEditNewProductProps();
-
-      addModalProps(modalDeleteEditNewProduct, {
-        ...props,
-        isDeleted: false,
-      });
-
-      setSizeAndQuantity(modalProps.arrSizeAndQuantity);
-    }
-
-    if (modalProps?.isChanged) {
-      modalProps.arrSizeAndQuantity[modalProps.nowIndex].size = modalProps.size;
-      modalProps.arrSizeAndQuantity[modalProps.nowIndex].quantity =
-        +modalProps.quantity;
-
-      setSizeAndQuantity(modalProps.arrSizeAndQuantity);
-    }
-  }, [modalsProps, size, quantity]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -92,17 +56,14 @@ export default function FormByModalNewProductAdmin() {
 
     const fData = new FormData();
 
-    setFormData((prev) => {
-      const newFormData = {
-        ...prev,
-        sizes: sizeAndQuantity.map((item) => item.size),
-        quantities: sizeAndQuantity.map((item) => item.quantity),
-      };
+    const newFormData = {
+      ...formData,
+      quantities: Number(quantity.value),
+      characteristics: JSON.stringify({ age: "12", text: "text" }),
+    };
+    setFormData(newFormData);
 
-      return newFormData;
-    });
-
-    fData.append("product", JSON.stringify(formData));
+    fData.append("product", JSON.stringify(newFormData));
 
     selectedFiles.forEach((file) => {
       fData.append("files", file);
@@ -167,9 +128,6 @@ export default function FormByModalNewProductAdmin() {
     if (!price.inputValid) {
       isValid = false;
     }
-    if (!sizeAndQuantity) {
-      isValid = false;
-    }
     if (!selectedFiles.length) {
       isValid = false;
     }
@@ -180,66 +138,6 @@ export default function FormByModalNewProductAdmin() {
     }
 
     return isValid;
-  };
-
-  const addSizeAndQuantity = () => {
-    const props =
-      modalsProps[modalDeleteEditNewProduct] ??
-      defaultDeleteEditNewProductProps();
-
-    addModalProps(modalDeleteEditNewProduct, {
-      ...props,
-      isChanged: false,
-    });
-
-    if (!size.value || !quantity.value) {
-      console.error("size или quantity не заданы");
-
-      return;
-    }
-
-    const isDuplicate = sizeAndQuantity.some(
-      (item) => item.size === size.value
-    );
-
-    if (isDuplicate) {
-      setErrorSizeAndQuantity("Такой размер уже существует");
-      return;
-    }
-
-    const newSizeAndQuantity = [
-      ...sizeAndQuantity,
-      { size: size.value, quantity: +quantity.value },
-    ];
-
-    setSizeAndQuantity(newSizeAndQuantity);
-
-    size.setValueExternally("");
-    quantity.setValueExternally("");
-
-    setErrorSizeAndQuantity("");
-  };
-
-  const handleAddPropsModal = (index: number) => {
-    const props =
-      modalsProps[modalDeleteEditNewProduct] ??
-      defaultDeleteEditNewProductProps();
-
-    addModalProps(modalDeleteEditNewProduct, {
-      ...props,
-      size: sizeAndQuantity[index].size,
-      quantity: String(sizeAndQuantity[index].quantity),
-      arrSizeAndQuantity: sizeAndQuantity,
-      nowIndex: index,
-      isChanged: false,
-    });
-
-    console.log({
-      size: sizeAndQuantity[index].size,
-      quantity: String(sizeAndQuantity[index].quantity),
-    });
-
-    handleOpenModalDeleteEdit();
   };
 
   const handleOpenModalDeleteEdit = () => {
@@ -382,36 +280,6 @@ export default function FormByModalNewProductAdmin() {
           <div className="flex justify-between items-start gap-3">
             <div className="flex flex-col w-1/2">
               <div className="flex items-start gap-1">
-                <label htmlFor="size">Размер</label>
-                {errorsValidation(size)}
-              </div>
-
-              <select
-                id="size"
-                className="rounded-md text-black px-2 py-[3px] text-base"
-                name="size"
-                value={size.value}
-                onChange={(e) => {
-                  size.onChange(e);
-                }}
-                onBlur={() => size.onBlur()}
-              >
-                <option value="">Выбрать</option>
-
-                {selectSiziesCloth.map((size) => (
-                  <option key={size.name} value={size.name}>
-                    {size.name}
-                  </option>
-                ))}
-              </select>
-
-              {errorSizeAndQuantity && (
-                <p className="text-red-500 text-sm">{errorSizeAndQuantity}</p>
-              )}
-            </div>
-
-            <div className="flex flex-col w-1/2">
-              <div className="flex items-start gap-1">
                 <label htmlFor="quantity">Количество</label>
                 {errorsValidation(quantity)}
               </div>
@@ -420,7 +288,7 @@ export default function FormByModalNewProductAdmin() {
                 id="quantity"
                 type="number"
                 name="quantities"
-                placeholder="Размер"
+                placeholder="Количество"
                 maxLength={4}
                 className="px-2 py-1 rounded-md text-black"
                 value={quantity.value}
@@ -430,33 +298,6 @@ export default function FormByModalNewProductAdmin() {
                 onBlur={() => quantity.onBlur()}
               />
             </div>
-          </div>
-
-          <div className="flex justify-center">
-            <button
-              className="px-3 py-1 rounded-md bg-green-400 text-sm"
-              onClick={addSizeAndQuantity}
-            >
-              Добавить размер | количество
-            </button>
-          </div>
-
-          <div className="flex justify-start items-center gap-1 flex-wrap">
-            {[...sizeAndQuantity]
-              .sort((a, b) => +a.size - +b.size)
-              .map((item, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  className="flex rounded-md max-w-20 bg-white text-black"
-                  onClick={() => handleAddPropsModal(index)}
-                >
-                  <div className="text-center px-2 py-1 border-r">
-                    {item.size}
-                  </div>
-                  <div className="text-center px-2 py-1">{item.quantity}</div>
-                </button>
-              ))}
           </div>
         </div>
 

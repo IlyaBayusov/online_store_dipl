@@ -68,11 +68,7 @@ export default function ProductsAdmin({ products }: Props) {
                   </div>
                 </td>
                 <td>{product.price}</td>
-                <td>
-                  {product.quantities.reduce((acc, currentValue) => {
-                    return acc + currentValue;
-                  }, 0)}
-                </td>
+                <td>{product.quantities}</td>
                 <td>Вкл.</td>
                 <td className="h-full">
                   <div className="flex justify-center items-center ">
