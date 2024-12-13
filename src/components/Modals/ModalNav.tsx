@@ -52,7 +52,7 @@ export default function ModalNav() {
             </div>
           </div>
 
-          <div className="flex flex-col mt-3 overflow-y-auto">
+          <div className="flex flex-col mt-3 overflow-y-auto hide-scrollbar-y">
             <input
               type="text"
               placeholder="Поиск"

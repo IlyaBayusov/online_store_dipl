@@ -5,18 +5,12 @@ import CartList from "@/components/Cart/CartList/CartList";
 import FormByCart from "@/components/Forms/FormByCart/FormByCart";
 import { modalCartDeleteProduct } from "@/constans";
 import { IProductInCart } from "@/interfaces";
-import { useCartStore } from "@/stores/useCartStore";
 import { useModalStore } from "@/stores/useModalStore";
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { RiH1 } from "react-icons/ri";
 
 export default function Cart() {
   const [products, setProducts] = useState<IProductInCart[]>([]);
-  const { sum } = useCartStore();
   const { modalsProps } = useModalStore();
-
-  const router = useRouter();
 
   useEffect(() => {
     getProducts();

@@ -1,6 +1,6 @@
 "use client";
 
-import { putProductCart } from "@/api";
+import { postCount, putProductCart } from "@/api";
 import { modalCartDeleteProduct } from "@/constans";
 import { IProductInCart } from "@/interfaces";
 import { useCartStore } from "@/stores/useCartStore";
@@ -17,9 +17,30 @@ export default function CartItem({ product }: Props) {
   const [quantity, setQuantity] = useState(product.quantity);
   const [isDisabledPlus, setIsDisabledPlus] = useState(false);
   const [isDisabledMinus, setIsDisabledMinus] = useState(false);
+  const [isDisabledSubmitBtn, setIsDisabledSubmitBtn] = useState(false); //добавить store для кнопки формы
 
   const { plusSum, minusSum } = useCartStore();
   const { openModal, addModalProps } = useModalStore();
+
+  useEffect(() => {
+    const getCount = async () => {
+      const count = await postCount(product.productId);
+
+      if (!count?.productCount) {
+        //нет на складе
+        return;
+      }
+
+      if (count?.productCount === 1) {
+        setIsDisabledPlus(true);
+        setIsDisabledMinus(true);
+        setQuantity(1);
+        return;
+      }
+    };
+
+    getCount();
+  }, []);
 
   useEffect(() => {
     const updateQuantity = async () => {
@@ -32,30 +53,45 @@ export default function CartItem({ product }: Props) {
   useEffect(() => {
     if (quantity <= 1) {
       setIsDisabledMinus(true);
-    } else {
-      setIsDisabledMinus(false);
+      setQuantity(1);
     }
 
-    if (quantity >= 99) {
+    if (quantity >= 100) {
       setIsDisabledPlus(true);
-    } else {
-      setIsDisabledPlus(false);
+      setQuantity(100);
     }
   }, [quantity]);
 
   const handleClickMinus = () => {
     if (quantity > 1) {
+      setIsDisabledPlus(false);
+
       setQuantity(quantity - 1);
       minusSum(product.price);
     }
   };
 
-  const handleClickPlus = () => {
-    if (quantity < 99) {
+  const handleClickPlus = async () => {
+    const count = await postCount(product.productId);
+
+    setIsDisabledMinus(false);
+
+    if (!count?.productCount) {
+      //нет на складе
+      return;
+    }
+
+    if (quantity < 100 && quantity < count?.productCount) {
       setQuantity(quantity + 1);
       plusSum(product.price);
     }
+
+    if (quantity + 1 === 100 || quantity + 1 === count?.productCount) {
+      setIsDisabledPlus(true);
+    }
   };
+
+  console.log(isDisabledPlus);
 
   const handleOpenModal = () => {
     addModalProps(modalCartDeleteProduct, {

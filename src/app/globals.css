@@ -92,3 +92,12 @@ select {
   width: 120%;
   background: #fff;
 }
+
+.hide-scrollbar-y {
+  overflow-y: scroll;
+  scrollbar-width: none; /* Для Firefox */
+}
+
+.hide-scrollbar-y::-webkit-scrollbar {
+  display: none; /* Для Chrome, Safari и Edge */
+}

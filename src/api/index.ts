@@ -1,6 +1,5 @@
 import { api } from "@/axios";
 import {
-  IDecodedToken,
   IGetFav,
   IOrderPost,
   IOrdersGet,
@@ -11,9 +10,12 @@ import { decodeToken } from "@/utils";
 
 export const getProductsCart = async () => {
   try {
-    const decodedToken: IDecodedToken | undefined = decodeToken();
+    const decodedToken = decodeToken();
 
-    if (!decodedToken) return;
+    if (!decodedToken) {
+      console.log("Токен не найден или недействителен");
+      return;
+    }
 
     const response = await api.get(`/v1/cart/${decodedToken.id}`);
     const data: IProductInCart[] = await response.data;
@@ -43,7 +45,6 @@ export const putProductCart = async (
       ...product,
       quantity: updateQuantity,
     });
-    console.log("Кол-во изменено: ", response);
 
     return response;
   } catch (error) {
@@ -53,9 +54,12 @@ export const putProductCart = async (
 
 export const getOrders = async () => {
   try {
-    const decodedToken: IDecodedToken = decodeToken();
+    const decodedToken = decodeToken();
 
-    if (!decodedToken) return;
+    if (!decodedToken) {
+      console.log("Токен не найден или недействителен");
+      return;
+    }
 
     const response = await api.get(`/v1/orders/${decodedToken.id}`);
     const data: IOrdersGet[] = await response.data;
@@ -78,9 +82,12 @@ export const postFav = async (fav: IPostFav) => {
 
 export const getFav = async () => {
   try {
-    const decodedToken: IDecodedToken = decodeToken();
+    const decodedToken = decodeToken();
 
-    if (!decodedToken) return;
+    if (!decodedToken) {
+      console.log("Токен не найден или недействителен");
+      return;
+    }
 
     const response = await api.get(`/v1/favorites/${decodedToken.id}`);
     const data: IGetFav[] = await response.data;
@@ -113,5 +120,16 @@ export const getProductAdmin = async () => {
     return data;
   } catch (error) {
     console.error("Ошибка получения товара в админке: ", error);
+  }
+};
+
+export const postCount = async (productId: number) => {
+  try {
+    const response = await api.post(`/v1/products/count`, { productId });
+    const data: { productCount: number } = await response.data;
+
+    return data;
+  } catch (error) {
+    console.error("Ошибка получения количества товара: ", error);
   }
 };

@@ -1,11 +1,9 @@
 "use client";
 
-import { getProductsCart } from "@/api";
 import { cartPage, favPage, mainPage, modalNav, ordersPage } from "@/constans";
-import { IProductInCart } from "@/interfaces";
 import { useModalStore } from "@/stores/useModalStore";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import img_logo from "../../public/main/img_logo.png";
@@ -18,28 +16,12 @@ import {
 
 import { IoIosSearch } from "react-icons/io";
 import { HiMenuAlt2 } from "react-icons/hi";
-import { useCartStore } from "@/stores/useCartStore";
 
 export default function Header() {
-  const [products, setProducts] = useState<IProductInCart[]>([]);
-
   const path = usePathname();
-  const { cart } = useCartStore();
   const noHeaderPages = ["/adminMenu"];
 
   const showHeader = !noHeaderPages.includes(path);
-
-  useEffect(() => {
-    const getProducts = async () => {
-      const data: IProductInCart[] | undefined = await getProductsCart();
-
-      if (data) {
-        setProducts(data);
-      }
-    };
-
-    getProducts();
-  }, []);
 
   const { openModal } = useModalStore();
 
@@ -56,12 +38,7 @@ export default function Header() {
               <ul className="flex items-center gap-3 text-[10px]">
                 <li className="">
                   <Link href="#" className="flex gap-1 flex-col items-center">
-                    <div className="relative">
-                      <CiUser className="h-5 w-5" />
-                      <div className="py-0.5 px-1 absolute -top-1 -right-3.5 z-10 bg-greenT text-white rounded-full">
-                        12
-                      </div>
-                    </div>
+                    <CiUser className="h-5 w-5" />
 
                     <p className="leading-none">Войти</p>
                   </Link>
@@ -106,11 +83,11 @@ export default function Header() {
                   >
                     <div className="relative">
                       <CiShoppingCart className="h-5 w-5" />
+
                       <div className="py-0.5 px-1 absolute -top-1 -right-3.5 z-10 bg-greenT text-white rounded-full">
-                        {cart.length}
+                        6
                       </div>
                     </div>
-
                     <p className="leading-none">Корзина</p>
                   </Link>
                 </li>

@@ -3,22 +3,29 @@ import { IDecodedToken } from "@/interfaces";
 import { jwtDecode } from "jwt-decode";
 import { notFound } from "next/navigation";
 
-export const decodeToken = () => {
+export const decodeToken = (): IDecodedToken | null => {
   const token = localStorage.getItem("accessToken");
 
   if (!token) {
     window.location.href = "http://localhost:3000/auth";
-    return;
+    return null;
   }
 
-  const decoded: IDecodedToken = jwtDecode(token);
+  try {
+    const decoded: IDecodedToken = jwtDecode(token);
 
-  if (!decoded) {
+    if (!decoded) {
+      window.location.href = "http://localhost:3000/auth";
+      return null;
+    }
+
+    return decoded;
+  } catch (error) {
     window.location.href = "http://localhost:3000/auth";
-    return;
-  }
+    console.log("Ошибка декодирования токена: ", error);
 
-  return decoded;
+    return null;
+  }
 };
 
 export function getCodeColor(color: string) {
