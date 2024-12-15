@@ -24,7 +24,6 @@ export default function OrdersItem({ order }: Props) {
         </div>
 
         <div className="absolute bottom-0 right-0 z-10 flex flex-col justify-end bg-black bg-opacity-50 rounded-tl-md rounded-br-md p-1">
-          <p className="text-xs text-white">Размер: {order.size}</p>
           <p className="text-xs text-white">Кол-во: {order.quantity} шт.</p>
         </div>
       </div>

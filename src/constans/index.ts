@@ -4,6 +4,7 @@ import img_household from "../../public/main/category/img_household.png";
 import img_books from "../../public/main/category/img_books.png";
 import img_eat from "../../public/main/category/img_eat.png";
 import img_test_shoes1 from "../../public/testImg/img_test_shoes1.png";
+import { ICatalog } from "@/interfaces";
 
 export const mainPage = "/";
 export const cartPage = "/cart";
@@ -11,6 +12,7 @@ export const favPage = "/favorites";
 export const ordersPage = "/orders";
 export const profilePage = "/profile";
 
+export const modalsCatalog = "modalsCatalog";
 export const modalNav = "modalNav";
 export const modalNavCategory = "modalNavCategory";
 export const modalCartDeleteProduct = "modalCartDeleteProduct";
@@ -72,7 +74,7 @@ export const categoriesPages = [
   },
 ];
 
-export const categories = [
+export const categories: ICatalog[] = [
   {
     id: 1,
     name: "Электроника",
@@ -81,14 +83,52 @@ export const categories = [
     next: [
       {
         id: 1,
-        name: "Мобильные телефоны и планшеты",
-        urlName: "mobiles",
+        name: "Мобильные телефоны и аксессуары",
+        urlName: "mobiles_acc",
+        img: img_shoes,
+        next: [
+          {
+            id: 1,
+            name: "Мобильные телефоны",
+            urlName: "mobile_phones",
+            img: img_shoes,
+          },
+          {
+            id: 2,
+            name: "Кнопочные телефоны",
+            urlName: "feature_phones",
+            img: img_shoes,
+          },
+          {
+            id: 1,
+            name: "Наушники",
+            urlName: "headphones",
+            img: img_shoes,
+          },
+          {
+            id: 2,
+            name: "Фитнес браслеты",
+            urlName: "fitness_bracelets",
+            img: img_shoes,
+          },
+        ],
+      },
+      {
+        id: 2,
+        name: "Телевидение и видео",
+        urlName: "tv_video",
+        img: img_shoes,
+      },
+      {
+        id: 1,
+        name: "Планшеты, электронные книги",
+        urlName: "tablets_e-readers",
         img: img_shoes,
       },
       {
         id: 2,
-        name: "Рубашки",
-        urlName: "shirts",
+        name: "Наушники и аудиотехника",
+        urlName: "headphones_audio-equipmen",
         img: img_shoes,
       },
     ],

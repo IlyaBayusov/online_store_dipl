@@ -7,7 +7,7 @@ export const decodeToken = (): IDecodedToken | null => {
   const token = localStorage.getItem("accessToken");
 
   if (!token) {
-    window.location.href = "http://localhost:3000/auth";
+    // window.location.href = "http://localhost:3000/auth";
     return null;
   }
 
@@ -15,13 +15,13 @@ export const decodeToken = (): IDecodedToken | null => {
     const decoded: IDecodedToken = jwtDecode(token);
 
     if (!decoded) {
-      window.location.href = "http://localhost:3000/auth";
+      // window.location.href = "http://localhost:3000/auth";
       return null;
     }
 
     return decoded;
   } catch (error) {
-    window.location.href = "http://localhost:3000/auth";
+    // window.location.href = "http://localhost:3000/auth";
     console.log("Ошибка декодирования токена: ", error);
 
     return null;

@@ -82,7 +82,9 @@ export default function ProductCardItem({ productCard }: Props) {
       </div>
 
       <Link
-        href={`/${productCard.categoryName}/${productCard.productId}`}
+        href={`/${productCard.categoryName.toLowerCase()}/${
+          productCard.productId
+        }`}
         className="flex flex-col h-full"
       >
         <div className="mt-3">

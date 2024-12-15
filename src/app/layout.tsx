@@ -27,8 +27,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={roboto.className}>
-      <body>
+    <html lang="ru" className={roboto.className + " hide-scrollbar-y"}>
+      <body className="">
         <div className="wrapper flex flex-col">
           <Header />
           {/* <Nav /> */}

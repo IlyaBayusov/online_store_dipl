@@ -7,6 +7,7 @@ import { IPostNewProduct } from "@/interfaces";
 import { useFormNewProductStore } from "@/stores/useFormNewProduct";
 import { useModalStore } from "@/stores/useModalStore";
 import React, { ChangeEvent, FormEvent, useState } from "react";
+import * as RadioGroup from "@radix-ui/react-radio-group";
 
 export default function FormByCart() {
   const { data, updateData } = useFormNewProductStore();
@@ -29,6 +30,8 @@ export default function FormByCart() {
   const price = useInput("", { empty: true, minLength: 1, maxLength: 5 });
 
   const quantity = useInput("", { empty: true, minLength: 1, maxLength: 5 });
+
+  const [selectedPayment, setSelectedPayment] = useState<string>("CASH");
 
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
@@ -55,7 +58,8 @@ export default function FormByCart() {
     setFormData((prev) => {
       const newFormData = {
         ...prev,
-        quantities: quantity.value,
+
+        quantities: Number(quantity.value),
         characteristics: JSON.stringify({ age: "12", text: "text" }),
       };
 
@@ -141,6 +145,10 @@ export default function FormByCart() {
 
   const handleOpenModalDeleteEdit = () => {
     openModal(modalDeleteEditNewProduct);
+  };
+
+  const handlePaymentChange = (value: string) => {
+    setSelectedPayment(value);
   };
 
   return (
@@ -295,6 +303,38 @@ export default function FormByCart() {
         <div>
           <h1 className="text-lg font-semibold mt-3 mb-3">Способ оплаты</h1>
         </div>
+
+        <RadioGroup.Root
+          className="flex flex-col gap-2.5"
+          value={selectedPayment}
+          onValueChange={handlePaymentChange}
+        >
+          <div className="flex items-center">
+            <RadioGroup.Item
+              value="CASH"
+              id="cash"
+              className="size-5 cursor-default rounded-full border border-[#B3B3B3] focus:border-greenT bg-white outline-none data-[state=checked]:border-greenT"
+            >
+              <RadioGroup.Indicator className="relative flex size-full items-center justify-center after:block after:size-[10px] after:rounded-full after:bg-greenT" />
+            </RadioGroup.Item>
+            <label className="pl-2 cursor-pointer text-sm" htmlFor="cash">
+              Наличными
+            </label>
+          </div>
+
+          <div className="flex items-center">
+            <RadioGroup.Item
+              value="CARD"
+              id="card"
+              className="size-5 cursor-default rounded-full border border-[#B3B3B3] focus:border-greenT bg-white outline-none data-[state=checked]:border-greenT"
+            >
+              <RadioGroup.Indicator className="relative flex size-full items-center justify-center after:block after:size-[10px] after:rounded-full after:bg-greenT" />
+            </RadioGroup.Item>
+            <label className="pl-2 cursor-pointer text-sm" htmlFor="card">
+              Банковской картой
+            </label>
+          </div>
+        </RadioGroup.Root>
 
         {errorSubmit && (
           <span className="text-red-600 text-base">{errorSubmit}</span>

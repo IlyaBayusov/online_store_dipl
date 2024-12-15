@@ -196,6 +196,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
               height={494}
               alt={nowProduct.name}
               className="rounded-md max-w-[75%]"
+              priority
             />
 
             <div className="w-full flex justify-between items-center">

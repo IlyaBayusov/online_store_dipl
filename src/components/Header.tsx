@@ -1,9 +1,14 @@
 "use client";
 
-import { cartPage, favPage, mainPage, modalNav, ordersPage } from "@/constans";
-import { useModalStore } from "@/stores/useModalStore";
+import {
+  cartPage,
+  categories,
+  favPage,
+  mainPage,
+  ordersPage,
+} from "@/constans";
 import Link from "next/link";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import img_logo from "../../public/main/img_logo.png";
@@ -14,29 +19,79 @@ import {
   CiShoppingCart,
 } from "react-icons/ci";
 
-import { IoIosSearch } from "react-icons/io";
+import { IoIosSearch, IoIosArrowForward } from "react-icons/io";
 import { HiMenuAlt2 } from "react-icons/hi";
+import { ICatalog } from "@/interfaces";
 
 export default function Header() {
+  const [selectedCategoryNameSecond, setSelectedCategoryNameSecond] =
+    useState<string>("");
+  const [selectedCategoryNameThird, setSelectedCategoryNameThird] =
+    useState<string>("");
+  const [selectedCategoryNext, setSelectedCategoryNext] = useState<ICatalog[]>(
+    []
+  );
+  const [isTranslatedX, setIsTranslatedX] = useState<string>("");
+  const [isActive, setIsActive] = useState(false);
+
   const path = usePathname();
   const noHeaderPages = ["/adminMenu"];
 
   const showHeader = !noHeaderPages.includes(path);
 
-  const { openModal } = useModalStore();
+  useEffect(() => {
+    if (isActive) {
+      document.body.classList.add("overflow-y-hidden");
+    } else {
+      document.body.classList.remove("overflow-y-hidden");
+    }
+  }, [isActive]);
+
+  const handleClickFirst = (category: ICatalog) => {
+    setSelectedCategoryNameSecond(category.name);
+    setIsActive(true);
+
+    if (category.next) {
+      setSelectedCategoryNext(category.next);
+      setIsTranslatedX(" -translate-x-[100vw]");
+    }
+  };
+
+  const handleClickSecond = (category: ICatalog) => {
+    setSelectedCategoryNameThird(category.name);
+
+    if (category.next) {
+      setSelectedCategoryNext(category.next);
+      setIsTranslatedX(" -translate-x-[200vw]");
+    }
+  };
+
+  const handleClickThird = (category: ICatalog) => {
+    setIsActive(false);
+    console.log("переход на сраницу с товаром");
+  };
 
   return (
     <>
       {showHeader && (
-        <div className="container px-2.5 pt-2.5">
-          <div className="flex justify-between items-end flex-wrap">
-            <Link href={mainPage} className="max-w-[110px] max-h-[42px]">
-              <Image src={img_logo} alt="logo" className="" />
+        <div
+          className={
+            "container relative px-2.5 pt-2.5" +
+            (isActive ? " flex flex-col h-screen" : "")
+          }
+        >
+          <header className="flex justify-between items-end flex-wrap">
+            <Link
+              href={mainPage}
+              className="max-w-[110px] max-h-[42px]"
+              onClick={() => setIsActive(false)}
+            >
+              <Image src={img_logo} alt="logo" className="" priority />
             </Link>
 
             <nav>
               <ul className="flex items-center gap-3 text-[10px]">
-                <li className="">
+                <li className="" onClick={() => setIsActive(false)}>
                   <Link href="#" className="flex gap-1 flex-col items-center">
                     <CiUser className="h-5 w-5" />
 
@@ -44,7 +99,7 @@ export default function Header() {
                   </Link>
                 </li>
 
-                <li className="">
+                <li className="" onClick={() => setIsActive(false)}>
                   <Link
                     href={ordersPage}
                     className="relative flex gap-1 flex-col items-center"
@@ -60,7 +115,7 @@ export default function Header() {
                   </Link>
                 </li>
 
-                <li className="">
+                <li className="" onClick={() => setIsActive(false)}>
                   <Link
                     href={favPage}
                     className="relative flex gap-1 flex-col items-center"
@@ -76,7 +131,7 @@ export default function Header() {
                   </Link>
                 </li>
 
-                <li className="">
+                <li className="" onClick={() => setIsActive(false)}>
                   <Link
                     href={cartPage}
                     className="relative flex gap-1 flex-col items-center"
@@ -97,7 +152,7 @@ export default function Header() {
             <div className="mt-3 w-full flex justify-between items-center gap-10 ">
               <div
                 className="py-1 px-2  bg-greenT rounded-sm"
-                onClick={() => openModal(modalNav)}
+                onClick={() => setIsActive(!isActive)}
               >
                 <HiMenuAlt2 className="h-4 w-4 text-white" />
               </div>
@@ -113,7 +168,82 @@ export default function Header() {
                 </button>
               </div>
             </div>
-          </div>
+          </header>
+
+          {isActive && (
+            <div className="flex-grow relative -ml-2.5">
+              <div
+                className={
+                  "transition-transform duration-500 absolute top-0 left-0 flex flex-row items-center overflow-hidden h-full w-[400vh]" +
+                  isTranslatedX
+                }
+              >
+                <div className="h-full w-screen px-2.5 pt-2.5">
+                  <div className="h-full w-full hide-scrollbar-y overflow-y-auto">
+                    <p className="text-sm mb-2.5">Каталог</p>
+
+                    {categories.map((category, index) => {
+                      return (
+                        <button
+                          key={index}
+                          className="flex justify-between items-center w-full py-1 text-sm"
+                          onClick={() => handleClickFirst(category)}
+                        >
+                          <span>{category.name}</span>
+
+                          <IoIosArrowForward className="h-4 w-4 mr-3" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="h-full w-screen px-2.5 pt-2.5">
+                  <div className="h-full w-full hide-scrollbar-y overflow-y-auto">
+                    <p className="text-sm mb-2.5">
+                      {selectedCategoryNameSecond}
+                    </p>
+
+                    {selectedCategoryNext.map((category, index) => {
+                      return (
+                        <button
+                          key={index}
+                          className="flex justify-between items-center w-full py-1 text-sm"
+                          onClick={() => handleClickSecond(category)}
+                        >
+                          <span>{category.name}</span>
+
+                          <IoIosArrowForward className="h-4 w-4 mr-3" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="h-full w-screen px-2.5 pt-2.5">
+                  <div className="h-full w-full hide-scrollbar-y overflow-y-auto">
+                    <p className="text-sm mb-2.5">
+                      {selectedCategoryNameThird}
+                    </p>
+
+                    {selectedCategoryNext.map((category, index) => {
+                      return (
+                        <button
+                          key={index}
+                          className="flex justify-between items-center w-full py-1 text-sm"
+                          onClick={() => handleClickThird(category)}
+                        >
+                          <span>{category.name}</span>
+
+                          <IoIosArrowForward className="h-4 w-4 mr-3" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </>

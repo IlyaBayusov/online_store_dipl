@@ -50,26 +50,26 @@ export default function BuyProducts() {
 
     setError("");
 
-    const decoded = decodeToken();
+    // const decoded = decodeToken();
 
-    const newOrder: IOrderPost = {
-      orderDetailsRequest: {
-        ...data,
-        totalPrice: sumPrice,
-        userId: decoded.id,
-      },
-      orderItemRequest: productsCart,
-    };
+    // const newOrder: IOrderPost = {
+    //   orderDetailsRequest: {
+    //     ...data,
+    //     totalPrice: sumPrice,
+    //     userId: decoded.id,
+    //   },
+    //   orderItemRequest: productsCart,
+    // };
 
-    console.log("Ответ ушел, новый заказ: ", newOrder);
+    // console.log("Ответ ушел, новый заказ: ", newOrder);
 
-    const response = await postByProducts(newOrder);
+    // const response = await postByProducts(newOrder);
 
-    if (response?.status !== 201) {
-      setError("Ошибка оформления заказа");
-    } else {
-      openModal(modalSuccessOrder);
-    }
+    // if (response?.status !== 201) {
+    //   setError("Ошибка оформления заказа");
+    // } else {
+    //   openModal(modalSuccessOrder);
+    // }
   };
 
   return (

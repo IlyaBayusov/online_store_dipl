@@ -231,7 +231,7 @@ export default function FormByModalNewProductAdmin() {
                 <option value="">Выбрать</option>
 
                 {colors.map((item) => (
-                  <option key={item.value} value={item.value}>
+                  <option key={item.value} value={item.name}>
                     {item.name}
                   </option>
                 ))}

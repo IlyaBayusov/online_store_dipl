@@ -1,3 +1,13 @@
+import { StaticImageData } from "next/image";
+
+export interface ICatalog {
+  id: number;
+  name: string;
+  urlName: string;
+  img: StaticImageData;
+  next?: ICatalog[];
+}
+
 export interface IProductCategory {
   productId: number;
   categoryName: string;
