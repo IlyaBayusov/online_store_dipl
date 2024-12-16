@@ -30,6 +30,8 @@ export default function Cart() {
     }
   };
 
+  console.log(products);
+
   if (!products) return <h1>Loading...</h1>;
 
   return (

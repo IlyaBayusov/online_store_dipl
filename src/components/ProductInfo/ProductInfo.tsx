@@ -266,12 +266,16 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
                   }
                   onClick={handleClickCart}
                 >
-                  <p>Купить</p>
-
                   {isActiveCart ? (
-                    <RiShoppingBasketFill className="h-5 w-5" />
+                    <>
+                      <p className="text-sm">В корзине</p>
+                      <RiShoppingBasketFill className="h-5 w-5" />
+                    </>
                   ) : (
-                    <RiShoppingBasketLine className="h-5 w-5" />
+                    <>
+                      <p className="text-sm">Купить</p>
+                      <RiShoppingBasketLine className="h-5 w-5" />
+                    </>
                   )}
                 </button>
               </div>

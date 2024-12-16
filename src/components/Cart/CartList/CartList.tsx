@@ -17,8 +17,8 @@ export default function CartList({ products }: Props) {
 
   return (
     <div className="flex flex-col justify-center items-center w-full gap-3">
-      {products.map((product) => (
-        <CartItem key={product.productId} product={product} />
+      {products.map((product, index) => (
+        <CartItem key={index} product={product} />
       ))}
     </div>
   );

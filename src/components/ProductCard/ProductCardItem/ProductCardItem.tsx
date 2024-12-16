@@ -1,18 +1,39 @@
 "use client";
 
-import { IDecodedToken, IGetFav, IProductCategory } from "@/interfaces";
+import {
+  IDecodedToken,
+  IGetFav,
+  IProductCategory,
+  IProductInCart,
+} from "@/interfaces";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
-import { getFav, postFav } from "@/api";
+import { getFav, getProductsCart, postFav } from "@/api";
 import { decodeToken } from "@/utils";
 import { api } from "@/axios";
 import Link from "next/link";
+import { RiShoppingBasketLine, RiShoppingBasketFill } from "react-icons/ri";
 
 type Props = { productCard: IProductCategory };
 
 export default function ProductCardItem({ productCard }: Props) {
   const [isActiveFav, setIsActiveFav] = useState(false);
+  const [isActiveCart, setIsActiveCart] = useState(false);
+
+  const [nowCartItem, setNowCartItem] = useState<IProductInCart>();
+
+  // useEffect(() => {
+  //   const getProducts = async () => {
+  //     const data: IProductInCart[] | undefined = await getProductsCart();
+
+  //     if (data) {
+  //       setProducts(data);
+  //     }
+  //   };
+
+  //   getProducts();
+  // }, []);
 
   useEffect(() => {
     setActiveBtnFav();
@@ -61,6 +82,60 @@ export default function ProductCardItem({ productCard }: Props) {
     }
   };
 
+  async function setActiveBtnCart() {
+    try {
+      const data: IProductInCart[] | undefined = await getProductsCart();
+
+      if (!data) return;
+
+      for (const item of data) {
+        if (item.productId === productCard.productId) {
+          setIsActiveCart(true);
+          setNowCartItem(item);
+          return item.cartItemId;
+        }
+      }
+
+      return;
+    } catch (error) {
+      console.error("Ошибка запроса получения корзины", error);
+      return;
+    }
+  }
+
+  const handleClickCart = async () => {
+    try {
+      const cartItemId = await setActiveBtnCart();
+
+      const decodedToken: IDecodedToken = decodeToken();
+
+      if (isActiveCart) {
+        setIsActiveCart(false);
+        //удаление из корзины
+        await api.delete(`/v1/cart/${cartItemId}`);
+        //удаление из стора
+      } else {
+        setIsActiveCart(true);
+        //добавление в корзину
+
+        console.log({
+          userId: decodedToken.id,
+          productId: productCard.productId,
+          quantity: 1,
+        });
+
+        await api.post("/v1/cart", {
+          userId: decodedToken.id,
+          productId: productCard.productId,
+          quantity: 1,
+        });
+        //добавление в стор
+      }
+    } catch (error) {
+      console.error("Ошибка запроса добавления/удаления в корзину: ", error);
+    }
+  };
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex justify-between items-center">
@@ -80,31 +155,50 @@ export default function ProductCardItem({ productCard }: Props) {
         </button>
       </div>
 
-      <Link
-        href={`/${productCard.categoryName.toLowerCase()}/${
-          productCard.productId
-        }`}
-        className="flex flex-col h-full"
-      >
-        <div className="mt-3">
-          <Image
-            src={productCard.image}
-            width={351}
-            height={494}
-            alt={productCard.name}
-            className="rounded-md w-auto h-auto object-cover"
-          />
-        </div>
+      <div className="flex flex-col h-full">
+        <Link
+          href={`/${productCard.categoryName.toLowerCase()}/${
+            productCard.productId
+          }`}
+        >
+          <div className="mt-3">
+            <Image
+              src={productCard.image}
+              width={351}
+              height={494}
+              alt={productCard.name}
+              className="rounded-md w-auto h-auto object-cover"
+            />
+          </div>
 
-        <div className="mt-3 flex flex-grow  flex-col items-start gap-3">
-          <p className="text-base font-bold text-start">{`${productCard.price} РУБ.`}</p>
-          <p className="text-sm text-start">{productCard.name}</p>
-        </div>
+          <div className="mt-3 flex flex-grow  flex-col items-start gap-3">
+            <p className="text-base font-bold text-start">{`${productCard.price} РУБ.`}</p>
+            <p className="text-sm text-start">{productCard.name}</p>
+          </div>
+        </Link>
 
-        <button className="bg-greenT px-3 p-1 text-sm text-white rounded-md mt-3">
-          Купить
+        <button
+          className={
+            "flex justify-center items-center gap-1 mt-3 py-2 px-4 w-full rounded-md transition-all" +
+            (isActiveCart
+              ? " bg-white text-greenT outline outline-1 outline-greenT"
+              : " bg-greenT text-white")
+          }
+          onClick={handleClickCart}
+        >
+          {isActiveCart ? (
+            <>
+              <p className="text-sm">В корзине</p>
+              <RiShoppingBasketFill className="h-5 w-5" />
+            </>
+          ) : (
+            <>
+              <p className="text-sm">Купить</p>
+              <RiShoppingBasketLine className="h-5 w-5" />
+            </>
+          )}
         </button>
-      </Link>
+      </div>
     </div>
   );
 }

@@ -91,8 +91,6 @@ export default function CartItem({ product }: Props) {
     }
   };
 
-  console.log(isDisabledPlus);
-
   const handleOpenModal = () => {
     addModalProps(modalCartDeleteProduct, {
       cartItemId: product.cartItemId,
