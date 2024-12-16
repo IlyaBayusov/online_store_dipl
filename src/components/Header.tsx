@@ -9,7 +9,7 @@ import {
 } from "@/constans";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import img_logo from "../../public/main/img_logo.png";
 import {
@@ -28,11 +28,17 @@ export default function Header() {
     useState<string>("");
   const [selectedCategoryNameThird, setSelectedCategoryNameThird] =
     useState<string>("");
-  const [selectedCategoryNext, setSelectedCategoryNext] = useState<ICatalog[]>(
-    []
-  );
+  const [selectedCategoryNextSecond, setSelectedCategoryNextSecond] = useState<
+    ICatalog[]
+  >([]);
+  const [selectedCategoryNextThird, setSelectedCategoryNextThird] = useState<
+    ICatalog[]
+  >([]);
+
   const [isTranslatedX, setIsTranslatedX] = useState<string>("");
   const [isActive, setIsActive] = useState(false);
+
+  const router = useRouter();
 
   const path = usePathname();
   const noHeaderPages = ["/adminMenu"];
@@ -43,6 +49,7 @@ export default function Header() {
     if (isActive) {
       document.body.classList.add("overflow-y-hidden");
     } else {
+      setIsTranslatedX(" -translate-x-[0]");
       document.body.classList.remove("overflow-y-hidden");
     }
   }, [isActive]);
@@ -52,7 +59,7 @@ export default function Header() {
     setIsActive(true);
 
     if (category.next) {
-      setSelectedCategoryNext(category.next);
+      setSelectedCategoryNextSecond(category.next);
       setIsTranslatedX(" -translate-x-[100vw]");
     }
   };
@@ -61,13 +68,16 @@ export default function Header() {
     setSelectedCategoryNameThird(category.name);
 
     if (category.next) {
-      setSelectedCategoryNext(category.next);
+      setSelectedCategoryNextThird(category.next);
       setIsTranslatedX(" -translate-x-[200vw]");
     }
   };
 
   const handleClickThird = (category: ICatalog) => {
     setIsActive(false);
+
+    router.push(`/${category.urlName}`);
+
     console.log("переход на сраницу с товаром");
   };
 
@@ -106,9 +116,9 @@ export default function Header() {
                   >
                     <div className="relative">
                       <CiShoppingBasket className="h-5 w-5" />
-                      <div className="py-0.5 px-1 absolute -top-1 -right-3.5 z-10 bg-greenT text-white rounded-full">
+                      {/* <div className="py-0.5 px-1 absolute -top-1 -right-3.5 z-10 bg-greenT text-white rounded-full">
                         5
-                      </div>
+                      </div> */}
                     </div>
 
                     <p className="leading-none">Заказы</p>
@@ -122,9 +132,9 @@ export default function Header() {
                   >
                     <div className="relative">
                       <CiHeart className="h-5 w-5" />
-                      <div className="py-0.5 px-1 absolute -top-1 -right-3.5 z-10 bg-greenT text-white rounded-full">
+                      {/* <div className="py-0.5 px-1 absolute -top-1 -right-3.5 z-10 bg-greenT text-white rounded-full">
                         5
-                      </div>
+                      </div> */}
                     </div>
 
                     <p className="leading-none">Избранные</p>
@@ -139,9 +149,9 @@ export default function Header() {
                     <div className="relative">
                       <CiShoppingCart className="h-5 w-5" />
 
-                      <div className="py-0.5 px-1 absolute -top-1 -right-3.5 z-10 bg-greenT text-white rounded-full">
+                      {/* <div className="py-0.5 px-1 absolute -top-1 -right-3.5 z-10 bg-greenT text-white rounded-full">
                         6
-                      </div>
+                      </div> */}
                     </div>
                     <p className="leading-none">Корзина</p>
                   </Link>
@@ -204,7 +214,7 @@ export default function Header() {
                       {selectedCategoryNameSecond}
                     </p>
 
-                    {selectedCategoryNext.map((category, index) => {
+                    {selectedCategoryNextSecond.map((category, index) => {
                       return (
                         <button
                           key={index}
@@ -226,7 +236,7 @@ export default function Header() {
                       {selectedCategoryNameThird}
                     </p>
 
-                    {selectedCategoryNext.map((category, index) => {
+                    {selectedCategoryNextThird.map((category, index) => {
                       return (
                         <button
                           key={index}

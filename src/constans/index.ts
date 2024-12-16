@@ -20,7 +20,7 @@ export const modalSuccessOrder = "modalSuccessOrder";
 export const modalNewProductAdmin = "modalNewProductAdmin";
 export const modalDeleteEditNewProduct = "modalDeleteEditNewProduct";
 
-export const nameTitlePopularProducts = "Популярные товары";
+export const nameTitlePopularProducts = "Новинки";
 
 // Chelsea - id - 1
 // Sneakers - id - 2
@@ -32,45 +32,10 @@ export const nameTitlePopularProducts = "Популярные товары";
 export const categoriesPages = [
   {
     id: 1,
-    name: "Брюки",
-    urlName: "trousers",
+    name: "Мобильные телефоны",
+    urlName: "mobile_phones",
     img: img_shoes,
-    path: "/trousers",
-  },
-  {
-    id: 2,
-    name: "Рубашки",
-    urlName: "shirts",
-    img: img_shoes,
-    path: "/shirts",
-  },
-  {
-    id: 3,
-    name: "Кеды",
-    urlName: "sneakers",
-    img: img_shoes,
-    path: "/sneakers",
-  },
-  {
-    id: 4,
-    name: "Челси",
-    urlName: "chelsea",
-    img: img_shoes,
-    path: "/chelsea",
-  },
-  {
-    id: 5,
-    name: "Галстуки",
-    urlName: "ties",
-    img: img_shoes,
-    path: "/ties",
-  },
-  {
-    id: 6,
-    name: "Ремни",
-    urlName: "belts",
-    img: img_shoes,
-    path: "/belts",
+    path: "/mobile_phones",
   },
 ];
 
@@ -196,14 +161,7 @@ export const categories: ICatalog[] = [
 ];
 
 export const categoriesList = [
-  { id: 1, name: "Электроника", url_name: "electronics" },
-  { id: 2, name: "Бытовая техника", url_name: "household" },
-  { id: 3, name: "Книги, хобби, канцелярия", url_name: "books" },
-  { id: 4, name: "Продукты питания", url_name: "eat" },
-  { id: 5, name: "Галстуки", url_name: "ties" },
-  { id: 6, name: "Ремни", url_name: "belts" },
-  { id: 7, name: "Рубашки", url_name: "shirts" },
-  { id: 7, name: "Челси", url_name: "chelsea" },
+  { id: 1, name: "Мобильные телефоны", url_name: "mobile_phones" },
 ];
 
 export const newArrivals = [
@@ -260,12 +218,7 @@ export const colors = [
 ];
 
 export const selectCategoryies = [
-  { name: "Челси", value: "Chelsea" },
-  { name: "Кеды", value: "Sneakers" },
-  { name: "Брюки", value: "Trousers" },
-  { name: "Рубашки", value: "Shirts" },
-  { name: "Галстуки", value: "Ties" },
-  { name: "Ремни", value: "Belts" },
+  { name: "Мобильные телефоны", value: "mobile_phones" },
 ];
 
 export const selectSiziesCloth = [

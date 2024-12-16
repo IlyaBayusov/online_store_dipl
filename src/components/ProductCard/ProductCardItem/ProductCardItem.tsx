@@ -3,7 +3,6 @@
 import { IDecodedToken, IGetFav, IProductCategory } from "@/interfaces";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import img_test from "../../../../public/testImg/img_test.png";
 import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
 import { getFav, postFav } from "@/api";
 import { decodeToken } from "@/utils";
@@ -89,10 +88,11 @@ export default function ProductCardItem({ productCard }: Props) {
       >
         <div className="mt-3">
           <Image
-            // src={productCard.image}
-            src={img_test}
+            src={productCard.image}
+            width={351}
+            height={494}
             alt={productCard.name}
-            className="rounded-md w-full h-auto object-cover"
+            className="rounded-md w-auto h-auto object-cover"
           />
         </div>
 
