@@ -37,12 +37,12 @@ export default function Home() {
 
       {isLoading ? (
         <h1>Loading...</h1>
-      ) : (
+      ) : newArrivals.length ? (
         <ProductCardList
           productsCard={newArrivals}
           nameTitle={nameTitlePopularProducts}
         />
-      )}
+      ) : null}
 
       <Brands />
 

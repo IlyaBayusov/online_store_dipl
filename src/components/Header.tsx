@@ -8,7 +8,7 @@ import {
   ordersPage,
 } from "@/constans";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import img_logo from "../../public/main/img_logo.png";
@@ -22,6 +22,7 @@ import {
 import { IoIosSearch, IoIosArrowForward } from "react-icons/io";
 import { HiMenuAlt2 } from "react-icons/hi";
 import { ICatalog } from "@/interfaces";
+import { decodeToken } from "@/utils";
 
 export default function Header() {
   const [selectedCategoryNameSecond, setSelectedCategoryNameSecond] =
@@ -38,12 +39,22 @@ export default function Header() {
   const [isTranslatedX, setIsTranslatedX] = useState<string>("");
   const [isActive, setIsActive] = useState(false);
 
+  const [isAuth, setIsAuth] = useState(false);
+
   const router = useRouter();
 
   const path = usePathname();
   const noHeaderPages = ["/adminMenu"];
 
   const showHeader = !noHeaderPages.includes(path);
+
+  useLayoutEffect(() => {
+    if (decodeToken()) {
+      setIsAuth(true);
+    } else {
+      setIsAuth(false);
+    }
+  });
 
   useEffect(() => {
     if (isActive) {
@@ -102,11 +113,22 @@ export default function Header() {
             <nav>
               <ul className="flex items-center gap-3 text-[10px]">
                 <li className="" onClick={() => setIsActive(false)}>
-                  <Link href="#" className="flex gap-1 flex-col items-center">
-                    <CiUser className="h-5 w-5" />
+                  {!isAuth ? (
+                    <Link
+                      href="/auth"
+                      className="flex gap-1 flex-col items-center"
+                    >
+                      <CiUser className="h-5 w-5" />
 
-                    <p className="leading-none">Войти</p>
-                  </Link>
+                      <p className="leading-none">Войти</p>
+                    </Link>
+                  ) : (
+                    <Link href="#" className="flex gap-1 flex-col items-center">
+                      <CiUser className="h-5 w-5" />
+
+                      <p className="leading-none">Профиль</p>
+                    </Link>
+                  )}
                 </li>
 
                 <li className="" onClick={() => setIsActive(false)}>

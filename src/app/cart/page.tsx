@@ -37,9 +37,15 @@ export default function Cart() {
   return (
     <div className="flex flex-col justify-start">
       {products.length === 0 ? (
-        <p className="text-sm text-center text-[#B3B3B3] font-semibold mt-3 mb-3">
-          Корзина пуста
-        </p>
+        <>
+          <h2 className="text-lg font-semibold text-start mt-3 mb-5">
+            Корзина
+          </h2>
+
+          <p className="text-sm text-center text-[#B3B3B3] font-semibold mb-3">
+            Корзина пуста
+          </p>
+        </>
       ) : (
         <>
           <h1 className="text-lg font-semibold mt-3 mb-3">

@@ -23,18 +23,6 @@ export default function ProductCardItem({ productCard }: Props) {
 
   const [nowCartItem, setNowCartItem] = useState<IProductInCart>();
 
-  // useEffect(() => {
-  //   const getProducts = async () => {
-  //     const data: IProductInCart[] | undefined = await getProductsCart();
-
-  //     if (data) {
-  //       setProducts(data);
-  //     }
-  //   };
-
-  //   getProducts();
-  // }, []);
-
   useEffect(() => {
     setActiveBtnFav();
   }, []);
