@@ -1,83 +1,86 @@
 "use client";
 
-import { postProductAdmin } from "@/api";
-import { modalDeleteEditNewProduct } from "@/constans";
 import { IUseInput, useInput } from "@/hooks/useInput";
-import { IPostNewProduct } from "@/interfaces";
-import { useFormNewProductStore } from "@/stores/useFormNewProduct";
-import { useModalStore } from "@/stores/useModalStore";
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import { IOrderDetails, IOrderPost, IProductInCart } from "@/interfaces";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import * as RadioGroup from "@radix-ui/react-radio-group";
+import { decodeToken } from "@/utils";
+import { getProductsCart, postByProducts } from "@/api";
 
 export default function FormByCart() {
-  const { data, updateData } = useFormNewProductStore();
-  const { openModal } = useModalStore();
+  const [products, setProducts] = useState<IProductInCart[]>([]);
 
-  const [formData, setFormData] = useState<IPostNewProduct>(data);
+  const [formData, setFormData] = useState<IOrderDetails>({
+    userId: 0,
+    totalPrice: 0,
 
-  const name = useInput("", { empty: true, minLength: 2, maxLength: 50 });
-  const color = useInput("123", { empty: true, minLength: 2, maxLength: 50 });
-  const description = useInput("", {
-    empty: true,
-    minLength: 50,
-    maxLength: 300,
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+
+    address: "",
+    apartment: "",
+    floor: "",
+    entrance: "",
+    comment: "",
+    paymentMethod: "CASH",
   });
-  const categoryName = useInput("", {
-    empty: true,
-    minLength: 2,
-    maxLength: 50,
-  });
-  const price = useInput("", { empty: true, minLength: 1, maxLength: 5 });
 
-  const quantity = useInput("", { empty: true, minLength: 1, maxLength: 5 });
+  const address = useInput("", { empty: true });
+  const apartment = useInput("", { empty: true });
+  const floor = useInput("", { empty: true });
+  const entrance = useInput("", { empty: true });
+  const comment = useInput("", { empty: true });
+
+  const firstName = useInput("", { empty: true });
+  const lastName = useInput("", { empty: true });
+  const email = useInput("", { empty: true });
+  const phone = useInput("", { empty: true });
 
   const [selectedPayment, setSelectedPayment] = useState<string>("CASH");
 
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-
   const [errorSubmit, setErrorSubmit] = useState<string>("");
 
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setSelectedFiles(Array.from(e.target.files));
-    }
-  };
+  useEffect(() => {
+    const getProductsInCart = async () => {
+      const data = await getProductsCart();
+      if (data) {
+        setProducts(data);
+      }
+    };
+
+    getProductsInCart();
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      setErrorSubmit("Не все поля заполнены, либо заполнены неверно");
-      return;
-    }
+    // if (!validateForm()) {
+    //   setErrorSubmit("Не все поля заполнены, либо заполнены неверно");
+    //   return;
+    // }
 
     setErrorSubmit("");
 
-    const fData = new FormData();
+    const decoded = decodeToken();
+    if (!decoded || !decoded.id) {
+      setErrorSubmit("Произошла ошибка, попробуйте позже");
+      return;
+    }
 
-    setFormData((prev) => {
-      const newFormData = {
-        ...prev,
+    const newOrder: IOrderPost = {
+      orderDetailsRequest: {
+        ...formData,
+        userId: decoded.id,
+      },
+      orderItemRequest: products,
+    };
 
-        quantities: Number(quantity.value),
-        characteristics: JSON.stringify({ age: "12", text: "text" }),
-      };
+    console.log(newOrder);
 
-      return newFormData;
-    });
-
-    fData.append("product", JSON.stringify(formData));
-
-    selectedFiles.forEach((file) => {
-      fData.append("files", file);
-    });
-
-    console.log(formData);
-    console.log(fData.getAll("files"));
-
-    const response = await postProductAdmin(fData); //response для обработки ошибки "товар с таким именем уже существует" и прочее
-
-    console.log(response);
+    const response = await postByProducts(newOrder);
+    console.log("запрос, отправка заказа", response);
   };
 
   const handleChange = (
@@ -92,8 +95,6 @@ export default function FormByCart() {
       ...formData,
       [name]: value,
     });
-
-    updateData(formData);
 
     // const valid = validateForm();
     // if (valid) updateIsValid(true);
@@ -116,35 +117,36 @@ export default function FormByCart() {
   const validateForm = () => {
     let isValid = true;
 
-    if (!name.inputValid) {
+    if (!address.inputValid) {
       isValid = false;
     }
-    if (!color.inputValid) {
+    if (!apartment.inputValid) {
       isValid = false;
     }
-    if (!description.inputValid) {
+    if (!floor.inputValid) {
       isValid = false;
     }
-    if (!categoryName.inputValid) {
+    if (!entrance.inputValid) {
       isValid = false;
     }
-    if (!price.inputValid) {
-      isValid = false;
-    }
-    if (!selectedFiles.length) {
+    if (!comment.inputValid) {
       isValid = false;
     }
 
-    if (!selectedFiles || selectedFiles.length === 0) {
-      console.log("Выберите файлы");
-      return;
+    if (!firstName.inputValid) {
+      isValid = false;
+    }
+    if (!lastName.inputValid) {
+      isValid = false;
+    }
+    if (!email.inputValid) {
+      isValid = false;
+    }
+    if (!phone.inputValid) {
+      isValid = false;
     }
 
     return isValid;
-  };
-
-  const handleOpenModalDeleteEdit = () => {
-    openModal(modalDeleteEditNewProduct);
   };
 
   const handlePaymentChange = (value: string) => {
@@ -162,46 +164,46 @@ export default function FormByCart() {
         <input
           type="text"
           placeholder="Адрес"
-          name="name"
+          name="address"
           className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
-          value={formData.name}
+          value={formData.address}
           onChange={(e) => {
-            name.onChange(e);
+            address.onChange(e);
             handleChange(e);
           }}
-          onBlur={() => name.onBlur()}
+          onBlur={() => address.onBlur()}
         />
 
         <div className="grid grid-cols-3 grid-rows-1 gap-2">
           <div className="flex flex-col">
-            <label htmlFor="description">Дом</label>
+            <label htmlFor="description">Кв./Офис</label>
             <input
               type="text"
-              placeholder="Дом"
-              name="name"
+              placeholder="Кв./Офис"
+              name="apartment"
               className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
-              value={formData.name}
+              value={formData.apartment}
               onChange={(e) => {
-                name.onChange(e);
+                apartment.onChange(e);
                 handleChange(e);
               }}
-              onBlur={() => name.onBlur()}
+              onBlur={() => apartment.onBlur()}
             />
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="description">Квартира</label>
+            <label htmlFor="description">Этаж</label>
             <input
               type="text"
               placeholder="Квартира"
-              name="name"
+              name="floor"
               className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
-              value={formData.name}
+              value={formData.floor}
               onChange={(e) => {
-                name.onChange(e);
+                floor.onChange(e);
                 handleChange(e);
               }}
-              onBlur={() => name.onBlur()}
+              onBlur={() => floor.onBlur()}
             />
           </div>
           <div className="flex flex-col">
@@ -209,14 +211,14 @@ export default function FormByCart() {
             <input
               type="text"
               placeholder="Подъезд"
-              name="name"
+              name="entrance"
               className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
-              value={formData.name}
+              value={formData.entrance}
               onChange={(e) => {
-                name.onChange(e);
+                entrance.onChange(e);
                 handleChange(e);
               }}
-              onBlur={() => name.onBlur()}
+              onBlur={() => entrance.onBlur()}
             />
           </div>
         </div>
@@ -224,21 +226,21 @@ export default function FormByCart() {
         <div className="flex flex-col">
           <div className="flex items-start gap-1">
             <label htmlFor="description">Комментарий</label>
-            {errorsValidation(description)}
+            {errorsValidation(comment)}
           </div>
           <textarea
             id="largeText"
-            name="description"
+            name="comment"
             rows={5}
             cols={50}
             placeholder="Комментарий"
             className="p-2 rounded-md text-black border border-[#B3B3B3]"
-            value={formData.description}
+            value={formData.comment}
             onChange={(e) => {
-              description.onChange(e);
+              comment.onChange(e);
               handleChange(e);
             }}
-            onBlur={() => description.onBlur()}
+            onBlur={() => comment.onBlur()}
           ></textarea>
         </div>
 
@@ -248,54 +250,54 @@ export default function FormByCart() {
           <div className="grid grid-cols-1 grid-rows-4 gap-2">
             <input
               type="text"
-              placeholder="Дом"
-              name="name"
+              placeholder="Имя"
+              name="firstName"
               className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
-              value={formData.name}
+              value={formData.firstName}
               onChange={(e) => {
-                name.onChange(e);
+                firstName.onChange(e);
                 handleChange(e);
               }}
-              onBlur={() => name.onBlur()}
+              onBlur={() => firstName.onBlur()}
             />
 
             <input
               type="text"
-              placeholder="Квартира"
-              name="name"
+              placeholder="Фамилия"
+              name="lastName"
               className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
-              value={formData.name}
+              value={formData.lastName}
               onChange={(e) => {
-                name.onChange(e);
+                lastName.onChange(e);
                 handleChange(e);
               }}
-              onBlur={() => name.onBlur()}
+              onBlur={() => lastName.onBlur()}
             />
 
             <input
               type="text"
-              placeholder="Подъезд"
-              name="name"
+              placeholder="Email"
+              name="email"
               className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
-              value={formData.name}
+              value={formData.email}
               onChange={(e) => {
-                name.onChange(e);
+                email.onChange(e);
                 handleChange(e);
               }}
-              onBlur={() => name.onBlur()}
+              onBlur={() => email.onBlur()}
             />
 
             <input
               type="text"
-              placeholder="Подъезд"
-              name="name"
+              placeholder="Телефон"
+              name="phone"
               className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
-              value={formData.name}
+              value={formData.phone}
               onChange={(e) => {
-                name.onChange(e);
+                phone.onChange(e);
                 handleChange(e);
               }}
-              onBlur={() => name.onBlur()}
+              onBlur={() => phone.onBlur()}
             />
           </div>
         </div>

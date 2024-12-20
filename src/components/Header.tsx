@@ -8,7 +8,7 @@ import {
   ordersPage,
 } from "@/constans";
 import Link from "next/link";
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import img_logo from "../../public/main/img_logo.png";
@@ -48,7 +48,7 @@ export default function Header() {
 
   const showHeader = !noHeaderPages.includes(path);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (decodeToken()) {
       setIsAuth(true);
     } else {

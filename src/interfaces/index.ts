@@ -49,22 +49,28 @@ export interface IProductInCart {
   image: string;
   price: number;
   quantity: number;
+  characteristics: string;
 }
 
-export interface IByProductsForm {
+export interface IOrderDetails {
   userId: number;
   totalPrice: number;
-  customerName: string;
-  phone: string;
-  country: string;
-  city: string;
   address: string;
-  postalCode: string;
+  apartment: string;
+  floor: string;
+  entrance: string;
+  comment: string;
+
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+
   paymentMethod: string;
 }
 
 export interface IOrderPost {
-  orderDetailsRequest: IByProductsForm;
+  orderDetailsRequest: IOrderDetails;
   orderItemRequest: IProductInCart[];
 }
 

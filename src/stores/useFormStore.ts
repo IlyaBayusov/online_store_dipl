@@ -1,12 +1,12 @@
-import { IByProductsForm } from "@/interfaces";
+import { IOrderDetails } from "@/interfaces";
 import { create } from "zustand";
 
 export interface IFormStore {
-  data: IByProductsForm;
+  data: IOrderDetails;
   isValid: boolean;
   error: string;
 
-  updateData: (products: IByProductsForm) => void;
+  updateData: (products: IOrderDetails) => void;
   updateIsValid: (isValid: boolean) => void;
   updateError: (error: string) => void;
 }
@@ -15,18 +15,23 @@ export const useFormStore = create<IFormStore>((set) => ({
   data: {
     userId: 0,
     totalPrice: 0,
-    customerName: "",
+
+    firstname: "",
+    lastname: "",
+    email: "",
     phone: "",
-    country: "",
-    city: "",
+
     address: "",
-    postalCode: "",
-    paymentMethod: "",
+    apartment: "",
+    floor: "",
+    entrance: "",
+    comment: "",
+    paymentMethod: "CASH",
   },
   isValid: false,
   error: "",
 
-  updateData: (data: IByProductsForm) => set({ data }),
+  updateData: (data: IOrderDetails) => set({ data }),
   updateIsValid: (isValid: boolean) => set({ isValid }),
   updateError: (error: string) => set({ error }),
 }));

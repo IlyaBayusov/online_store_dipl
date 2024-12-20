@@ -37,6 +37,10 @@ export default function CartItem({ product }: Props) {
         setQuantity(1);
         return;
       }
+      if (count?.productCount === product.quantity) {
+        setIsDisabledPlus(true);
+        return;
+      }
     };
 
     getCount();
