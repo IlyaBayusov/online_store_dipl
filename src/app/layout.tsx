@@ -34,7 +34,7 @@ export default function RootLayout({
           {/* <Nav /> */}
 
           <main className="flex-grow">
-            <div className="container px-2.5">{children}</div>
+            <div className="container px-2.5 relative">{children}</div>
           </main>
 
           <ModalNav />

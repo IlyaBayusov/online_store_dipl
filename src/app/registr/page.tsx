@@ -28,7 +28,7 @@ export default function Registr() {
 
   const firstname = useInput("", { empty: true, minLength: 2, maxLength: 50 });
   const lastname = useInput("", { empty: true, minLength: 2, maxLength: 50 });
-  const username = useInput("", { empty: true, minLength: 2, maxLength: 50 });
+  const username = useInput("", { empty: true, minLength: 3, maxLength: 50 });
   const email = useInput("", { empty: true, minLength: 4, maxLength: 50 });
   const password = useInput("", { empty: true, minLength: 6, maxLength: 50 });
   const secondPassword = useInput("", {

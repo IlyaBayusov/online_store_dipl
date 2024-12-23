@@ -17,8 +17,8 @@ export default function Auth() {
     password: "",
   });
 
-  const username = useInput("", { empty: true, minLength: 2, maxLength: 50 });
-  const password = useInput("", { empty: true, minLength: 4, maxLength: 50 });
+  const username = useInput("", { empty: true, minLength: 3, maxLength: 50 });
+  const password = useInput("", { empty: true, minLength: 6, maxLength: 50 });
 
   const [error, setError] = useState("");
   const router = useRouter();

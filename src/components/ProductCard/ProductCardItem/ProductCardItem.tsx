@@ -149,7 +149,7 @@ export default function ProductCardItem({ productCard }: Props) {
             productCard.productId
           }`}
         >
-          <div className="mt-3">
+          <div className="mt-3 max-w-32">
             <Image
               src={productCard.image}
               width={351}

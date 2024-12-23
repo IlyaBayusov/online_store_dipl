@@ -21,12 +21,12 @@ export default function AdminMenu() {
   }, []);
 
   return (
-    <>
+    <div className="w-full absolute top-0 left-0 z-10">
       <HeaderAdmin />
 
       <div className="container ">
         {products && <ProductsAdmin products={products} />}
       </div>
-    </>
+    </div>
   );
 }

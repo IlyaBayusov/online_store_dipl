@@ -11,7 +11,7 @@ import { FaHouse } from "react-icons/fa6";
 import { IoSearchSharp } from "react-icons/io5";
 import { FaPlus } from "react-icons/fa6";
 import { useModalStore } from "@/stores/useModalStore";
-import { modalNewProductAdmin } from "@/constans";
+import { mainPage, modalNewProductAdmin } from "@/constans";
 
 export default function HeaderAdmin() {
   const { openModal } = useModalStore();
@@ -19,28 +19,29 @@ export default function HeaderAdmin() {
   return (
     <div className="w-full">
       <div className="flex flex-col items-center w-full">
-        <div className="flex justify-between items-center px-3 bg-red-400 py-1 w-full">
-          <Link href="/" className="text-base">
+        <div className="flex justify-between items-center px-3 bg-greenT py-1 w-full">
+          {/* <Link href="/" className="text-sm">
             Перейти на главную
-          </Link>
-
-          <div>
-            <IoIosNotifications className="h-5 w-5" />
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center px-3 bg-white w-full border-b">
+          </Link> */}
           <div className="flex items-center gap-3">
-            <FaHouse className="h-4 w-4 text-red-400 text-opacity-80" />
+            <Link href={mainPage}>
+              <FaHouse className="h-4 w-4 text-white text-opacity-80" />
+            </Link>
 
-            <button className="text-base text-red-400 text-opacity-80 py-2">
+            {/* <button className="text-sm text-red-400 text-opacity-80 py-2">
               Заказы
-            </button>
-            <button className="text-base text-red-400 text-opacity-80 py-2">
+            </button> */}
+            <button className="text-sm text-white text-opacity-80 leading-none py-2">
               Товары
             </button>
           </div>
 
+          <div>
+            <IoIosNotifications className="h-5 w-5 text-white" />
+          </div>
+        </div>
+
+        <div className="flex justify-between items-center px-3 bg-white w-full border-b">
           <div className="flex items-center gap-1">
             <input
               type="text"
@@ -51,24 +52,14 @@ export default function HeaderAdmin() {
               <IoSearchSharp className="h-5 w-5 text-green-600" />
             </button>
           </div>
-        </div>
-
-        <div className="flex justify-between items-center px-3 bg-white w-full">
-          <div className="flex items-center gap-1">
-            <button className="py-0.5 px-2">
-              <IoMdArrowBack className="h-5 w-5 text-green-600" />
-            </button>
-
-            <h1 className="text-red-400 py-2">Товар</h1>
-          </div>
 
           <div className="flex items-center gap-1">
-            <button className="py-1 px-2">
+            {/* <button className="py-1 px-2">
               <IoIosOptions className="h-5 w-5 p-px text-green-600" />
-            </button>
+            </button> */}
 
             <button
-              className="py-1 px-2 bg-green-600 rounded-md"
+              className="flex justify-center items-center h-8 w-8 bg-greenT rounded-full"
               onClick={() => openModal(modalNewProductAdmin)}
             >
               <FaPlus className="h-5 w-5 p-px text-white" />
