@@ -7,6 +7,7 @@ import ProductCardList from "@/components/ProductCard/ProductCardList/ProductCar
 import { nameTitlePopularProducts } from "@/constans";
 import Brands from "@/components/Brands/Brands";
 import Viewed from "@/components/Viewed/Viewed";
+import Loader from "@/components/Loader/Loader";
 
 export default function Home() {
   const [newArrivals, setNewArrivals] = useState([]);
@@ -36,7 +37,7 @@ export default function Home() {
       <CategoryList />
 
       {isLoading ? (
-        <h1>Loading...</h1>
+        <Loader />
       ) : newArrivals.length ? (
         <ProductCardList
           productsCard={newArrivals}

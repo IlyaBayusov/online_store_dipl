@@ -6,13 +6,14 @@ import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { decodeToken } from "@/utils";
 import { getProductsCart, postByProducts } from "@/api";
+import { useRouter } from "next/navigation";
 
 export default function FormByCart() {
   const [products, setProducts] = useState<IProductInCart[]>([]);
 
   const [formData, setFormData] = useState<IOrderDetails>({
     userId: 0,
-    totalPrice: 0,
+    totalPrice: 100,
 
     firstName: "",
     lastName: "",
@@ -41,6 +42,8 @@ export default function FormByCart() {
   const [selectedPayment, setSelectedPayment] = useState<string>("CASH");
 
   const [errorSubmit, setErrorSubmit] = useState<string>("");
+
+  const router = useRouter();
 
   useEffect(() => {
     const getProductsInCart = async () => {
@@ -73,6 +76,7 @@ export default function FormByCart() {
       orderDetailsRequest: {
         ...formData,
         userId: decoded.id,
+        customerName: `${firstName.value}`, // временно
       },
       orderItemRequest: products,
     };
@@ -81,6 +85,10 @@ export default function FormByCart() {
 
     const response = await postByProducts(newOrder);
     console.log("запрос, отправка заказа", response);
+
+    if (response) {
+      router.push(`/orders`);
+    }
   };
 
   const handleChange = (

@@ -19,7 +19,7 @@ type Props = {
 export default function ProductsAdmin({ products }: Props) {
   return (
     <div className="flex flex-col w-full bg-white">
-      <div className="flex justify-center items-center gap-1 py-1">
+      {/* <div className="flex justify-center items-center gap-1 py-1">
         <button className="px-2 py-1 border rounded-md">
           <MdOutlineKeyboardDoubleArrowLeft className="h-5 w-5 p-px text-gray-400" />
         </button>
@@ -35,13 +35,14 @@ export default function ProductsAdmin({ products }: Props) {
         <button className="px-2 py-1 border rounded-md">
           <MdOutlineKeyboardDoubleArrowRight className="h-5 w-5 p-px text-gray-400" />
         </button>
-      </div>
+      </div> */}
 
       {products ? (
-        <div className="w-[120vw] overflow-x-scroll">
-          <table className="w-full text-black uppercase text-xs text-center -mx-3 mt-3">
+        <div className="overflow-x-scroll">
+          {/* w-[120vw] */}
+          <table className="w-full text-black uppercase text-xs text-center mt-3">
             <thead>
-              <tr className="text-greenT">
+              <tr className="text-greenT text-[10px]">
                 <th>Название / Артикул</th>
                 <th>Цена</th>
                 <th>Кол-во</th>

@@ -23,6 +23,7 @@ import { IoIosSearch, IoIosArrowForward } from "react-icons/io";
 import { HiMenuAlt2 } from "react-icons/hi";
 import { ICatalog } from "@/interfaces";
 import { decodeToken } from "@/utils";
+import { ProfileDropDownMenu } from "./DropDownMenu/ProfileDropDownMenu";
 
 export default function Header() {
   const [selectedCategoryNameSecond, setSelectedCategoryNameSecond] =
@@ -112,23 +113,8 @@ export default function Header() {
 
             <nav>
               <ul className="flex items-center gap-3 text-[10px]">
-                <li className="" onClick={() => setIsActive(false)}>
-                  {!isAuth ? (
-                    <Link
-                      href="/auth"
-                      className="flex gap-1 flex-col items-center"
-                    >
-                      <CiUser className="h-5 w-5" />
-
-                      <p className="leading-none">Войти</p>
-                    </Link>
-                  ) : (
-                    <Link href="#" className="flex gap-1 flex-col items-center">
-                      <CiUser className="h-5 w-5" />
-
-                      <p className="leading-none">Профиль</p>
-                    </Link>
-                  )}
+                <li className="">
+                  <ProfileDropDownMenu />
                 </li>
 
                 <li className="" onClick={() => setIsActive(false)}>
