@@ -6,12 +6,13 @@ type Props = { name: string; img: string; price: number };
 export default function ProductsItem({ name, img, price }: Props) {
   return (
     <div className="flex flex-col justify-center">
-      <div>
+      <div className="relative w-full h-[228px] bg-[#F0F0F0] flex justify-center items-center rounded-md">
         <Image
           src={img}
           alt={name}
-          height={200}
-          width={200}
+          fill
+          style={{ objectFit: "cover", objectPosition: "center" }}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="rounded-md"
         />
       </div>

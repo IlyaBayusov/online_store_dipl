@@ -82,6 +82,12 @@ export default function Header() {
     if (category.next) {
       setSelectedCategoryNextThird(category.next);
       setIsTranslatedX(" -translate-x-[200vw]");
+    } else {
+      setIsActive(false);
+
+      router.push(`/${category.urlName}`);
+
+      console.log("переход на сраницу с товаром", category.urlName);
     }
   };
 
@@ -90,7 +96,7 @@ export default function Header() {
 
     router.push(`/${category.urlName}`);
 
-    console.log("переход на сраницу с товаром");
+    console.log("переход на сраницу с товаром", category.urlName);
   };
 
   return (

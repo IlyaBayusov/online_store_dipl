@@ -56,10 +56,14 @@ export default function ProductsAdmin({ products }: Props) {
                 <tr className="border-b border-slate-300" key={product.name}>
                   <td>
                     <div className="ml-1 flex items-start text-start">
-                      <div className="max-w-12">
+                      <div className="relative h-[80px] w-[60px] bg-[#F0F0F0] flex justify-center items-center rounded-md">
                         <Image
-                          width={175}
-                          height={250}
+                          fill
+                          style={{
+                            objectFit: "cover",
+                            objectPosition: "center",
+                          }}
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           src={product.images[0]}
                           alt={product.name}
                         />

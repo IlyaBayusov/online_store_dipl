@@ -25,24 +25,24 @@ export default function HeaderAdmin() {
           </Link> */}
           <div className="flex items-center gap-3">
             <Link href={mainPage}>
-              <FaHouse className="h-4 w-4 text-white text-opacity-80" />
+              <FaHouse className="h-4 w-4 text-white" />
             </Link>
 
             {/* <button className="text-sm text-red-400 text-opacity-80 py-2">
               Заказы
             </button> */}
-            <button className="text-sm text-white text-opacity-80 leading-none py-2">
+            <button className="text-sm text-white leading-none py-2">
               Товары
             </button>
           </div>
 
-          <div>
+          {/* <div>
             <IoIosNotifications className="h-5 w-5 text-white" />
-          </div>
+          </div> */}
         </div>
 
-        <div className="flex justify-between items-center px-3 bg-white w-full border-b">
-          <div className="flex items-center gap-1">
+        <div className="flex justify-center items-center px-3 py-2 bg-white w-full border-b">
+          {/* <div className="flex items-center gap-1">
             <input
               type="text"
               placeholder="Найти"
@@ -51,7 +51,7 @@ export default function HeaderAdmin() {
             <button className="py-2">
               <IoSearchSharp className="h-5 w-5 text-green-600" />
             </button>
-          </div>
+          </div> */}
 
           <div className="flex items-center gap-1">
             {/* <button className="py-1 px-2">

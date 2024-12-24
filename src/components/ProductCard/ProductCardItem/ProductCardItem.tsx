@@ -148,14 +148,16 @@ export default function ProductCardItem({ productCard }: Props) {
           href={`/${productCard.categoryName.toLowerCase()}/${
             productCard.productId
           }`}
+          className="flex-grow"
         >
-          <div className="mt-3 max-w-32">
+          <div className="relative w-full h-[228px] bg-[#F0F0F0] flex justify-center items-center rounded-md">
             <Image
               src={productCard.image}
-              width={351}
-              height={494}
               alt={productCard.name}
-              className="rounded-md w-auto h-auto object-cover"
+              fill
+              style={{ objectFit: "cover", objectPosition: "center" }}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="rounded-md"
             />
           </div>
 

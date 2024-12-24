@@ -50,31 +50,31 @@ export const categories: ICatalog[] = [
         id: 1,
         name: "Мобильные телефоны и аксессуары",
         urlName: "mobiles_acc",
-        img: img_shoes,
+        img: img_categoryBig,
         next: [
           {
             id: 1,
             name: "Мобильные телефоны",
             urlName: "mobile_phones",
-            img: img_shoes,
+            img: img_categoryBig,
           },
           {
             id: 2,
             name: "Кнопочные телефоны",
             urlName: "feature_phones",
-            img: img_shoes,
+            img: img_categoryBig,
           },
           {
             id: 1,
             name: "Наушники",
             urlName: "headphones",
-            img: img_shoes,
+            img: img_categoryBig,
           },
           {
             id: 2,
             name: "Фитнес браслеты",
             urlName: "fitness_bracelets",
-            img: img_shoes,
+            img: img_categoryBig,
           },
         ],
       },
@@ -82,19 +82,19 @@ export const categories: ICatalog[] = [
         id: 2,
         name: "Телевидение и видео",
         urlName: "tv_video",
-        img: img_shoes,
+        img: img_categoryBig,
       },
       {
         id: 1,
         name: "Планшеты, электронные книги",
         urlName: "tablets_e-readers",
-        img: img_shoes,
+        img: img_categoryBig,
       },
       {
         id: 2,
         name: "Наушники и аудиотехника",
         urlName: "headphones_audio-equipmen",
-        img: img_shoes,
+        img: img_categoryBig,
       },
     ],
   },
@@ -106,15 +106,15 @@ export const categories: ICatalog[] = [
     next: [
       {
         id: 1,
-        name: "Брюки",
-        urlName: "trousers",
-        img: img_shoes,
+        name: "Холодильники",
+        urlName: "holod",
+        img: img_household,
       },
       {
         id: 2,
-        name: "Рубашки",
-        urlName: "shirts",
-        img: img_shoes,
+        name: "Плиты",
+        urlName: "pliti",
+        img: img_household,
       },
     ],
   },
@@ -126,15 +126,15 @@ export const categories: ICatalog[] = [
     next: [
       {
         id: 1,
-        name: "Кеды",
-        urlName: "sneakers",
-        img: img_shoes,
+        name: "Художественная литература",
+        urlName: "hudojlit",
+        img: img_books,
       },
       {
         id: 2,
-        name: "Челси",
-        urlName: "chelsea",
-        img: img_shoes,
+        name: "Научная литература",
+        urlName: "nauchlit",
+        img: img_books,
       },
     ],
   },
@@ -146,15 +146,15 @@ export const categories: ICatalog[] = [
     next: [
       {
         id: 1,
-        name: "Галстуки",
-        urlName: "ties",
-        img: img_shoes,
+        name: "Кофе",
+        urlName: "coffee",
+        img: img_eat,
       },
       {
         id: 2,
-        name: "Ремни",
-        urlName: "belts",
-        img: img_shoes,
+        name: "Молоко",
+        urlName: "milk",
+        img: img_eat,
       },
     ],
   },
@@ -162,6 +162,9 @@ export const categories: ICatalog[] = [
 
 export const categoriesList = [
   { id: 1, name: "Мобильные телефоны", url_name: "mobile_phones" },
+  { id: 2, name: "Холодильники", url_name: "holod" },
+  { id: 3, name: "Художественная литература", url_name: "hudojlit" },
+  { id: 4, name: "Чипсы", url_name: "chipsi" },
 ];
 
 export const newArrivals = [
@@ -217,8 +220,15 @@ export const colors = [
   { name: "Черно-серый", value: "#555555" },
 ];
 
+// export const selectCategoryies = [
+//   { name: "Мобильные телефоны", value: "mobile_phones" },
+// ];
+
 export const selectCategoryies = [
   { name: "Мобильные телефоны", value: "mobile_phones" },
+  { name: "Холодильники", value: "holod" },
+  { name: "Художественная литература", value: "hudojlit" },
+  { name: "Кофе", value: "coffee" },
 ];
 
 export const selectSiziesCloth = [

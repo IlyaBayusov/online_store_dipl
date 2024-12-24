@@ -60,7 +60,7 @@ export function getCodeColor(color: string) {
 export function getStatusRu(status: string) {
   switch (status.toLowerCase()) {
     case "created":
-      return "В обработке";
+      return "Создан";
     case "en_route":
       return "В пути";
     case "completed":

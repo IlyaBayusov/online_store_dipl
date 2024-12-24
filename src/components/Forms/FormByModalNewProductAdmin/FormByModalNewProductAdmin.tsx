@@ -4,6 +4,7 @@ import { postProductAdmin } from "@/api";
 import {
   colors,
   modalDeleteEditNewProduct,
+  modalNewProductAdmin,
   selectCategoryies,
 } from "@/constans";
 import { IUseInput, useInput } from "@/hooks/useInput";
@@ -14,7 +15,7 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 
 export default function FormByModalNewProductAdmin() {
   const { data, updateData } = useFormNewProductStore();
-  const { openModal } = useModalStore();
+  const { openModal, closeModal } = useModalStore();
 
   const [formData, setFormData] = useState<IPostNewProduct>(data);
 
@@ -75,6 +76,10 @@ export default function FormByModalNewProductAdmin() {
     const response = await postProductAdmin(fData); //response для обработки ошибки "товар с таким именем уже существует" и прочее
 
     console.log(response);
+
+    if (response) {
+      closeModal(modalNewProductAdmin);
+    }
   };
 
   const handleChange = (
@@ -157,7 +162,7 @@ export default function FormByModalNewProductAdmin() {
             type="text"
             placeholder="Название"
             name="name"
-            className="px-2 py-1 rounded-md text-black"
+            className="px-2 py-1 rounded-md text-black border border-greenT"
             value={formData.name}
             onChange={(e) => {
               name.onChange(e);
@@ -178,7 +183,7 @@ export default function FormByModalNewProductAdmin() {
             rows={5}
             cols={50}
             placeholder="Описание"
-            className="p-2 rounded-md text-black"
+            className="p-2 rounded-md text-black border border-greenT"
             value={formData.description}
             onChange={(e) => {
               description.onChange(e);
@@ -188,7 +193,7 @@ export default function FormByModalNewProductAdmin() {
           ></textarea>
         </div>
 
-        <div className="flex justify-between items-start">
+        <div className="flex flex-col justify-start items-start gap-1">
           <div className="flex flex-col">
             <div className="flex items-start gap-1">
               <label htmlFor="price">Цена</label>
@@ -200,7 +205,7 @@ export default function FormByModalNewProductAdmin() {
               name="price"
               placeholder="Цена"
               maxLength={4}
-              className="px-2 py-1 rounded-md max-w-20 text-black"
+              className="px-2 py-1 rounded-md max-w-20 text-black border border-greenT"
               value={formData.price}
               onChange={(e) => {
                 price.onChange(e);
@@ -219,7 +224,7 @@ export default function FormByModalNewProductAdmin() {
             <div className="flex items-center gap-1">
               <select
                 id="color"
-                className="rounded-md text-black px-2 py-[3px] text-base max-h-10 overflow-auto"
+                className="rounded-md text-black px-2 py-[3px] text-base max-h-10 overflow-auto border border-greenT"
                 name="color"
                 value={formData.color}
                 onChange={(e) => {
@@ -255,7 +260,7 @@ export default function FormByModalNewProductAdmin() {
             <div className="flex items-center gap-3">
               <select
                 id="category"
-                className="rounded-md text-black px-2 py-[3px] text-base"
+                className="rounded-md text-black px-2 py-[3px] text-base border border-greenT"
                 name="categoryName"
                 value={formData.categoryName}
                 onChange={(e) => {
@@ -290,7 +295,7 @@ export default function FormByModalNewProductAdmin() {
                 name="quantities"
                 placeholder="Количество"
                 maxLength={4}
-                className="px-2 py-1 rounded-md text-black"
+                className="px-2 py-1 rounded-md text-black border border-greenT"
                 value={quantity.value}
                 onChange={(e) => {
                   quantity.onChange(e);
@@ -304,9 +309,9 @@ export default function FormByModalNewProductAdmin() {
         <div>
           <div className="flex items-start gap-1">
             <label htmlFor="files">Фото</label>
-            {(!selectedFiles || selectedFiles.length === 0) && (
+            {/* {(!selectedFiles || selectedFiles.length === 0) && (
               <span className="text-red-600 text-base">Выберите фото</span>
-            )}
+            )} */}
           </div>
 
           <input
@@ -322,12 +327,14 @@ export default function FormByModalNewProductAdmin() {
           <span className="text-red-600 text-base">{errorSubmit}</span>
         )}
 
-        <button
-          type="submit"
-          className="mt-3 px-3 py-1 rounded-md bg-green-400 text-sm"
-        >
-          Создать товар
-        </button>
+        <div className="flex justify-center items-center w-full">
+          <button
+            type="submit"
+            className="mt-3 px-3 py-2 rounded-md bg-greenT text-sm text-white"
+          >
+            Создать
+          </button>
+        </div>
       </form>
     </div>
   );
