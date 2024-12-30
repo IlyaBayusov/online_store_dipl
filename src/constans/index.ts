@@ -22,6 +22,8 @@ export const modalDeleteEditNewProduct = "modalDeleteEditNewProduct";
 
 export const nameTitlePopularProducts = "Новинки";
 
+export const sizeProducts = 30;
+
 // Chelsea - id - 1
 // Sneakers - id - 2
 // Pants - id - 3

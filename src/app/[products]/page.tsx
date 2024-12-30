@@ -42,6 +42,8 @@ export default function Products() {
       setData(productsData.products);
     };
 
+    window.location.href = "/stoli";
+
     const categoryRu = categoriesList.find((item) => {
       if (item.url_name.toLocaleLowerCase() === params.products.toLowerCase())
         return item;
