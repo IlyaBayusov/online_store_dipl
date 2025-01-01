@@ -115,9 +115,7 @@ export const postProductAdmin = async (product: FormData) => {
 
 export const getProductAdmin = async (page: number) => {
   try {
-    const response = await api.get(
-      `/v1/products/admin?size=${sizeProducts}&page=${page}`
-    );
+    const response = await api.get(`/v1/products/admin?size=${2}&page=${page}`);
     const data = await response.data;
 
     return data;
