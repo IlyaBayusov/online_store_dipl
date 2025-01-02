@@ -9,13 +9,17 @@ type Props = {
 export default function FavItem({ fav }: Props) {
   return (
     <div className="flex flex-col justify-center">
-      <div className="relative w-full h-[228px] bg-[#F0F0F0] flex justify-center items-center rounded-md">
+      <div className="relative w-full aspect-square flex justify-center items-center rounded-md">
         <Image
           src={fav.image}
           alt={fav.productName}
           fill
-          style={{ objectFit: "cover", objectPosition: "center" }}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          style={{
+            objectFit: "contain",
+            objectPosition: "center",
+            mixBlendMode: "multiply",
+          }}
+          sizes="(max-width: 768px) 50vw"
           className="rounded-md"
         />
       </div>

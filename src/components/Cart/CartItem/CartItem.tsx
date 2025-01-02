@@ -113,13 +113,18 @@ export default function CartItem({ product }: Props) {
         <div className="flex justify-start gap-3 w-full">
           <Link
             href={`/${product.categoryName.toLowerCase()}/${product.productId}`}
-            className="max-w-20"
+            className="relative w-full max-w-[150px] aspect-square flex justify-center items-center rounded-md"
           >
             <Image
-              width={350}
-              height={500}
               src={product.image}
               alt={product.productName}
+              fill
+              style={{
+                objectFit: "contain",
+                objectPosition: "center",
+                mixBlendMode: "multiply",
+              }}
+              sizes="(max-width: 768px) 50vw"
               className="rounded-md"
             />
           </Link>

@@ -8,13 +8,6 @@ import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import axios from "axios";
 import { ICategory } from "@/interfaces";
 
-// Chelsea - id - 1
-// Sneakers - id - 2
-// Trousers - id - 3
-// Shirts - id -4
-// Ties - id - 5
-// Belts - id - 6
-
 const fetchProducts = async (products: string) => {
   try {
     const response = await axios.get(
@@ -41,8 +34,6 @@ export default function Products() {
 
       setData(productsData.products);
     };
-
-    window.location.href = "/stoli";
 
     const categoryRu = categoriesList.find((item) => {
       if (item.url_name.toLocaleLowerCase() === params.products.toLowerCase())

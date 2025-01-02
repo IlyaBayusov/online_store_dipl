@@ -167,6 +167,7 @@ export const categoriesList = [
   { id: 2, name: "Холодильники", url_name: "holod" },
   { id: 3, name: "Художественная литература", url_name: "hudojlit" },
   { id: 4, name: "Чипсы", url_name: "chipsi" },
+  { id: 5, name: "Кофе", url_name: "coffee" },
 ];
 
 export const newArrivals = [

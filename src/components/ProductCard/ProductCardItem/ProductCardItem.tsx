@@ -25,6 +25,7 @@ export default function ProductCardItem({ productCard }: Props) {
 
   useEffect(() => {
     setActiveBtnFav();
+    setActiveBtnCart();
   }, []);
 
   async function setActiveBtnFav() {
