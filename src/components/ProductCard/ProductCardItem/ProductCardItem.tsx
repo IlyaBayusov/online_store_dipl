@@ -3,8 +3,9 @@
 import {
   IDecodedToken,
   IGetFav,
-  IProductCategory,
   IProductInCart,
+  IProductsCardBody,
+  IProductsCardParams,
 } from "@/interfaces";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -15,9 +16,9 @@ import { api } from "@/axios";
 import Link from "next/link";
 import { RiShoppingBasketLine, RiShoppingBasketFill } from "react-icons/ri";
 
-type Props = { productCard: IProductCategory };
+type Props = { productCard: IProductsCardBody; params: IProductsCardParams };
 
-export default function ProductCardItem({ productCard }: Props) {
+export default function ProductCardItem({ productCard, params }: Props) {
   const [isActiveFav, setIsActiveFav] = useState(false);
   const [isActiveCart, setIsActiveCart] = useState(false);
 
@@ -128,20 +129,24 @@ export default function ProductCardItem({ productCard }: Props) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex justify-between items-center">
-        <div className="bg-[#EB8528] px-2 p-0.5 text-sm rounded-md">
-          <p className="text-white">Новинки</p>
-        </div>
+        {params.markTitle && (
+          <div className="bg-[#EB8528] px-2 p-0.5 text-sm rounded-md">
+            <p className="text-white">Новинки</p>
+          </div>
+        )}
 
-        <button
-          className="flex justify-center items-center gap-1 py-1"
-          onClick={handleClickFav}
-        >
-          {isActiveFav ? (
-            <MdFavorite className="h-5 w-5 " />
-          ) : (
-            <MdFavoriteBorder className="h-5 w-5" />
-          )}
-        </button>
+        {params.btnFav && (
+          <button
+            className="flex justify-center items-center gap-1 py-1"
+            onClick={handleClickFav}
+          >
+            {isActiveFav ? (
+              <MdFavorite className="h-5 w-5 " />
+            ) : (
+              <MdFavoriteBorder className="h-5 w-5" />
+            )}
+          </button>
+        )}
       </div>
 
       <div className="flex flex-col h-full">
@@ -172,27 +177,29 @@ export default function ProductCardItem({ productCard }: Props) {
           </div>
         </Link>
 
-        <button
-          className={
-            "flex justify-center items-center gap-1 mt-3 py-2 px-4 w-full rounded-md transition-all" +
-            (isActiveCart
-              ? " bg-white text-greenT outline outline-1 outline-greenT"
-              : " bg-greenT text-white")
-          }
-          onClick={handleClickCart}
-        >
-          {isActiveCart ? (
-            <>
-              <p className="text-sm">В корзине</p>
-              <RiShoppingBasketFill className="h-5 w-5" />
-            </>
-          ) : (
-            <>
-              <p className="text-sm">Купить</p>
-              <RiShoppingBasketLine className="h-5 w-5" />
-            </>
-          )}
-        </button>
+        {params.btnCart && (
+          <button
+            className={
+              "flex justify-center items-center gap-1 mt-3 py-2 px-4 w-full rounded-md transition-all" +
+              (isActiveCart
+                ? " bg-white text-greenT outline outline-1 outline-greenT"
+                : " bg-greenT text-white")
+            }
+            onClick={handleClickCart}
+          >
+            {isActiveCart ? (
+              <>
+                <p className="text-sm">В корзине</p>
+                <RiShoppingBasketFill className="h-5 w-5" />
+              </>
+            ) : (
+              <>
+                <p className="text-sm">Купить</p>
+                <RiShoppingBasketLine className="h-5 w-5" />
+              </>
+            )}
+          </button>
+        )}
       </div>
     </div>
   );

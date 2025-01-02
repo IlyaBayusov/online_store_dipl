@@ -1,10 +1,18 @@
-import { IProductCategory } from "@/interfaces";
+import { IProductsCardBody, IProductsCardParams } from "@/interfaces";
 import React from "react";
 import ProductCardItem from "../ProductCardItem/ProductCardItem";
 
-type Props = { productsCard: IProductCategory[]; nameTitle: string };
+type Props = {
+  productsCard: IProductsCardBody[];
+  nameTitle: string;
+  params: IProductsCardParams;
+};
 
-export default function ProductCardList({ productsCard, nameTitle }: Props) {
+export default function ProductCardList({
+  productsCard,
+  nameTitle,
+  params,
+}: Props) {
   return (
     <>
       <div className="flex justify-start mt-3 mb-5">
@@ -14,7 +22,7 @@ export default function ProductCardList({ productsCard, nameTitle }: Props) {
         {productsCard &&
           productsCard.map((product) => (
             <div key={product.productId} className="h-full">
-              <ProductCardItem productCard={product} />
+              <ProductCardItem productCard={product} params={params} />
             </div>
           ))}
       </div>

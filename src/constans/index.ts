@@ -4,7 +4,7 @@ import img_household from "../../public/main/category/img_household.png";
 import img_books from "../../public/main/category/img_books.png";
 import img_eat from "../../public/main/category/img_eat.png";
 import img_test_shoes1 from "../../public/testImg/img_test_shoes1.png";
-import { ICatalog } from "@/interfaces";
+import { ICatalog, IProductsCardParams } from "@/interfaces";
 
 export const mainPage = "/";
 export const cartPage = "/cart";
@@ -20,16 +20,18 @@ export const modalSuccessOrder = "modalSuccessOrder";
 export const modalNewProductAdmin = "modalNewProductAdmin";
 export const modalDeleteEditNewProduct = "modalDeleteEditNewProduct";
 
-export const nameTitlePopularProducts = "Новинки";
-
 export const sizeProducts = 2;
 
-// Chelsea - id - 1
-// Sneakers - id - 2
-// Pants - id - 3
-// Shirts - id -4
-// Ties - id - 5
-// Belts - id - 6
+export const nameTitlePopularProducts = "Новинки";
+
+export const paramsPopularProducts = {
+  page: mainPage,
+  btnCart: true,
+  btnFav: true,
+  markTitle: true,
+  status: false,
+  quantity: false,
+} as IProductsCardParams;
 
 export const categoriesPages = [
   {

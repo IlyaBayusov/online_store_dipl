@@ -134,3 +134,27 @@ export interface IPagination {
   totalItems: number;
   totalPages: number;
 }
+
+export interface IProductsCardParams {
+  page: string;
+  btnCart: boolean;
+  btnFav: boolean;
+  markTitle: boolean;
+  status: boolean;
+  quantity: boolean;
+
+  // grid_cols: number;
+  // grid_rows: number;
+}
+
+export interface IProductsCardBody {
+  productId: number;
+  categoryName: string;
+  name: string;
+  image: string;
+  price?: number;
+  cartItemId?: number;
+  favoriteId?: number;
+  orderId?: number;
+  quantity?: number;
+}

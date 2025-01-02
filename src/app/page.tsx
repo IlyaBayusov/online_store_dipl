@@ -4,10 +4,16 @@ import CategoryList from "@/components/Category/CategoryList/CategoryList";
 import { useEffect, useState } from "react";
 import { api } from "@/axios";
 import ProductCardList from "@/components/ProductCard/ProductCardList/ProductCardList";
-import { nameTitlePopularProducts } from "@/constans";
+import { nameTitlePopularProducts, paramsPopularProducts } from "@/constans";
 import Brands from "@/components/Brands/Brands";
 import Viewed from "@/components/Viewed/Viewed";
 import Loader from "@/components/Loader/Loader";
+import {
+  IFavsGet,
+  IOrdersGet,
+  IProductCategory,
+  IProductsCardBody,
+} from "@/interfaces";
 
 export default function Home() {
   const [newArrivals, setNewArrivals] = useState([]);
@@ -19,8 +25,11 @@ export default function Home() {
         const response = await api.get("/v1/products");
         const data = await response.data;
 
-        setNewArrivals(data);
+        const products = data.map(mapToUnifiedProduct);
+
+        setNewArrivals(products);
         setIsLoading(false);
+
         console.log(newArrivals);
       } catch (error) {
         console.log("главная страница: ", error);
@@ -29,6 +38,22 @@ export default function Home() {
 
     fetchNewArrivals();
   }, []);
+
+  function mapToUnifiedProduct(
+    data: IProductCategory | IOrdersGet | IFavsGet
+  ): IProductsCardBody {
+    return {
+      productId: data.productId,
+      categoryName: data.categoryName,
+      name:
+        (data as IProductCategory).name ||
+        (data as IFavsGet | IOrdersGet).productName,
+      image: data.image,
+      price: (data as IProductCategory | IOrdersGet).price,
+    };
+  }
+
+  console.log(newArrivals);
 
   return (
     <div className="w-full">
@@ -42,6 +67,7 @@ export default function Home() {
         <ProductCardList
           productsCard={newArrivals}
           nameTitle={nameTitlePopularProducts}
+          params={paramsPopularProducts}
         />
       ) : null}
 
