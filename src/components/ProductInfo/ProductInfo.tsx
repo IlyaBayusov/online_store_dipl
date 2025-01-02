@@ -190,14 +190,19 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
               </div>
             </div>
 
-            <Image
-              src={nowProduct.images[0]}
-              width={351}
-              height={494}
-              alt={nowProduct.name}
-              className="rounded-md max-w-[75%]"
-              priority
-            />
+            <div className="relative w-full aspect-square flex justify-center items-center rounded-md">
+              <Image
+                src={nowProduct.images[0]}
+                alt={nowProduct.name}
+                fill
+                style={{
+                  objectFit: "contain",
+                  objectPosition: "center",
+                  mixBlendMode: "multiply",
+                }}
+                className="rounded-md"
+              />
+            </div>
 
             <div className="w-full flex justify-between items-center">
               {nowProduct.images.map((item, index) => (

@@ -3,6 +3,7 @@
 import { getProductAdmin } from "@/api";
 import HeaderAdmin from "@/components/AdminPage/HeaderAdmin/HeaderAdmin";
 import ProductsAdmin from "@/components/AdminPage/ProductsAdmin/ProductsAdmin";
+import Loader from "@/components/Loader/Loader";
 import { IPagination, IProductInfo } from "@/interfaces";
 import React, { useEffect, useState } from "react";
 import {
@@ -13,6 +14,7 @@ import {
 } from "react-icons/md";
 
 export default function AdminMenu() {
+  const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState<IProductInfo[]>([]);
   const [pagination, setPagination] = useState<IPagination>({} as IPagination);
 
@@ -24,6 +26,9 @@ export default function AdminMenu() {
     const data = await getProductAdmin(page);
 
     if (data) {
+      console.log(data);
+      setIsLoading(false);
+
       setProducts(data.products);
       setPagination((prev) => ({
         ...prev,
@@ -55,73 +60,79 @@ export default function AdminMenu() {
       <HeaderAdmin />
 
       <div className="container ">
-        <div className="flex justify-center items-center gap-1 py-1">
-          <button
-            className="px-2 py-1 border rounded-md"
-            disabled={pagination.currentPage ? false : true}
-          >
-            <MdOutlineKeyboardDoubleArrowLeft
-              className={
-                "h-5 w-5 p-px" +
-                (pagination.currentPage ? " text-greenT" : " text-gray-400")
-              }
-              onClick={handleDoubleLeftClick}
-            />
-          </button>
-          <button
-            className="px-2 py-1 border rounded-md"
-            disabled={pagination.currentPage ? false : true}
-          >
-            <MdOutlineKeyboardArrowLeft
-              className={
-                "h-5 w-5 p-px text-gray-400" +
-                (pagination.currentPage ? " text-greenT" : " text-gray-400")
-              }
-              onClick={handleLeftClick}
-            />
-          </button>
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <>
+            <div className="flex justify-center items-center gap-1 py-1">
+              <button
+                className="px-2 py-1 border rounded-md"
+                disabled={pagination.currentPage ? false : true}
+              >
+                <MdOutlineKeyboardDoubleArrowLeft
+                  className={
+                    "h-5 w-5 p-px" +
+                    (pagination.currentPage ? " text-greenT" : " text-gray-400")
+                  }
+                  onClick={handleDoubleLeftClick}
+                />
+              </button>
+              <button
+                className="px-2 py-1 border rounded-md"
+                disabled={pagination.currentPage ? false : true}
+              >
+                <MdOutlineKeyboardArrowLeft
+                  className={
+                    "h-5 w-5 p-px text-gray-400" +
+                    (pagination.currentPage ? " text-greenT" : " text-gray-400")
+                  }
+                  onClick={handleLeftClick}
+                />
+              </button>
 
-          <p className="text-greenT text-sm">1-10 из 24</p>
+              <p className="text-greenT text-sm">{`"pagination.currentItems" из ${pagination.totalItems}`}</p>
 
-          <button
-            className="px-2 py-1 border rounded-md"
-            disabled={
-              pagination.currentPage + 1 !== pagination.totalPages
-                ? false
-                : true
-            }
-          >
-            <MdOutlineKeyboardArrowRight
-              className={
-                "h-5 w-5 p-px text-gray-400" +
-                (pagination.currentPage + 1 !== pagination.totalPages
-                  ? " text-greenT"
-                  : " text-gray-400")
-              }
-              onClick={handleRightClick}
-            />
-          </button>
-          <button
-            className="px-2 py-1 border rounded-md"
-            disabled={
-              pagination.currentPage + 1 !== pagination.totalPages
-                ? false
-                : true
-            }
-          >
-            <MdOutlineKeyboardDoubleArrowRight
-              className={
-                "h-5 w-5 p-px text-gray-400" +
-                (pagination.currentPage + 1 !== pagination.totalPages
-                  ? " text-greenT"
-                  : " text-gray-400")
-              }
-              onClick={handleDoubleRightClick}
-            />
-          </button>
-        </div>
+              <button
+                className="px-2 py-1 border rounded-md"
+                disabled={
+                  pagination.currentPage + 1 !== pagination.totalPages
+                    ? false
+                    : true
+                }
+              >
+                <MdOutlineKeyboardArrowRight
+                  className={
+                    "h-5 w-5 p-px text-gray-400" +
+                    (pagination.currentPage + 1 !== pagination.totalPages
+                      ? " text-greenT"
+                      : " text-gray-400")
+                  }
+                  onClick={handleRightClick}
+                />
+              </button>
+              <button
+                className="px-2 py-1 border rounded-md"
+                disabled={
+                  pagination.currentPage + 1 !== pagination.totalPages
+                    ? false
+                    : true
+                }
+              >
+                <MdOutlineKeyboardDoubleArrowRight
+                  className={
+                    "h-5 w-5 p-px text-gray-400" +
+                    (pagination.currentPage + 1 !== pagination.totalPages
+                      ? " text-greenT"
+                      : " text-gray-400")
+                  }
+                  onClick={handleDoubleRightClick}
+                />
+              </button>
+            </div>
 
-        <ProductsAdmin products={products} />
+            <ProductsAdmin products={products} />
+          </>
+        )}
       </div>
     </div>
   );
