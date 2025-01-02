@@ -1,21 +1,27 @@
 "use client";
 
 import { getFav } from "@/api";
-import FavList from "@/components/Fav/FavList/FavList";
 import Loader from "@/components/Loader/Loader";
-import { IFavsGet } from "@/interfaces";
+import ProductCardList from "@/components/ProductCard/ProductCardList/ProductCardList";
+import { paramsFavoritsProducts } from "@/constans";
+import { IFavsGet, IProductsCardBody } from "@/interfaces";
+import { mapToUnifiedProduct } from "@/utils";
 import React, { useEffect, useState } from "react";
 
 export default function Favorites() {
   const [isLoading, setIsLoading] = useState(true);
-  const [favs, setFavs] = useState<IFavsGet[]>([]);
+  const [favs, setFavs] = useState<IProductsCardBody[]>([]);
 
   useEffect(() => {
     const getFavsList = async () => {
       const data: IFavsGet[] | undefined = await getFav();
 
-      if (data !== undefined) {
-        setFavs(data);
+      if (data) {
+        const products = data.map(mapToUnifiedProduct);
+
+        console.log("data", products);
+
+        setFavs(products);
         setIsLoading(false);
       }
     };
@@ -23,5 +29,17 @@ export default function Favorites() {
     getFavsList();
   }, []);
 
-  return isLoading ? <Loader /> : <FavList favs={favs} />;
+  return (
+    <>
+      <div className="flex justify-start mt-3 mb-5">
+        <h2 className="text-lg font-semibold">Избранные</h2>
+      </div>
+
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <ProductCardList productsCard={favs} params={paramsFavoritsProducts} />
+      )}
+    </>
+  );
 }

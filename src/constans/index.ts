@@ -11,6 +11,7 @@ export const cartPage = "/cart";
 export const favPage = "/favorites";
 export const ordersPage = "/orders";
 export const profilePage = "/profile";
+export const categoryListPages = "products";
 
 export const modalsCatalog = "modalsCatalog";
 export const modalNav = "modalNav";
@@ -23,6 +24,7 @@ export const modalDeleteEditNewProduct = "modalDeleteEditNewProduct";
 export const sizeProducts = 2;
 
 export const nameTitlePopularProducts = "Новинки";
+export const nameTitleFavoritsProducts = "Избранные";
 
 export const paramsPopularProducts = {
   page: mainPage,
@@ -31,6 +33,37 @@ export const paramsPopularProducts = {
   markTitle: true,
   status: false,
   quantity: false,
+  price: true,
+} as IProductsCardParams;
+
+export const paramsFavoritsProducts = {
+  page: favPage,
+  btnCart: true,
+  btnFav: true,
+  markTitle: false,
+  status: false,
+  quantity: false,
+  price: false,
+} as IProductsCardParams;
+
+export const paramsOrdersProducts = {
+  page: ordersPage,
+  btnCart: true,
+  btnFav: false,
+  markTitle: false,
+  status: true,
+  quantity: true,
+  price: true,
+} as IProductsCardParams;
+
+export const paramsProductsCategoryProducts = {
+  page: categoryListPages,
+  btnCart: true,
+  btnFav: true,
+  markTitle: false,
+  status: false,
+  quantity: false,
+  price: true,
 } as IProductsCardParams;
 
 export const categoriesPages = [

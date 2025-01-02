@@ -1,5 +1,11 @@
 import { categoriesList } from "@/constans";
-import { IDecodedToken } from "@/interfaces";
+import {
+  IDecodedToken,
+  IFavsGet,
+  IOrdersGet,
+  IProductCategory,
+  IProductsCardBody,
+} from "@/interfaces";
 import { jwtDecode } from "jwt-decode";
 import { notFound } from "next/navigation";
 
@@ -81,4 +87,20 @@ export function getCategoryRu(category: string) {
   if (!categoryRu) return notFound();
 
   return categoryRu;
+}
+
+export function mapToUnifiedProduct(
+  data: IProductCategory | IOrdersGet | IFavsGet
+): IProductsCardBody {
+  return {
+    productId: data.productId,
+    categoryName: data.categoryName,
+    name:
+      (data as IProductCategory).name ||
+      (data as IFavsGet | IOrdersGet).productName,
+    image: data.image,
+    price: (data as IProductCategory | IOrdersGet).price,
+    quantity: (data as IOrdersGet).quantity,
+    status: (data as IOrdersGet).status || "",
+  };
 }

@@ -142,6 +142,7 @@ export interface IProductsCardParams {
   markTitle: boolean;
   status: boolean;
   quantity: boolean;
+  price: boolean;
 
   // grid_cols: number;
   // grid_rows: number;
@@ -157,4 +158,5 @@ export interface IProductsCardBody {
   favoriteId?: number;
   orderId?: number;
   quantity?: number;
+  status?: string;
 }

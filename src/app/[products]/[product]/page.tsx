@@ -37,6 +37,13 @@ export default async function Product({
 
   const arrProduct: IProductInfo[] = await fetchProducts(product);
 
+  if (!arrProduct)
+    return (
+      <p className="text-sm text-center text-[#B3B3B3] font-semibold mt-3 mb-3">
+        Товар не найден
+      </p>
+    );
+
   const productIdInArray = arrProduct
     ?.map((item) => item.id)
     .indexOf(Number(product));

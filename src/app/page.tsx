@@ -4,16 +4,11 @@ import CategoryList from "@/components/Category/CategoryList/CategoryList";
 import { useEffect, useState } from "react";
 import { api } from "@/axios";
 import ProductCardList from "@/components/ProductCard/ProductCardList/ProductCardList";
-import { nameTitlePopularProducts, paramsPopularProducts } from "@/constans";
+import { paramsPopularProducts } from "@/constans";
 import Brands from "@/components/Brands/Brands";
 import Viewed from "@/components/Viewed/Viewed";
 import Loader from "@/components/Loader/Loader";
-import {
-  IFavsGet,
-  IOrdersGet,
-  IProductCategory,
-  IProductsCardBody,
-} from "@/interfaces";
+import { mapToUnifiedProduct } from "@/utils";
 
 export default function Home() {
   const [newArrivals, setNewArrivals] = useState([]);
@@ -25,12 +20,14 @@ export default function Home() {
         const response = await api.get("/v1/products");
         const data = await response.data;
 
-        const products = data.map(mapToUnifiedProduct);
+        if (data) {
+          const products = data.map(mapToUnifiedProduct);
 
-        setNewArrivals(products);
-        setIsLoading(false);
+          setNewArrivals(products);
+          setIsLoading(false);
 
-        console.log(newArrivals);
+          console.log(newArrivals);
+        }
       } catch (error) {
         console.log("главная страница: ", error);
       }
@@ -39,37 +36,26 @@ export default function Home() {
     fetchNewArrivals();
   }, []);
 
-  function mapToUnifiedProduct(
-    data: IProductCategory | IOrdersGet | IFavsGet
-  ): IProductsCardBody {
-    return {
-      productId: data.productId,
-      categoryName: data.categoryName,
-      name:
-        (data as IProductCategory).name ||
-        (data as IFavsGet | IOrdersGet).productName,
-      image: data.image,
-      price: (data as IProductCategory | IOrdersGet).price,
-    };
-  }
-
-  console.log(newArrivals);
-
   return (
     <div className="w-full">
       {/* слайдер */}
 
       <CategoryList />
 
-      {isLoading ? (
-        <Loader />
-      ) : newArrivals.length ? (
-        <ProductCardList
-          productsCard={newArrivals}
-          nameTitle={nameTitlePopularProducts}
-          params={paramsPopularProducts}
-        />
-      ) : null}
+      <>
+        <div className="flex justify-start mt-3 mb-5">
+          <h2 className="text-lg font-semibold">Новинки</h2>
+        </div>
+
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <ProductCardList
+            productsCard={newArrivals}
+            params={paramsPopularProducts}
+          />
+        )}
+      </>
 
       <Brands />
 

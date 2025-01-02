@@ -11,7 +11,7 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
 import { getFav, getProductsCart, postFav } from "@/api";
-import { decodeToken } from "@/utils";
+import { decodeToken, getStatusRu } from "@/utils";
 import { api } from "@/axios";
 import Link from "next/link";
 import { RiShoppingBasketLine, RiShoppingBasketFill } from "react-icons/ri";
@@ -21,8 +21,6 @@ type Props = { productCard: IProductsCardBody; params: IProductsCardParams };
 export default function ProductCardItem({ productCard, params }: Props) {
   const [isActiveFav, setIsActiveFav] = useState(false);
   const [isActiveCart, setIsActiveCart] = useState(false);
-
-  const [nowCartItem, setNowCartItem] = useState<IProductInCart>();
 
   useEffect(() => {
     setActiveBtnFav();
@@ -81,7 +79,6 @@ export default function ProductCardItem({ productCard, params }: Props) {
       for (const item of data) {
         if (item.productId === productCard.productId) {
           setIsActiveCart(true);
-          setNowCartItem(item);
           return item.cartItemId;
         }
       }
@@ -128,7 +125,12 @@ export default function ProductCardItem({ productCard, params }: Props) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex justify-between items-center">
+      <div
+        className={
+          "flex items-center" +
+          (params.markTitle ? " justify-between" : " justify-end")
+        }
+      >
         {params.markTitle && (
           <div className="bg-[#EB8528] px-2 p-0.5 text-sm rounded-md">
             <p className="text-white">Новинки</p>
@@ -161,18 +163,29 @@ export default function ProductCardItem({ productCard, params }: Props) {
               src={productCard.image}
               alt={productCard.name}
               fill
-              style={{
-                objectFit: "contain",
-                objectPosition: "center",
-                mixBlendMode: "multiply",
-              }}
+              priority
               sizes="(max-width: 768px) 50vw"
-              className="rounded-md"
+              className="rounded-md object-contain object-center mix-blend-multiply"
             />
+
+            {params.status && (
+              <div className="absolute bottom-0 right-0 z-10 flex flex-col justify-end">
+                <p className="bg-greenT bg-opacity-90 px-2 p-0.5 text-white text-sm rounded-s-md">
+                  {getStatusRu(productCard.status)}
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="mt-3 flex flex-grow flex-col items-start gap-3">
-            <p className="text-base font-bold text-start">{`${productCard.price} РУБ.`}</p>
+            {params.quantity && (
+              <p className="text-sm text-start">
+                Количество: {productCard.quantity} шт.
+              </p>
+            )}
+            {params.price && (
+              <p className="text-base font-bold text-start">{`${productCard.price} РУБ.`}</p>
+            )}
             <p className="text-sm text-start">{productCard.name}</p>
           </div>
         </Link>
