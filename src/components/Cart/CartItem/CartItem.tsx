@@ -19,10 +19,12 @@ export default function CartItem({ product }: Props) {
   const [isDisabledMinus, setIsDisabledMinus] = useState(false);
   const [isDisabledSubmitBtn, setIsDisabledSubmitBtn] = useState(false); //добавить store для кнопки формы
 
-  const { plusSum, minusSum } = useCartStore();
+  const { plusSum, minusSum, addProduct, updateProduct } = useCartStore();
   const { openModal, addModalProps } = useModalStore();
 
   useEffect(() => {
+    addProduct(product);
+
     const getCount = async () => {
       const count = await postCount(product.productId);
 

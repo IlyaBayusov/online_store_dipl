@@ -14,7 +14,6 @@ import { getFav, getProductsCart, postFav } from "@/api";
 import { decodeToken, getStatusRu } from "@/utils";
 import { api } from "@/axios";
 import Link from "next/link";
-import { RiShoppingBasketLine, RiShoppingBasketFill } from "react-icons/ri";
 import CartBtn from "@/components/Buttons/CartBtn/CartBtn";
 
 type Props = { productCard: IProductsCardBody; params: IProductsCardParams };

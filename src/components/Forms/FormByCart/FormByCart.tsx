@@ -76,7 +76,6 @@ export default function FormByCart() {
       orderDetailsRequest: {
         ...formData,
         userId: decoded.id,
-        customerName: `${firstName.value}`, // временно
       },
       orderItemRequest: products,
     };

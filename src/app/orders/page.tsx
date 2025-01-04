@@ -1,24 +1,20 @@
 "use client";
 
 import { getOrders } from "@/api";
+import OrdersAccordion from "@/components/Accordions/OrdersAccordion/OrdersAccordion";
 import Loader from "@/components/Loader/Loader";
-import ProductCardList from "@/components/ProductCard/ProductCardList/ProductCardList";
-import { paramsOrdersProducts } from "@/constans";
-import { IOrdersGet, IProductsCardBody } from "@/interfaces";
-import { mapToUnifiedProduct } from "@/utils";
+import { IOrdersGet } from "@/interfaces";
 import React, { useEffect, useState } from "react";
 
 export default function Orders() {
   const [isLoading, setIsLoading] = useState(true);
-  const [orders, setOrders] = useState<IProductsCardBody[]>([]);
+  const [orders, setOrders] = useState<IOrdersGet[]>([]);
 
   useEffect(() => {
     const getOrdersList = async () => {
       const data: IOrdersGet[] | undefined = await getOrders();
       if (data) {
-        const products = data.map(mapToUnifiedProduct);
-
-        setOrders(products);
+        setOrders(data);
         setIsLoading(false);
       }
     };
@@ -35,7 +31,8 @@ export default function Orders() {
       {isLoading ? (
         <Loader />
       ) : (
-        <ProductCardList productsCard={orders} params={paramsOrdersProducts} />
+        // <ProductCardList productsCard={orders} params={paramsOrdersProducts} />
+        <OrdersAccordion orders={orders} />
       )}
     </>
   );

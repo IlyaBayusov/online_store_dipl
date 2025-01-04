@@ -5,15 +5,18 @@ import CartList from "@/components/Cart/CartList/CartList";
 import FormByCart from "@/components/Forms/FormByCart/FormByCart";
 import { modalCartDeleteProduct } from "@/constans";
 import { IProductInCart } from "@/interfaces";
+import { useCartStore } from "@/stores/useCartStore";
 import { useModalStore } from "@/stores/useModalStore";
 import React, { useEffect, useState } from "react";
 
 export default function Cart() {
   const [products, setProducts] = useState<IProductInCart[]>([]);
   const { modalsProps } = useModalStore();
+  const { getProductsInCart } = useCartStore();
 
   useEffect(() => {
     getProducts();
+    getProductsInCart();
   }, []);
 
   useEffect(() => {
@@ -30,7 +33,7 @@ export default function Cart() {
     }
   };
 
-  console.log(products);
+  // console.log(products);
 
   if (!products) return <h1>Loading...</h1>;
 

@@ -75,16 +75,17 @@ export interface IOrderPost {
 }
 
 export interface IOrdersGet {
+  orderId: number;
   productId: number;
   categoryName: string;
   productName: string;
   image: string;
   price: number;
-  characteristics: string;
   quantity: number;
   totalPrice: number;
-  paymentMethod: string;
   status: string;
+  paymentMethod: string;
+  buysIn: string;
 }
 
 export interface IFavsGet {

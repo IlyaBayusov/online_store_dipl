@@ -1,4 +1,6 @@
-import type { Metadata } from "next";
+"use client";
+
+// import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import { Roboto } from "next/font/google";
@@ -9,6 +11,8 @@ import ModalCartDeleteProduct from "@/components/Modals/ModalCartDeleteProduct";
 import ModalSuccessOrder from "@/components/Modals/ModalSuccessOrder";
 import ModalNewProductAdmin from "@/components/Modals/ModalNewProductAdmin";
 import ModalDeleteEditNewProduct from "@/components/Modals/ModalDeleteEditNewProduct";
+import { useCartStore } from "@/stores/useCartStore";
+import { useEffect } from "react";
 
 const roboto = Roboto({
   weight: ["400", "500", "700"],
@@ -16,16 +20,28 @@ const roboto = Roboto({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Главная",
-  description: "Главная страница",
-};
+// export const metadata: Metadata = {
+//   title: "Главная",
+//   description: "Главная страница",
+// };
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { cart, getProductsInCart } = useCartStore();
+
+  useEffect(() => {
+    const fetchCartData = async () => {
+      return await getProductsInCart();
+    };
+
+    console.warn("получение товара корзины из useCartStore", cart);
+
+    fetchCartData();
+  }, []);
+
   return (
     <html lang="ru" className={roboto.className + " hide-scrollbar-y"}>
       <body className="">
