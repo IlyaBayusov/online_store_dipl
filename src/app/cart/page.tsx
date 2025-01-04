@@ -9,8 +9,9 @@ import { useCartStore } from "@/stores/useCartStore";
 import { useModalStore } from "@/stores/useModalStore";
 import React, { useEffect, useState } from "react";
 
-export default function Cart() {
+export default React.memo(function Cart() {
   const [products, setProducts] = useState<IProductInCart[]>([]);
+
   const { modalsProps } = useModalStore();
   const { getProductsInCart } = useCartStore();
 
@@ -32,8 +33,6 @@ export default function Cart() {
       setProducts(data);
     }
   };
-
-  // console.log(products);
 
   if (!products) return <h1>Loading...</h1>;
 
@@ -62,4 +61,4 @@ export default function Cart() {
       )}
     </div>
   );
-}
+});
