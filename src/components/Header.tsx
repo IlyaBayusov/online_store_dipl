@@ -24,6 +24,7 @@ import { HiMenuAlt2 } from "react-icons/hi";
 import { ICatalog } from "@/interfaces";
 import { decodeToken } from "@/utils";
 import { ProfileDropDownMenu } from "./DropDownMenu/ProfileDropDownMenu";
+import { useCartStore } from "@/stores/useCartStore";
 
 export default function Header() {
   const [selectedCategoryNameSecond, setSelectedCategoryNameSecond] =
@@ -41,6 +42,8 @@ export default function Header() {
   const [isActive, setIsActive] = useState(false);
 
   const [isAuth, setIsAuth] = useState(false);
+
+  const { cart } = useCartStore();
 
   const router = useRouter();
 
@@ -130,9 +133,6 @@ export default function Header() {
                   >
                     <div className="relative">
                       <CiShoppingBasket className="h-5 w-5" />
-                      {/* <div className="py-0.5 px-1 absolute -top-1 -right-3.5 z-10 bg-greenT text-white rounded-full">
-                        5
-                      </div> */}
                     </div>
 
                     <p className="leading-none">Заказы</p>
@@ -146,9 +146,9 @@ export default function Header() {
                   >
                     <div className="relative">
                       <CiHeart className="h-5 w-5" />
-                      {/* <div className="py-0.5 px-1 absolute -top-1 -right-3.5 z-10 bg-greenT text-white rounded-full">
-                        5
-                      </div> */}
+                      <div className="px-1.5 w-auto h-4 flex justify-center items-center absolute -top-3.5 -right-3 z-10 bg-greenT text-white rounded-full">
+                        12
+                      </div>
                     </div>
 
                     <p className="leading-none">Избранные</p>
@@ -163,9 +163,9 @@ export default function Header() {
                     <div className="relative">
                       <CiShoppingCart className="h-5 w-5" />
 
-                      {/* <div className="py-0.5 px-1 absolute -top-1 -right-3.5 z-10 bg-greenT text-white rounded-full">
-                        6
-                      </div> */}
+                      <div className="px-1.5 w-auto h-4 flex justify-center items-center absolute -top-3.5 -right-3 z-10 bg-greenT text-white rounded-full">
+                        {cart.length}
+                      </div>
                     </div>
                     <p className="leading-none">Корзина</p>
                   </Link>

@@ -34,7 +34,6 @@ export default React.memo(
   },
 
   (prevProps, nextProps) => {
-    console.log(prevProps, nextProps);
     if (prevProps.isActiveCart !== nextProps.isActiveCart) {
       return false;
     } else {

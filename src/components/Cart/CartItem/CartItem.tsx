@@ -7,7 +7,7 @@ import { useCartStore } from "@/stores/useCartStore";
 import { useModalStore } from "@/stores/useModalStore";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaPlus, FaMinus } from "react-icons/fa6";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
@@ -22,10 +22,6 @@ export default React.memo(
 
     const { updateQuantity } = useCartStore();
     const { openModal, addModalProps } = useModalStore();
-
-    // const q = useMemo(() => {
-    //   updateQuantity(product.productId, quantity);
-    // }, [quantity]);
 
     useEffect(() => {
       updateQuantity(product.productId, quantity);

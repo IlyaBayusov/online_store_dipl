@@ -7,10 +7,10 @@ import * as RadioGroup from "@radix-ui/react-radio-group";
 import { decodeToken } from "@/utils";
 import { getProductsCart, postByProducts } from "@/api";
 import { useRouter } from "next/navigation";
+import { useCartStore } from "@/stores/useCartStore";
 
-export default function FormByCart() {
+export default React.memo(function FormByCart() {
   const [products, setProducts] = useState<IProductInCart[]>([]);
-
   const [formData, setFormData] = useState<IOrderDetails>({
     userId: 0,
     totalPrice: 100,
@@ -27,6 +27,8 @@ export default function FormByCart() {
     comment: "",
     paymentMethod: "CASH",
   });
+
+  const { cart } = useCartStore();
 
   const address = useInput("", { empty: true });
   const apartment = useInput("", { empty: true });
@@ -47,9 +49,11 @@ export default function FormByCart() {
 
   useEffect(() => {
     const getProductsInCart = async () => {
-      const data = await getProductsCart();
-      if (data) {
-        setProducts(data);
+      if (cart) {
+        const data = await getProductsCart();
+        if (data) {
+          setProducts(data);
+        }
       }
     };
 
@@ -59,10 +63,10 @@ export default function FormByCart() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    // if (!validateForm()) {
-    //   setErrorSubmit("Не все поля заполнены, либо заполнены неверно");
-    //   return;
-    // }
+    if (!validateForm()) {
+      setErrorSubmit("Не все поля заполнены, либо заполнены неверно");
+      return;
+    }
 
     setErrorSubmit("");
 
@@ -77,13 +81,12 @@ export default function FormByCart() {
         ...formData,
         userId: decoded.id,
       },
-      orderItemRequest: products,
+      orderItemRequest: cart ? cart : products,
     };
 
     console.log(newOrder);
 
     const response = await postByProducts(newOrder);
-    console.log("запрос, отправка заказа", response);
 
     if (response) {
       router.push(`/orders`);
@@ -358,4 +361,4 @@ export default function FormByCart() {
       </form>
     </>
   );
-}
+});
