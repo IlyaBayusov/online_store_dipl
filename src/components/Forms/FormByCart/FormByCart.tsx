@@ -28,6 +28,8 @@ export default React.memo(function FormByCart() {
     paymentMethod: "CASH",
   });
 
+  const [sum, setSum] = useState<number>(0);
+
   const { cart } = useCartStore();
 
   const address = useInput("", { empty: true });
@@ -59,6 +61,11 @@ export default React.memo(function FormByCart() {
 
     getProductsInCart();
   }, []);
+
+  useEffect(() => {
+    const totalSum = cart.reduce((acc, product) => acc + product.price, 0);
+    setSum(totalSum);
+  }, [cart]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -351,6 +358,19 @@ export default React.memo(function FormByCart() {
         {errorSubmit && (
           <span className="text-red-600 text-base">{errorSubmit}</span>
         )}
+
+        <div className="p-3 outline outline-1 outline-[#B3B3B3] rounded-md">
+          <h1 className="text-lg font-semibold mb-1">Ваш заказ</h1>
+
+          <div className="flex justify-between items-center">
+            <p>{`Товары(${cart.length})`}</p>
+            <p className="font-semibold">{`${sum} руб.`}</p>
+          </div>
+          <div className="mt-3 flex justify-between items-center">
+            <p className="font-semibold">Итого</p>
+            <p className="font-semibold">{`${sum} руб.`}</p>
+          </div>
+        </div>
 
         <button
           type="submit"

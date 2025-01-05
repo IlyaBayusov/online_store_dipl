@@ -1,4 +1,7 @@
-import React from "react";
+"use client";
+
+import { useCartStore } from "@/stores/useCartStore";
+import React, { useEffect } from "react";
 import { RiShoppingBasketLine, RiShoppingBasketFill } from "react-icons/ri";
 
 type Props = {
@@ -8,6 +11,12 @@ type Props = {
 
 export default React.memo(
   function CartBtn({ isActiveCart, handleClickCallBack }: Props) {
+    const { getProductsInCart } = useCartStore();
+
+    useEffect(() => {
+      getProductsInCart();
+    }, [isActiveCart]);
+
     return (
       <button
         className={

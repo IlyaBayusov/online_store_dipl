@@ -47,7 +47,7 @@ export const putProductCart = async (
       quantity: updateQuantity,
     });
 
-    return response;
+    return response.data;
   } catch (error) {
     console.error("Ошибка изменения кол-ва товара в корзине: ", error);
   }

@@ -26,6 +26,8 @@ export const sizeProducts = 2;
 export const nameTitlePopularProducts = "Новинки";
 export const nameTitleFavoritsProducts = "Избранные";
 
+export const messageCount = "Нет на складе";
+
 export const paramsPopularProducts = {
   page: mainPage,
   btnCart: true,

@@ -1,7 +1,7 @@
 "use client";
 
 import { postCount, putProductCart } from "@/api";
-import { modalCartDeleteProduct } from "@/constans";
+import { messageCount, modalCartDeleteProduct } from "@/constans";
 import { IProductInCart } from "@/interfaces";
 import { useCartStore } from "@/stores/useCartStore";
 import { useModalStore } from "@/stores/useModalStore";
@@ -16,60 +16,59 @@ type Props = { product: IProductInCart };
 export default React.memo(
   function CartItem({ product }: Props) {
     const [quantity, setQuantity] = useState(product.quantity);
+    const [count, setCount] = useState({} as { productCount: number });
+    const [titleCount, setTitleCount] = useState<string>("");
     const [isDisabledPlus, setIsDisabledPlus] = useState(false);
     const [isDisabledMinus, setIsDisabledMinus] = useState(false);
-    // const [isDisabledSubmitBtn, setIsDisabledSubmitBtn] = useState(false); //добавить store для кнопки формы
 
     const { updateQuantity } = useCartStore();
     const { openModal, addModalProps } = useModalStore();
 
     useEffect(() => {
-      updateQuantity(product.productId, quantity);
-    }, [quantity]);
-
-    useEffect(() => {
       const getCount = async () => {
-        const count = await postCount(product.productId);
-
-        if (!count?.productCount) {
-          //нет на складе
-          return;
+        const dataCount = await postCount(product.productId);
+        if (dataCount) {
+          setCount(dataCount);
         }
 
-        if (count?.productCount === 1) {
+        if (!quantity) {
           setIsDisabledPlus(true);
           setIsDisabledMinus(true);
-          setQuantity(1);
+
+          setQuantity(0);
+          setTitleCount(messageCount);
           return;
         }
-        if (count?.productCount === product.quantity) {
-          setIsDisabledPlus(true);
-          return;
-        }
+
+        setQuantity(product.quantity);
+        setTitleCount("");
       };
 
       getCount();
     }, []);
 
     useEffect(() => {
-      const updateQuantity = async () => {
-        await putProductCart(product, quantity);
-      };
+      updateQuantity(product.productId, quantity);
 
-      updateQuantity();
-    }, [quantity]);
-
-    useEffect(() => {
-      if (quantity <= 1) {
+      if (quantity <= 1 && !titleCount) {
         setIsDisabledMinus(true);
+        setIsDisabledPlus(false);
         setQuantity(1);
       }
 
       if (quantity >= 100) {
         setIsDisabledPlus(true);
+        setIsDisabledMinus(false);
         setQuantity(100);
       }
     }, [quantity]);
+
+    const putQuantity = async () => {
+      const data = await putProductCart(product, quantity);
+      if (data) {
+        return data.quantity;
+      }
+    };
 
     const handleClickMinus = () => {
       if (quantity > 1) {
@@ -80,20 +79,20 @@ export default React.memo(
     };
 
     const handleClickPlus = async () => {
-      const count = await postCount(product.productId);
+      const dataQuantity = await putQuantity();
 
-      setIsDisabledMinus(false);
-
-      if (!count?.productCount) {
-        //нет на складе
+      if (!dataQuantity) {
+        setIsDisabledPlus(true);
         return;
       }
 
-      if (quantity < 100 && quantity < count?.productCount) {
-        setQuantity(quantity + 1);
+      setIsDisabledMinus(false);
+
+      if (quantity < 100 && quantity < count.productCount) {
+        setQuantity((prev) => prev + 1);
       }
 
-      if (quantity + 1 === 100 || quantity + 1 === count?.productCount) {
+      if (quantity + 1 === 100 || quantity + 1 === count.productCount) {
         setIsDisabledPlus(true);
       }
     };
@@ -160,41 +159,45 @@ export default React.memo(
         <div className="flex justify-between items-center w-full border-t border-[#B3B3B3] pt-2">
           <p className="text-base font-bold">{`${product.price} руб.`}</p>
 
-          <div className="flex justify-start items-center">
-            <button
-              disabled={isDisabledMinus}
-              className={
-                "w-6 h-6 flex justify-center items-center border rounded-sm transition-all" +
-                (isDisabledMinus ? " border-[#B3B3B3]" : " border-greenT ")
-              }
-              onClick={handleClickMinus}
-            >
-              <FaMinus
+          {titleCount ? (
+            <p>{titleCount}</p>
+          ) : (
+            <div className="flex justify-start items-center">
+              <button
+                disabled={isDisabledMinus}
                 className={
-                  "w-4 h-4 transition-all" +
-                  (isDisabledMinus ? " text-[#B3B3B3]" : "  text-greenT")
+                  "w-6 h-6 flex justify-center items-center border rounded-sm transition-all" +
+                  (isDisabledMinus ? " border-[#B3B3B3]" : " border-greenT ")
                 }
-              />
-            </button>
-            <div className="flex justify-center items-center w-6 h-6 px-0.5">
-              <p className="text-base text-center">{quantity}</p>
+                onClick={handleClickMinus}
+              >
+                <FaMinus
+                  className={
+                    "w-4 h-4 transition-all" +
+                    (isDisabledMinus ? " text-[#B3B3B3]" : "  text-greenT")
+                  }
+                />
+              </button>
+              <div className="flex justify-center items-center w-6 h-6 px-0.5">
+                <p className="text-base text-center">{quantity}</p>
+              </div>
+              <button
+                disabled={isDisabledPlus}
+                className={
+                  "w-6 h-6 flex justify-center items-center border rounded-sm transition-all" +
+                  (isDisabledPlus ? " border-[#B3B3B3]" : " border-greenT ")
+                }
+                onClick={handleClickPlus}
+              >
+                <FaPlus
+                  className={
+                    "w-4 h-4 transition-all" +
+                    (isDisabledPlus ? " text-[#B3B3B3]" : "  text-greenT")
+                  }
+                />
+              </button>
             </div>
-            <button
-              disabled={isDisabledPlus}
-              className={
-                "w-6 h-6 flex justify-center items-center border rounded-sm transition-all" +
-                (isDisabledPlus ? " border-[#B3B3B3]" : " border-greenT ")
-              }
-              onClick={handleClickPlus}
-            >
-              <FaPlus
-                className={
-                  "w-4 h-4 transition-all" +
-                  (isDisabledPlus ? " text-[#B3B3B3]" : "  text-greenT")
-                }
-              />
-            </button>
-          </div>
+          )}
         </div>
       </div>
     );
