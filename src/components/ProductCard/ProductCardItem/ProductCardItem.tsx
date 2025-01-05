@@ -209,7 +209,7 @@ export default React.memo(
   (prevProps: Props, nextProps: Props) => {
     console.log(prevProps, nextProps);
     if (
-      prevProps.productCard !== nextProps.productCard &&
+      prevProps.productCard !== nextProps.productCard ||
       prevProps.params !== nextProps.params
     ) {
       return false;

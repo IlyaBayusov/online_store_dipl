@@ -28,6 +28,8 @@ export const nameTitleFavoritsProducts = "Избранные";
 
 export const messageCount = "Нет на складе";
 
+export const roleAdmin = "ADMIN";
+
 export const paramsPopularProducts = {
   page: mainPage,
   btnCart: true,

@@ -5,7 +5,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
 import { CiUser } from "react-icons/ci";
 
-export const ProfileDropDownMenu = () => {
+export const ProfileDDMNotAuth = () => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>

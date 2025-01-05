@@ -90,7 +90,9 @@ export default function AdminMenu() {
                 />
               </button>
 
-              <p className="text-greenT text-sm">{`"pagination.currentItems" из ${pagination.totalItems}`}</p>
+              <p className="text-greenT text-sm">{`${
+                (pagination.currentPage + 1) * products.length
+              } из ${pagination.totalItems}`}</p>
 
               <button
                 className="px-2 py-1 border rounded-md"

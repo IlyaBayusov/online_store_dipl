@@ -23,8 +23,9 @@ import { IoIosSearch, IoIosArrowForward } from "react-icons/io";
 import { HiMenuAlt2 } from "react-icons/hi";
 import { ICatalog } from "@/interfaces";
 import { decodeToken } from "@/utils";
-import { ProfileDropDownMenu } from "./DropDownMenu/ProfileDropDownMenu";
+import { ProfileDDMNotAuth } from "./DropDownMenu/ProfileDDMNotAuth";
 import { useCartStore } from "@/stores/useCartStore";
+import ProfileDDMAuth from "./DropDownMenu/ProfileDDMAuth";
 
 export default function Header() {
   const [selectedCategoryNameSecond, setSelectedCategoryNameSecond] =
@@ -62,10 +63,10 @@ export default function Header() {
 
   useEffect(() => {
     if (isActive) {
-      document.body.classList.add("overflow-y-hidden");
+      document.body.classList.add("fixed");
     } else {
       setIsTranslatedX(" -translate-x-[0]");
-      document.body.classList.remove("overflow-y-hidden");
+      document.body.classList.remove("fixed");
     }
   }, [isActive]);
 
@@ -123,7 +124,7 @@ export default function Header() {
             <nav>
               <ul className="flex items-center gap-3 text-[10px]">
                 <li className="">
-                  <ProfileDropDownMenu />
+                  {isAuth ? <ProfileDDMAuth /> : <ProfileDDMNotAuth />}
                 </li>
 
                 <li className="" onClick={() => setIsActive(false)}>
@@ -146,9 +147,6 @@ export default function Header() {
                   >
                     <div className="relative">
                       <CiHeart className="h-5 w-5" />
-                      <div className="px-1.5 w-auto h-4 flex justify-center items-center absolute -top-3.5 -right-3 z-10 bg-greenT text-white rounded-full">
-                        12
-                      </div>
                     </div>
 
                     <p className="leading-none">Избранные</p>
