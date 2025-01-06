@@ -136,3 +136,53 @@ export const postCount = async (productId: number) => {
     console.error("Ошибка получения количества товара: ", error);
   }
 };
+
+export const postEnableProductAdmin = async (
+  productId: number,
+  enable: boolean
+) => {
+  try {
+    const response = await api.post(`/v1/products/enable/${productId}`, {
+      enable: String(enable).toUpperCase(),
+    });
+
+    return response;
+  } catch (error) {
+    console.error("Ошибка вкл./выкл. товара: ", error);
+  }
+};
+
+export const getUsersAdmin = async () => {
+  try {
+    const response = await api.get(`/v1/users`);
+    const data = await response.data;
+
+    return data;
+  } catch (error) {
+    console.error("Ошибка получения пользователей в админке: ", error);
+  }
+};
+
+export const putUserRoleAdmin = async (userId: number, role: string) => {
+  try {
+    const response = await api.put(`/v1/users/role/${userId}`, {
+      role,
+    });
+    const data = await response.data;
+
+    return data;
+  } catch (error) {
+    console.error("Ошибка изменения роли пользователя: ", error);
+  }
+};
+
+export const getOrdersAdmin = async () => {
+  try {
+    const response = await api.get(`/v1/orders?size=10`);
+    const data = await response.data;
+
+    return data;
+  } catch (error) {
+    console.error("Ошибка получения товаров из корзины: ", error);
+  }
+};

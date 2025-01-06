@@ -12,6 +12,9 @@ export const favPage = "/favorites";
 export const ordersPage = "/orders";
 export const profilePage = "/profile";
 export const categoryListPages = "products";
+export const adminMenuPage = "/adminMenu";
+export const adminProfilesPage = "/adminMenu/profiles";
+export const adminOrdersPage = "/adminMenu/orders";
 
 export const modalsCatalog = "modalsCatalog";
 export const modalNav = "modalNav";
@@ -29,6 +32,7 @@ export const nameTitleFavoritsProducts = "Избранные";
 export const messageCount = "Нет на складе";
 
 export const roleAdmin = "ADMIN";
+export const roleUser = "USER";
 
 export const paramsPopularProducts = {
   page: mainPage,

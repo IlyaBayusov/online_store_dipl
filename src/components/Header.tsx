@@ -1,6 +1,9 @@
 "use client";
 
 import {
+  adminMenuPage,
+  adminOrdersPage,
+  adminProfilesPage,
   cartPage,
   categories,
   favPage,
@@ -52,7 +55,7 @@ export default function Header() {
   const router = useRouter();
 
   const path = usePathname();
-  const noHeaderPages = ["/adminMenu"];
+  const noHeaderPages = [adminMenuPage, adminOrdersPage, adminProfilesPage];
 
   const showHeader = !noHeaderPages.includes(path);
 

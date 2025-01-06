@@ -7,11 +7,17 @@ import {
   IoMdArrowBack,
   IoIosOptions,
 } from "react-icons/io";
-import { FaHouse } from "react-icons/fa6";
+import { FaHouse, FaUsers } from "react-icons/fa6";
 import { IoSearchSharp } from "react-icons/io5";
 import { FaPlus } from "react-icons/fa6";
 import { useModalStore } from "@/stores/useModalStore";
-import { mainPage, modalNewProductAdmin } from "@/constans";
+import {
+  adminMenuPage,
+  adminOrdersPage,
+  adminProfilesPage,
+  mainPage,
+  modalNewProductAdmin,
+} from "@/constans";
 
 export default function HeaderAdmin() {
   const { openModal } = useModalStore();
@@ -20,25 +26,32 @@ export default function HeaderAdmin() {
     <div className="w-full">
       <div className="flex flex-col items-center w-full">
         <div className="flex justify-between items-center px-3 bg-greenT py-1 w-full">
-          {/* <Link href="/" className="text-sm">
-            Перейти на главную
-          </Link> */}
           <div className="flex items-center gap-3">
             <Link href={mainPage}>
               <FaHouse className="h-4 w-4 text-white" />
             </Link>
 
-            {/* <button className="text-sm text-red-400 text-opacity-80 py-2">
+            <Link href={adminProfilesPage} className="py-2">
+              <FaUsers className="h-5 w-5 text-white" />
+            </Link>
+
+            <Link
+              href={adminOrdersPage}
+              className="text-sm text-white leading-none py-2"
+            >
               Заказы
-            </button> */}
-            <button className="text-sm text-white leading-none py-2">
+            </Link>
+            <Link
+              href={adminMenuPage}
+              className="text-sm text-white leading-none py-2"
+            >
               Товары
-            </button>
+            </Link>
           </div>
 
-          {/* <div>
+          <div>
             <IoIosNotifications className="h-5 w-5 text-white" />
-          </div> */}
+          </div>
         </div>
 
         <div className="flex justify-center items-center px-3 py-2 bg-white w-full border-b">
