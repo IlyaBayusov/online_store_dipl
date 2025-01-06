@@ -135,25 +135,24 @@ export default function Header() {
             <nav>
               <ul className="flex items-center gap-3 text-[10px]">
                 <li className="">
-                  {role === roleAdmin ? (
-                    isAuth ? (
+                  {isAuth ? (
+                    role === roleAdmin ? (
                       <ProfileDDMAuth />
                     ) : (
-                      <ProfileDDMNotAuth />
+                      <Link
+                        href={profilePage}
+                        className="relative flex gap-1 flex-col items-center"
+                      >
+                        <div className="relative">
+                          <CiUser className="h-5 w-5" />
+                        </div>
+
+                        <p className="leading-none">Профиль</p>
+                      </Link>
                     )
                   ) : (
-                    <Link
-                      href={profilePage}
-                      className="relative flex gap-1 flex-col items-center"
-                    >
-                      <div className="relative">
-                        <CiUser className="h-5 w-5" />
-                      </div>
-
-                      <p className="leading-none">Профиль</p>
-                    </Link>
+                    <ProfileDDMNotAuth />
                   )}
-                  {}
                 </li>
 
                 <li className="" onClick={() => setIsActive(false)}>

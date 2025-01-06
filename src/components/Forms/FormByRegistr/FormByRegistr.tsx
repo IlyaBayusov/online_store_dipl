@@ -3,7 +3,6 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { IUseInput, useInput } from "@/hooks/useInput";
 
@@ -12,7 +11,11 @@ interface IParams {
   maxLength: number;
 }
 
-export default function FormByRegistr() {
+type Props = {
+  setSubmit: () => void;
+};
+
+export default function FormByRegistr({ setSubmit }: Props) {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -38,7 +41,6 @@ export default function FormByRegistr() {
   const [errorMessagePassword, setErrorMessagePassword] = useState("");
 
   const [error, setError] = useState("");
-  const router = useRouter();
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -194,7 +196,7 @@ export default function FormByRegistr() {
       decodeToken(data.accessToken);
       console.log("Регистрация прошла успешно", data);
 
-      router.push("/");
+      setSubmit(); //callback для перенаправления на подтв. кода
     } catch (error) {
       const axiosError = error as AxiosError;
 
@@ -208,7 +210,7 @@ export default function FormByRegistr() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex flex-col justify-center items-center w-full max-w-72">
       <h1 className="text-lg font-bold uppercase text-center mt-3">
         Регистрация
       </h1>
@@ -218,7 +220,7 @@ export default function FormByRegistr() {
         onSubmit={handleSubmit}
         className="flex flex-col w-full items-center text-black"
       >
-        <div className="flex flex-col justify-center text-base items-center w-full max-w-64">
+        <div className="flex flex-col justify-center text-base items-center w-full">
           <input
             type="text"
             placeholder="Имя"
@@ -234,7 +236,7 @@ export default function FormByRegistr() {
           {errorsValidation(firstname, { minLength: 2, maxLength: 50 })}
         </div>
 
-        <div className="flex flex-col justify-center text-base items-center w-full max-w-64">
+        <div className="flex flex-col justify-center text-base items-center w-full">
           <input
             type="text"
             placeholder="Фамилия"
@@ -250,7 +252,7 @@ export default function FormByRegistr() {
           {errorsValidation(lastname, { minLength: 2, maxLength: 50 })}
         </div>
 
-        <div className="flex flex-col justify-center text-base items-center w-full max-w-64">
+        <div className="flex flex-col justify-center text-base items-center w-full">
           <input
             type="text"
             placeholder="Логин"
@@ -269,7 +271,7 @@ export default function FormByRegistr() {
           {errorsValidation(username, { minLength: 2, maxLength: 50 })}
         </div>
 
-        <div className="flex flex-col justify-center text-base items-center w-full max-w-64">
+        <div className="flex flex-col justify-center text-base items-center w-full">
           <input
             type="email"
             placeholder="Email"
@@ -293,7 +295,7 @@ export default function FormByRegistr() {
           {errorsValidation(email, { minLength: 4, maxLength: 50 })}
         </div>
 
-        <div className="flex flex-col justify-center text-base items-center w-full max-w-64">
+        <div className="flex flex-col justify-center text-base items-center w-full">
           <input
             type="password"
             placeholder="Пароль"
@@ -309,7 +311,7 @@ export default function FormByRegistr() {
           {errorsValidation(password, { minLength: 6, maxLength: 50 })}
         </div>
 
-        <div className="flex flex-col justify-center text-base items-center w-full max-w-64">
+        <div className="flex flex-col justify-center text-base items-center w-full">
           <input
             type="password"
             placeholder="Повторить пароль"
