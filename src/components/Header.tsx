@@ -6,9 +6,11 @@ import {
   favPage,
   mainPage,
   ordersPage,
+  profilePage,
+  roleAdmin,
 } from "@/constans";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import img_logo from "../../public/main/img_logo.png";
@@ -41,6 +43,7 @@ export default function Header() {
 
   const [isTranslatedX, setIsTranslatedX] = useState<string>("");
   const [isActive, setIsActive] = useState(false);
+  const [role, setRole] = useState<string>("");
 
   const [isAuth, setIsAuth] = useState(false);
 
@@ -52,6 +55,14 @@ export default function Header() {
   const noHeaderPages = ["/adminMenu"];
 
   const showHeader = !noHeaderPages.includes(path);
+
+  useLayoutEffect(() => {
+    const decodedToken = decodeToken();
+
+    if (decodedToken) {
+      setRole(decodedToken.roles);
+    }
+  });
 
   useEffect(() => {
     if (decodeToken()) {
@@ -124,7 +135,25 @@ export default function Header() {
             <nav>
               <ul className="flex items-center gap-3 text-[10px]">
                 <li className="">
-                  {isAuth ? <ProfileDDMAuth /> : <ProfileDDMNotAuth />}
+                  {role === roleAdmin ? (
+                    isAuth ? (
+                      <ProfileDDMAuth />
+                    ) : (
+                      <ProfileDDMNotAuth />
+                    )
+                  ) : (
+                    <Link
+                      href={profilePage}
+                      className="relative flex gap-1 flex-col items-center"
+                    >
+                      <div className="relative">
+                        <CiUser className="h-5 w-5" />
+                      </div>
+
+                      <p className="leading-none">Профиль</p>
+                    </Link>
+                  )}
+                  {}
                 </li>
 
                 <li className="" onClick={() => setIsActive(false)}>
@@ -161,9 +190,11 @@ export default function Header() {
                     <div className="relative">
                       <CiShoppingCart className="h-5 w-5" />
 
-                      <div className="px-1.5 w-auto h-4 flex justify-center items-center absolute -top-3.5 -right-3 z-10 bg-greenT text-white rounded-full">
-                        {cart.length}
-                      </div>
+                      {cart.length !== 0 && (
+                        <div className="px-1.5 w-auto h-4 flex justify-center items-center absolute -top-3.5 -right-3 z-10 bg-greenT text-white rounded-full">
+                          {cart.length}
+                        </div>
+                      )}
                     </div>
                     <p className="leading-none">Корзина</p>
                   </Link>
