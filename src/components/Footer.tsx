@@ -8,11 +8,16 @@ import i_instagram from "../../public/icons/i_instagram.svg";
 import i_telegram from "../../public/icons/i_telegram.svg";
 import i_viber from "../../public/icons/i_viber.svg";
 import Link from "next/link";
-import { mainPage } from "@/constans";
+import {
+  adminMenuPage,
+  adminOrdersPage,
+  adminProfilesPage,
+  mainPage,
+} from "@/constans";
 
 export default function Footer() {
   const path = usePathname();
-  const noFooterPages = ["/adminMenu"];
+  const noFooterPages = [adminMenuPage, adminOrdersPage, adminProfilesPage];
 
   const showFooter = !noFooterPages.includes(path);
 

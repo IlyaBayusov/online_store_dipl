@@ -1,10 +1,11 @@
 "use client";
 
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios from "axios";
 import Link from "next/link";
 import { IUseInput, useInput } from "@/hooks/useInput";
+import { IFormDataRegistr } from "@/interfaces";
+import { useFormRegistrStore } from "@/stores/useFormRegistrStore";
 
 interface IParams {
   minLength: number;
@@ -16,7 +17,7 @@ type Props = {
 };
 
 export default function FormByRegistr({ setSubmit }: Props) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<IFormDataRegistr>({
     firstName: "",
     lastName: "",
     username: "",
@@ -41,6 +42,8 @@ export default function FormByRegistr({ setSubmit }: Props) {
   const [errorMessagePassword, setErrorMessagePassword] = useState("");
 
   const [error, setError] = useState("");
+
+  const { setFormDataRegistr } = useFormRegistrStore();
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -135,17 +138,6 @@ export default function FormByRegistr({ setSubmit }: Props) {
     });
   };
 
-  const decodeToken = (accessToken: string) => {
-    try {
-      const decoded = jwtDecode(accessToken);
-      console.log("Decoded token:", decoded);
-      return decoded;
-    } catch (error) {
-      console.error("Invalid token:", error);
-      return null;
-    }
-  };
-
   const validateForm = () => {
     let isValid = true;
 
@@ -181,31 +173,20 @@ export default function FormByRegistr({ setSubmit }: Props) {
 
     setError("");
 
-    console.log(formData);
+    // console.log(formData);
 
     try {
-      const response: AxiosResponse = await axios.post(
-        "http://localhost:8080/api/auth/registration",
-        formData
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/verification?email=${email.value}`
       );
 
-      const data = await response.data;
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
-
-      decodeToken(data.accessToken);
-      console.log("Регистрация прошла успешно", data);
-
-      setSubmit(); //callback для перенаправления на подтв. кода
-    } catch (error) {
-      const axiosError = error as AxiosError;
-
-      console.error("Ошибка при регистрации", error);
-      if (axiosError.response && axiosError.response.status === 500) {
-        setError("Ошибка валидации");
-      } else {
-        setError("Ошибка при регистрации");
+      if (response.status === 200) {
+        setFormDataRegistr(formData);
+        setSubmit(); //callback для перенаправления на подтв. кода
       }
+    } catch (error) {
+      console.log("Ошибка отправки запроса на подтверждение кода", error);
+      return;
     }
   };
 

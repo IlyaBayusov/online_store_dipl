@@ -1,9 +1,12 @@
 "use client";
 
+import { mainPage } from "@/constans";
 import { IUseInput, useInput } from "@/hooks/useInput";
+import { useFormRegistrStore } from "@/stores/useFormRegistrStore";
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { FormEvent, useState } from "react";
 
 interface IParams {
   minLength: number;
@@ -16,14 +19,13 @@ type Props = {
 };
 
 export default function FormByRegistrCode({ isSubmit, setSubmit }: Props) {
-  const [formData, setFormData] = useState({
-    code: "",
-  });
-
-  const code = useInput("", { empty: true, minLength: 2, maxLength: 50 });
-
   const [error, setError] = useState("");
+
+  const code = useInput("", { empty: true, minLength: 2, maxLength: 16 });
+
   const router = useRouter();
+
+  const { formData } = useFormRegistrStore();
 
   const errorsValidation = (inputName: IUseInput, params: IParams) => {
     if (inputName.dirty && (inputName.empty || inputName.minLength)) {
@@ -47,14 +49,6 @@ export default function FormByRegistrCode({ isSubmit, setSubmit }: Props) {
     return <span className="text-red-600 text-xs mb-4"></span>;
   };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
   const validateForm = () => {
     let isValid = true;
 
@@ -65,12 +59,21 @@ export default function FormByRegistrCode({ isSubmit, setSubmit }: Props) {
     return isValid;
   };
 
-  console.warn("код ошибка", error);
+  const decodeToken = (accessToken: string) => {
+    try {
+      const decoded = jwtDecode(accessToken);
+      console.log("Decoded token:", decoded);
+      return decoded;
+    } catch (error) {
+      console.error("Invalid token:", error);
+      return null;
+    }
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!isSubmit) {
+    if (!isSubmit || !formData) {
       setSubmit();
       return;
     }
@@ -82,8 +85,31 @@ export default function FormByRegistrCode({ isSubmit, setSubmit }: Props) {
 
     setError("");
 
-    console.log(formData);
+    console.log({ email: formData.email, code: code.value });
 
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/verification",
+        { email: formData.email, code }
+      );
+      const data = await response.data;
+
+      switch (data.message) {
+        case "SUCCESS":
+          postRegistr();
+          break;
+        case "EXPIRED":
+          //истек
+          break;
+        case "INVALID":
+          return;
+      }
+    } catch (error) {
+      console.log("Ошибка отправки запроса с кодом", error);
+    }
+  };
+
+  const postRegistr = async () => {
     try {
       const response: AxiosResponse = await axios.post(
         "http://localhost:8080/api/auth/registration",
@@ -94,18 +120,19 @@ export default function FormByRegistrCode({ isSubmit, setSubmit }: Props) {
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
 
-      console.log("Почта подтверждена", data);
+      decodeToken(data.accessToken);
+      console.log("Регистрация прошла успешно", data);
 
-      router.push("/");
+      router.push(mainPage);
     } catch (error) {
       const axiosError = error as AxiosError;
-
-      console.error("Ошибка при подтверждении", error);
+      console.error("Ошибка при регистрации", error);
       if (axiosError.response && axiosError.response.status === 500) {
         setError("Ошибка валидации");
       } else {
-        setError("Ошибка при подтверждении");
+        setError("Ошибка при регистрации");
       }
+      setSubmit();
     }
   };
 
@@ -126,14 +153,11 @@ export default function FormByRegistrCode({ isSubmit, setSubmit }: Props) {
             placeholder="Код"
             name="code"
             value={code.value}
-            onChange={(e) => {
-              code.onChange(e);
-              handleChange(e);
-            }}
+            onChange={(e) => code.onChange(e)}
             onBlur={() => code.onBlur()}
             className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#EAEAEA]"
           />
-          {isSubmit && errorsValidation(code, { minLength: 2, maxLength: 50 })}
+          {errorsValidation(code, { minLength: 2, maxLength: 50 })}
         </div>
 
         <button

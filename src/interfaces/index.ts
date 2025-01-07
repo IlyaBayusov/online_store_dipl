@@ -170,3 +170,11 @@ export interface IGetUserAdmin {
   email: string;
   role: string;
 }
+
+export interface IFormDataRegistr {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  password: string;
+}
