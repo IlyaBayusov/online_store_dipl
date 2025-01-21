@@ -140,7 +140,7 @@ export default function FormByRegistrCode({ isSubmit, setSubmit }: Props) {
                 message: "Введите 6-значный код",
               },
             })}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#EAEAEA]"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-gray-300"
           />
           {
             <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-10 text-nowrap text-red-600 text-xs mt-1">

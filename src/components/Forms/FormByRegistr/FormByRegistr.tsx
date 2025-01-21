@@ -274,7 +274,7 @@ export default function FormByRegistr({ setSubmit }: Props) {
         </div>
 
         <button
-          className="bg-greenT text-white py-2 px-6 rounded-md mt-3"
+          className="bg-greenT text-white py-2 px-6 rounded-md"
           type="submit"
         >
           Зарегистрироваться

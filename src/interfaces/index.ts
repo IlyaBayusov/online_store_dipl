@@ -179,3 +179,8 @@ export interface IFormDataRegistr {
   password: string;
   secondPassword: string;
 }
+
+export interface IFormByAuth {
+  username: string;
+  password: string;
+}

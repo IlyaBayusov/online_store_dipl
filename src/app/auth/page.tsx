@@ -1,75 +1,25 @@
 "use client";
 
-import { IUseInput, useInput } from "@/hooks/useInput";
+import { IFormByAuth } from "@/interfaces";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { ChangeEvent, FormEvent, useState } from "react";
-
-interface IParams {
-  minLength: number;
-  maxLength: number;
-}
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export default function Auth() {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
-
-  const username = useInput("", { empty: true, minLength: 3, maxLength: 50 });
-  const password = useInput("", { empty: true, minLength: 6, maxLength: 50 });
+  const {
+    formState: { errors, isValid },
+    handleSubmit,
+    register,
+    watch,
+  } = useForm<IFormByAuth>({ mode: "onBlur" });
 
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  const errorsValidation = (inputName: IUseInput, params: IParams) => {
-    if (inputName.dirty && (inputName.empty || inputName.minLength)) {
-      return (
-        <span className="text-red-600 text-xs">
-          Мин.{" "}
-          {params.minLength !== 2
-            ? `${params.minLength} символа`
-            : `${params.minLength} символов`}
-        </span>
-      );
-    }
-    if (inputName.dirty && inputName.maxLength) {
-      return (
-        <span className="text-red-600 text-xs">
-          Макс. {params.maxLength} символов
-        </span>
-      );
-    }
-
-    return <span className="text-red-600 text-xs mb-4"></span>;
-  };
-
-  const validateForm = () => {
-    let isValid = true;
-
-    if (!username.inputValid) {
-      isValid = false;
-    }
-    if (!password.inputValid) {
-      isValid = false;
-    }
-
-    return isValid;
-  };
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
+  const onSubmit = async (formData: IFormByAuth) => {
+    if (!isValid) {
       setError("Некоторые поля заполнены неверно.");
       return;
     }
@@ -115,42 +65,58 @@ export default function Auth() {
       <h1 className="text-lg font-bold uppercase text-center mt-3">
         Авторизация
       </h1>
-      {error && <p className="text-red-700">{error}</p>}
+      {error && <p className="text-red-600 text-xs">{error}</p>}
 
       <form
-        onSubmit={handleSubmit}
-        className="flex flex-col w-full items-center mt-1 text-black"
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col items-center gap-5 w-full mt-1 text-black"
       >
-        <div className="flex flex-col justify-center text-base items-center w-full max-w-64">
+        <div className="relative flex flex-col justify-center text-base items-center w-full max-w-64">
           <input
             type="text"
             placeholder="Логин"
-            name="username"
-            value={formData.username}
-            onChange={(e) => {
-              username.onChange(e);
-              handleChange(e);
-            }}
-            onBlur={() => username.onBlur()}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#EAEAEA]"
+            {...register("username", {
+              required: "Поле обязательно для заполнения",
+              minLength: {
+                value: 3,
+                message: "Минимум 3 символа",
+              },
+              maxLength: {
+                value: 50,
+                message: "Максимум 50 символов",
+              },
+            })}
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-gray-300"
           />
-          {errorsValidation(username, { minLength: 2, maxLength: 50 })}
+          {
+            <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-10 text-nowrap text-red-600 text-xs mt-1">
+              {errors?.username && (errors?.username?.message || "Ошибка!")}
+            </span>
+          }
         </div>
 
-        <div className="flex flex-col justify-center text-base items-center w-full max-w-64">
+        <div className="relative flex flex-col justify-center text-base items-center w-full max-w-64">
           <input
             type="password"
             placeholder="Пароль"
-            name="password"
-            value={formData.password}
-            onChange={(e) => {
-              password.onChange(e);
-              handleChange(e);
-            }}
-            onBlur={() => password.onBlur()}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-[#EAEAEA]"
+            {...register("password", {
+              required: "Поле обязательно для заполнения",
+              minLength: {
+                value: 6,
+                message: "Минимум 6 символов",
+              },
+              maxLength: {
+                value: 50,
+                message: "Максимум 50 символов",
+              },
+            })}
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-gray-300"
           />
-          {errorsValidation(password, { minLength: 6, maxLength: 50 })}
+          {
+            <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-10 text-nowrap text-red-600 text-xs mt-1">
+              {errors?.password && (errors?.password?.message || "Ошибка!")}
+            </span>
+          }
         </div>
 
         <Link href={"/forgotPass"} className="text-greenT text-base">
@@ -158,7 +124,7 @@ export default function Auth() {
         </Link>
 
         <button
-          className="bg-greenT text-white py-2 px-6 rounded-md mt-3"
+          className="bg-greenT text-white py-2 px-6 rounded-md"
           type="submit"
         >
           Войти
