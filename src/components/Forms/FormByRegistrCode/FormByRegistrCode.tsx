@@ -136,6 +136,11 @@ export default function FormByRegistrCode({ isSubmit, setSubmit }: Props) {
     }
   };
 
+  const handlePrev = () => {
+    code.setValueExternally("");
+    setSubmit();
+  };
+
   return (
     <div className="flex flex-col justify-center items-center w-full max-w-72">
       <h1 className="text-lg font-bold uppercase text-center mt-3">
@@ -164,11 +169,11 @@ export default function FormByRegistrCode({ isSubmit, setSubmit }: Props) {
           className="bg-greenT text-white py-2 px-6 rounded-md mt-3"
           type="submit"
         >
-          Зарегистрироваться
+          Отправить
         </button>
       </form>
 
-      <button className="text-greenT text-base mt-1" onClick={setSubmit}>
+      <button className="text-greenT text-base mt-1" onClick={handlePrev}>
         Назад
       </button>
     </div>

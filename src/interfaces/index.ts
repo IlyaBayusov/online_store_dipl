@@ -177,4 +177,5 @@ export interface IFormDataRegistr {
   username: string;
   email: string;
   password: string;
+  secondPassword: string;
 }
