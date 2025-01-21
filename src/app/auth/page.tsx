@@ -12,7 +12,6 @@ export default function Auth() {
     formState: { errors, isValid },
     handleSubmit,
     register,
-    watch,
   } = useForm<IFormByAuth>({ mode: "onBlur" });
 
   const [error, setError] = useState("");

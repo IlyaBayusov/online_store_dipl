@@ -129,9 +129,7 @@ export default function FormByRegistr({ setSubmit }: Props) {
           />
           {
             <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-10 text-nowrap text-red-600 text-xs mt-1">
-              {errors?.firstName
-                ? errors?.firstName?.message || "Ошибка!"
-                : " "}
+              {errors?.firstName && (errors?.firstName?.message || "Ошибка!")}
             </span>
           }
         </div>

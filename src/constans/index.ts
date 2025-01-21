@@ -15,6 +15,7 @@ export const categoryListPages = "products";
 export const adminMenuPage = "/adminMenu";
 export const adminProfilesPage = "/adminMenu/profiles";
 export const adminOrdersPage = "/adminMenu/orders";
+export const authPage = "/auth";
 
 export const modalsCatalog = "modalsCatalog";
 export const modalNav = "modalNav";

@@ -1,49 +1,28 @@
 "use client";
 
-import { IUseInput, useInput } from "@/hooks/useInput";
 import { IOrderDetails, IOrderPost, IProductInCart } from "@/interfaces";
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { decodeToken } from "@/utils";
 import { getProductsCart, postByProducts } from "@/api";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/stores/useCartStore";
+import { useForm } from "react-hook-form";
+import { authPage } from "@/constans";
 
 export default React.memo(function FormByCart() {
   const [products, setProducts] = useState<IProductInCart[]>([]);
-  const [formData, setFormData] = useState<IOrderDetails>({
-    userId: 0,
-    totalPrice: 100,
-
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-
-    address: "",
-    apartment: "",
-    floor: "",
-    entrance: "",
-    comment: "",
-    paymentMethod: "CASH",
-  });
 
   const [sum, setSum] = useState<number>(0);
 
+  const {
+    formState: { errors, isValid },
+    handleSubmit,
+    register,
+    setValue,
+  } = useForm<IOrderDetails>({ mode: "onBlur" });
+
   const { cart } = useCartStore();
-
-  const address = useInput("", { empty: true });
-  const apartment = useInput("", { empty: true });
-  const floor = useInput("", { empty: true });
-  const entrance = useInput("", { empty: true });
-  const comment = useInput("", { empty: true });
-
-  const firstName = useInput("", { empty: true });
-  const lastName = useInput("", { empty: true });
-  const email = useInput("", { empty: true });
-  const phone = useInput("", { empty: true });
-
-  const [selectedPayment, setSelectedPayment] = useState<string>("CASH");
 
   const [errorSubmit, setErrorSubmit] = useState<string>("");
 
@@ -63,14 +42,15 @@ export default React.memo(function FormByCart() {
   }, []);
 
   useEffect(() => {
-    const totalSum = cart.reduce((acc, product) => acc + product.price, 0);
+    const totalSum = cart.reduce(
+      (acc, product) => acc + product.price * product.quantity,
+      0
+    );
     setSum(totalSum);
   }, [cart]);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
-    if (!validateForm()) {
+  const onSubmit = async (formData: IOrderDetails) => {
+    if (!isValid) {
       setErrorSubmit("Не все поля заполнены, либо заполнены неверно");
       return;
     }
@@ -80,6 +60,7 @@ export default React.memo(function FormByCart() {
     const decoded = decodeToken();
     if (!decoded || !decoded.id) {
       setErrorSubmit("Произошла ошибка, попробуйте позже");
+      router.push(authPage);
       return;
     }
 
@@ -100,164 +81,115 @@ export default React.memo(function FormByCart() {
     }
   };
 
-  const handleChange = (
-    e:
-      | ChangeEvent<HTMLInputElement>
-      | ChangeEvent<HTMLTextAreaElement>
-      | ChangeEvent<HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-
-    // const valid = validateForm();
-    // if (valid) updateIsValid(true);
-  };
-
-  // доделать
-  const errorsValidation = (inputName: IUseInput) => {
-    if (!inputName.inputValid) {
-      <span className="text-red-600 text-base">*</span>;
-    }
-
-    if (inputName.dirty && (inputName.empty || inputName.minLength)) {
-      return <span className="text-red-600 text-base">*</span>;
-    }
-    if (inputName.dirty && inputName.maxLength) {
-      return <span className="text-red-600 text-base">*</span>;
-    }
-  };
-
-  const validateForm = () => {
-    let isValid = true;
-
-    if (!address.inputValid) {
-      isValid = false;
-    }
-    if (!apartment.inputValid) {
-      isValid = false;
-    }
-    if (!floor.inputValid) {
-      isValid = false;
-    }
-    if (!entrance.inputValid) {
-      isValid = false;
-    }
-    if (!comment.inputValid) {
-      isValid = false;
-    }
-
-    if (!firstName.inputValid) {
-      isValid = false;
-    }
-    if (!lastName.inputValid) {
-      isValid = false;
-    }
-    if (!email.inputValid) {
-      isValid = false;
-    }
-    if (!phone.inputValid) {
-      isValid = false;
-    }
-
-    return isValid;
-  };
-
-  const handlePaymentChange = (value: string) => {
-    setSelectedPayment(value);
-  };
-
   return (
     <>
       <h1 className="text-lg font-semibold mt-3 mb-3">Адрес доставки</h1>
 
       <form
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         className="text-sm flex flex-col gap-3 mb-3"
       >
-        <input
-          type="text"
-          placeholder="Адрес"
-          name="address"
-          className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
-          value={formData.address}
-          onChange={(e) => {
-            address.onChange(e);
-            handleChange(e);
-          }}
-          onBlur={() => address.onBlur()}
-        />
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Адрес"
+            className="px-2 py-1 w-full rounded-md text-black border border-[#B3B3B3]"
+            {...register("address", {
+              required: true,
+              maxLength: 80,
+            })}
+          />
+          {
+            <span className="absolute top-1/2 right-2 -translate-y-[3px] z-10 leading-none text-red-600 text-xs">
+              {errors?.address && "*"}
+            </span>
+          }
+        </div>
 
         <div className="grid grid-cols-3 grid-rows-1 gap-2">
           <div className="flex flex-col">
-            <label htmlFor="description">Кв./Офис</label>
+            <label htmlFor="description">
+              Кв./Офис
+              {
+                <span className="text-red-600 text-xs">
+                  {errors?.apartment && "*"}
+                </span>
+              }
+            </label>
             <input
               type="text"
               placeholder="Кв./Офис"
-              name="apartment"
-              className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
-              value={formData.apartment}
-              onChange={(e) => {
-                apartment.onChange(e);
-                handleChange(e);
-              }}
-              onBlur={() => apartment.onBlur()}
+              className="px-2 py-1 w-full rounded-md text-black border border-[#B3B3B3]"
+              {...register("apartment", {
+                required: true,
+                maxLength: 80,
+              })}
             />
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="description">Этаж</label>
+            <label htmlFor="description">
+              Этаж
+              {
+                <span className="text-red-600 text-xs">
+                  {errors?.floor && "*"}
+                </span>
+              }
+            </label>
             <input
-              type="text"
-              placeholder="Квартира"
-              name="floor"
+              type="number"
+              placeholder="Этаж"
               className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
-              value={formData.floor}
-              onChange={(e) => {
-                floor.onChange(e);
-                handleChange(e);
-              }}
-              onBlur={() => floor.onBlur()}
+              {...register("floor", {
+                required: true,
+                max: 100,
+              })}
             />
           </div>
           <div className="flex flex-col">
-            <label htmlFor="description">Подъезд</label>
-            <input
-              type="text"
-              placeholder="Подъезд"
-              name="entrance"
-              className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
-              value={formData.entrance}
-              onChange={(e) => {
-                entrance.onChange(e);
-                handleChange(e);
-              }}
-              onBlur={() => entrance.onBlur()}
-            />
+            <label htmlFor="description">
+              Подъезд
+              {
+                <span className="text-red-600 text-xs">
+                  {errors?.entrance && "*"}
+                </span>
+              }
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Подъезд"
+                className="px-2 py-1 w-full rounded-md text-black border border-[#B3B3B3]"
+                {...register("entrance", {
+                  required: true,
+                  maxLength: 10,
+                })}
+              />
+            </div>
           </div>
         </div>
 
         <div className="flex flex-col">
           <div className="flex items-start gap-1">
-            <label htmlFor="description">Комментарий</label>
-            {errorsValidation(comment)}
+            <label htmlFor="description">
+              Комментарий
+              {
+                <span className="text-red-600 text-xs">
+                  {errors?.comment && "*"}
+                </span>
+              }
+            </label>
           </div>
           <textarea
             id="largeText"
-            name="comment"
             rows={5}
             cols={50}
             placeholder="Комментарий"
             className="p-2 rounded-md text-black border border-[#B3B3B3]"
-            value={formData.comment}
-            onChange={(e) => {
-              comment.onChange(e);
-              handleChange(e);
-            }}
-            onBlur={() => comment.onBlur()}
+            {...register("comment", {
+              required: false,
+              maxLength: 250,
+            })}
           ></textarea>
         </div>
 
@@ -265,57 +197,76 @@ export default React.memo(function FormByCart() {
           <h1 className="text-lg font-semibold mt-3 mb-3">Получатель</h1>
 
           <div className="grid grid-cols-1 grid-rows-4 gap-2">
-            <input
-              type="text"
-              placeholder="Имя"
-              name="firstName"
-              className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
-              value={formData.firstName}
-              onChange={(e) => {
-                firstName.onChange(e);
-                handleChange(e);
-              }}
-              onBlur={() => firstName.onBlur()}
-            />
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="Имя"
+                className="px-2 py-1 w-full rounded-md text-black border border-[#B3B3B3]"
+                {...register("firstName", {
+                  required: true,
+                  maxLength: 50,
+                })}
+              />
+              {
+                <span className="absolute top-1/2 right-2 -translate-y-[3px] z-10 leading-none text-red-600 text-xs">
+                  {errors?.firstName && "*"}
+                </span>
+              }
+            </div>
 
-            <input
-              type="text"
-              placeholder="Фамилия"
-              name="lastName"
-              className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
-              value={formData.lastName}
-              onChange={(e) => {
-                lastName.onChange(e);
-                handleChange(e);
-              }}
-              onBlur={() => lastName.onBlur()}
-            />
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="Фамилия"
+                className="px-2 py-1 w-full rounded-md text-black border border-[#B3B3B3]"
+                {...register("lastName", {
+                  required: true,
+                  maxLength: 50,
+                })}
+              />
+              {
+                <span className="absolute top-1/2 right-2 -translate-y-[3px] z-10 leading-none text-red-600 text-xs">
+                  {errors?.lastName && "*"}
+                </span>
+              }
+            </div>
 
-            <input
-              type="text"
-              placeholder="Email"
-              name="email"
-              className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
-              value={formData.email}
-              onChange={(e) => {
-                email.onChange(e);
-                handleChange(e);
-              }}
-              onBlur={() => email.onBlur()}
-            />
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="Email"
+                className="px-2 py-1 w-full rounded-md text-black border border-[#B3B3B3]"
+                {...register("email", {
+                  required: true,
+                  minLength: 4,
+                  maxLength: 50,
+                  pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                })}
+              />
+              {
+                <span className="absolute top-1/2 right-2 -translate-y-[3px] z-10 leading-none text-red-600 text-xs">
+                  {errors?.email && "*"}
+                </span>
+              }
+            </div>
 
-            <input
-              type="text"
-              placeholder="Телефон"
-              name="phone"
-              className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
-              value={formData.phone}
-              onChange={(e) => {
-                phone.onChange(e);
-                handleChange(e);
-              }}
-              onBlur={() => phone.onBlur()}
-            />
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="Телефон"
+                className="px-2 py-1 w-full rounded-md text-black border border-[#B3B3B3]"
+                {...register("phone", {
+                  required: true,
+                  maxLength: 14,
+                  pattern: /^(?:\+375|375)[0-9]{9}$|^8[0-9]{10}$/,
+                })}
+              />
+              {
+                <span className="absolute top-1/2 right-2 -translate-y-[3px] z-10 leading-none text-red-600 text-xs">
+                  {errors?.phone && "*"}
+                </span>
+              }
+            </div>
           </div>
         </div>
 
@@ -325,8 +276,11 @@ export default React.memo(function FormByCart() {
 
         <RadioGroup.Root
           className="flex flex-col gap-2.5"
-          value={selectedPayment}
-          onValueChange={handlePaymentChange}
+          defaultValue="CASH"
+          {...register("paymentMethod", { required: true })}
+          onValueChange={(value) => {
+            setValue("paymentMethod", value, { shouldValidate: true });
+          }}
         >
           <div className="flex items-center">
             <RadioGroup.Item
@@ -334,7 +288,10 @@ export default React.memo(function FormByCart() {
               id="cash"
               className="size-5 cursor-default rounded-full border border-[#B3B3B3] focus:border-greenT bg-white outline-none data-[state=checked]:border-greenT"
             >
-              <RadioGroup.Indicator className="relative flex size-full items-center justify-center after:block after:size-[10px] after:rounded-full after:bg-greenT" />
+              <RadioGroup.Indicator
+                aria-hidden="true"
+                className="relative flex size-full items-center justify-center after:block after:size-[10px] after:rounded-full after:bg-greenT"
+              />
             </RadioGroup.Item>
             <label className="pl-2 cursor-pointer text-sm" htmlFor="cash">
               Наличными
@@ -347,7 +304,10 @@ export default React.memo(function FormByCart() {
               id="card"
               className="size-5 cursor-default rounded-full border border-[#B3B3B3] focus:border-greenT bg-white outline-none data-[state=checked]:border-greenT"
             >
-              <RadioGroup.Indicator className="relative flex size-full items-center justify-center after:block after:size-[10px] after:rounded-full after:bg-greenT" />
+              <RadioGroup.Indicator
+                aria-hidden="true"
+                className="relative flex size-full items-center justify-center after:block after:size-[10px] after:rounded-full after:bg-greenT"
+              />
             </RadioGroup.Item>
             <label className="pl-2 cursor-pointer text-sm" htmlFor="card">
               Банковской картой

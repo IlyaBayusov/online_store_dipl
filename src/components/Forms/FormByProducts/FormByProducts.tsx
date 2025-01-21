@@ -4,14 +4,27 @@ import { IUseInput, useInput } from "@/hooks/useInput";
 import { IByProductsForm } from "@/interfaces";
 import { useFormStore } from "@/stores/useFormStore";
 import React, { ChangeEvent, useState } from "react";
+import { useForm } from "react-hook-form";
 
-interface IParams {
-  minLength: number;
-  maxLength: number;
+interface IFormByProducts {
+  customerName: string;
+  phone: string;
+  country: string;
+  city: string;
+  address: string;
+  postalCode: string;
+  paymentMethod: string;
 }
 
 export default function FormByProducts() {
   const { data, updateData, updateIsValid } = useFormStore();
+
+  const {
+    formState: { errors, isValid },
+    handleSubmit,
+    register,
+    watch,
+  } = useForm<IFormByProducts>({ mode: "onBlur" });
 
   const [formData, setFormData] = useState<IByProductsForm>(data);
 
@@ -102,16 +115,24 @@ export default function FormByProducts() {
         <input
           type="text"
           placeholder="Имя"
-          name="customerName"
-          value={formData.customerName}
-          onChange={(e) => {
-            customerName.onChange(e);
-            handleChange(e);
-          }}
-          onBlur={() => customerName.onBlur()}
+          {...register("customerName", {
+            required: "Поле обязательно для заполнения",
+            minLength: {
+              value: 2,
+              message: "Минимум 2 символа",
+            },
+            maxLength: {
+              value: 50,
+              message: "Максимум 50 символов",
+            },
+          })}
           className="py-2 px-6 rounded-md mt-1 w-full max-w-72 text-white bg-transparent border border-[#6F00FF]"
         />
-        {errorsValidation(customerName, { minLength: 2, maxLength: 50 })}
+        {
+          <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-10 text-nowrap text-red-600 text-xs mt-1">
+            {errors?.c ? errors?.firstName?.message || "Ошибка!" : " "}
+          </span>
+        }
       </div>
 
       <div className="flex flex-col justify-center text-base items-center w-full max-w-64">

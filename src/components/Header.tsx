@@ -194,7 +194,9 @@ export default function Header() {
 
                       {cart.length !== 0 && (
                         <div className="px-1.5 w-auto h-4 flex justify-center items-center absolute -top-3.5 -right-3 z-10 bg-greenT text-white rounded-full">
-                          {cart.length}
+                          <span className="text-center leading-none">
+                            {cart.length}
+                          </span>
                         </div>
                       )}
                     </div>
