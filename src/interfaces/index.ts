@@ -75,6 +75,11 @@ export interface IOrderPost {
 }
 
 export interface IOrdersGet {
+  orderItems: IOrderItems[];
+  pageInfo: IPagination;
+}
+
+export interface IProductsInOrder {
   orderId: number;
   productId: number;
   categoryName: string;
@@ -82,6 +87,11 @@ export interface IOrdersGet {
   image: string;
   price: number;
   quantity: number;
+}
+
+export interface IOrderItems {
+  orders: IProductsInOrder[];
+
   totalPrice: number;
   status: string;
   paymentMethod: string;
@@ -134,6 +144,7 @@ export interface IPagination {
   currentPage: number;
   totalItems: number;
   totalPages: number;
+  pageSize: number;
 }
 
 export interface IProductsCardParams {

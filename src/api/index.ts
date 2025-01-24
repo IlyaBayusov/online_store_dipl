@@ -63,7 +63,7 @@ export const getOrders = async () => {
     }
 
     const response = await api.get(`/v1/orders/${decodedToken.id}`);
-    const data: IOrdersGet[] = await response.data;
+    const data: IOrdersGet = await response.data;
 
     return data;
   } catch (error) {

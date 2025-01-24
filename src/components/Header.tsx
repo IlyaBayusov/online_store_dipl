@@ -62,13 +62,13 @@ export default function Header() {
   useLayoutEffect(() => {
     const decodedToken = decodeToken();
 
-    if (decodedToken) {
+    if (decodedToken?.id) {
       setRole(decodedToken.roles);
     }
   });
 
   useEffect(() => {
-    if (decodeToken()) {
+    if (decodeToken()?.id) {
       setIsAuth(true);
     } else {
       setIsAuth(false);
@@ -126,7 +126,7 @@ export default function Header() {
             (isActive ? " flex flex-col h-screen" : "")
           }
         >
-          <header className="flex justify-between items-end flex-wrap">
+          <header className=" flex justify-between items-end flex-wrap">
             <Link
               href={mainPage}
               className="max-w-[110px] max-h-[42px]"

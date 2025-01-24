@@ -8,11 +8,11 @@ import React, { useEffect, useState } from "react";
 
 export default function Orders() {
   const [isLoading, setIsLoading] = useState(true);
-  const [orders, setOrders] = useState<IOrdersGet[]>([]);
+  const [orders, setOrders] = useState<IOrdersGet>({} as IOrdersGet);
 
   useEffect(() => {
     const getOrdersList = async () => {
-      const data: IOrdersGet[] | undefined = await getOrders();
+      const data = await getOrders();
       if (data) {
         setOrders(data);
         setIsLoading(false);

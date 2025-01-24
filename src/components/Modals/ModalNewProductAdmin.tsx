@@ -18,7 +18,7 @@ export default function ModalNewProductAdmin() {
       onClick={() => closeModal(modalNewProductAdmin)}
     >
       <div
-        className="absolute top-0 left-0 z-10 w-full h-full flex flex-col bg-white p-3"
+        className="absolute top-0 left-0 z-10 w-full h-full flex flex-col bg-white p-3 overflow-auto hide-scrollbar-y"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center font-bold">

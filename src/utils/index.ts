@@ -27,7 +27,7 @@ export const decodeToken = (): IDecodedToken | null => {
 
     return decoded;
   } catch (error) {
-    // window.location.href = "http://localhost:3000/auth";
+    window.location.href = "http://localhost:3000/auth";
     console.log("Ошибка декодирования токена: ", error);
 
     return null;
@@ -87,6 +87,18 @@ export function getCategoryRu(category: string) {
   if (!categoryRu) return notFound();
 
   return categoryRu;
+}
+
+export function getDate(utcDate: string) {
+  const date = new Date(utcDate);
+
+  return {
+    day: date.getDate(),
+    month: date.getMonth() + 1,
+    year: date.getFullYear(),
+
+    time: date.getTime(),
+  };
 }
 
 export function mapToUnifiedProduct(
