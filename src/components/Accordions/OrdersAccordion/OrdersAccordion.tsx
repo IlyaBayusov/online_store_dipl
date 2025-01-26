@@ -27,22 +27,25 @@ export default function OrdersAccordion({ orders }: Props) {
         <Accordion.Item
           value={index.toString()}
           key={index}
-          className={"w-full p-2.5 rounded-md outline outline-1 outline-greenT"}
+          className={"w-full mb-2 p-2.5 rounded-md shadow-lg"}
         >
           <Accordion.Trigger className="w-full">
             <div className="w-full flex flex-col items-center gap-3 text-sm">
               <div className="w-full flex justify-between items-center font-bold">
-                <p>{`Заказ от ${getDate(order.buysIn).day}.${
-                  getDate(order.buysIn).month
-                }`}</p>
+                <p>{`Заказ от ${getDate(order.buysIn)}`}</p>
                 <p>{`${order.totalPrice} руб.`}</p>
               </div>
 
               <div className="w-full flex justify-between items-center">
                 <div className="flex items-center gap-3">
                   <p className="text-greenT">{`№${order.orders[0].orderId}`}</p>
-                  <div className="px-2 py-px rounded-[4px] bg-greenT text-white">
-                    {getStatusRu(order.status)}
+                  <div
+                    className={
+                      "px-2 py-px rounded-[4px] text-white " +
+                      getStatusRu(order.status).color
+                    }
+                  >
+                    {getStatusRu(order.status).value}
                   </div>
                 </div>
 
@@ -57,7 +60,7 @@ export default function OrdersAccordion({ orders }: Props) {
               <div key={product.productName} className="text-xs mt-2">
                 <p className="w-full">{product.productName}</p>
 
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-cente">
                   <p>{`${product.quantity} шт.`}</p>
                   <p>{`${product.price} руб.`}</p>
                 </div>

@@ -66,15 +66,15 @@ export function getCodeColor(color: string) {
 export function getStatusRu(status: string) {
   switch (status.toLowerCase()) {
     case "created":
-      return "Создан";
+      return { value: "Создан", color: "bg-yellow-500" };
     case "en_route":
-      return "В пути";
+      return { value: "В пути", color: "bg-orange-500" };
     case "completed":
-      return "Доставлен";
+      return { value: "Доставлен", color: "bg-greenT" };
     case "canceled":
-      return "Отменён";
+      return { value: "Отменён", color: "bg-red-600" };
     default:
-      return "В обработке";
+      return { value: "В обработке", color: "bg-gray-500" };
   }
 }
 
@@ -92,13 +92,9 @@ export function getCategoryRu(category: string) {
 export function getDate(utcDate: string) {
   const date = new Date(utcDate);
 
-  return {
-    day: date.getDate(),
-    month: date.getMonth() + 1,
-    year: date.getFullYear(),
-
-    time: date.getTime(),
-  };
+  return `${String(date.getDate()).padStart(2, "0")}.${String(
+    date.getMonth() + 1
+  ).padStart(2, "0")}.${date.getFullYear()}`;
 }
 
 export function mapToUnifiedProduct(

@@ -129,6 +129,11 @@ export interface IProductCharacteristics {
   [key: string]: string;
 }
 
+export interface IPostFormDataNewProduct {
+  product: IPostNewProduct;
+  files: File[];
+}
+
 export interface IPostNewProduct {
   categoryName: string;
   groupId: null;

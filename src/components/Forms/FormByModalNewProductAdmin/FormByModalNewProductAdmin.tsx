@@ -8,16 +8,24 @@ import {
   selectCategoryies,
 } from "@/constans";
 import { IUseInput, useInput } from "@/hooks/useInput";
-import { IPostNewProduct } from "@/interfaces";
+import { IPostFormDataNewProduct, IPostNewProduct } from "@/interfaces";
 import { useFormNewProductStore } from "@/stores/useFormNewProduct";
 import { useModalStore } from "@/stores/useModalStore";
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
+import { useForm } from "react-hook-form";
 
 export default function FormByModalNewProductAdmin() {
   const { data, updateData } = useFormNewProductStore();
   const { openModal, closeModal } = useModalStore();
 
   const [formData, setFormData] = useState<IPostNewProduct>(data);
+
+  const {
+    formState: { errors, isValid },
+    handleSubmit,
+    register,
+    setValue,
+  } = useForm<IPostFormDataNewProduct>({ mode: "onBlur" });
 
   const name = useInput("", { empty: true, minLength: 2, maxLength: 50 });
   const color = useInput("", { empty: true, minLength: 2, maxLength: 50 });
@@ -45,7 +53,7 @@ export default function FormByModalNewProductAdmin() {
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const onSubmit = async () => {
     e.preventDefault();
 
     if (!validateForm()) {
@@ -151,181 +159,206 @@ export default function FormByModalNewProductAdmin() {
 
   return (
     <div className="mt-3">
-      <form onSubmit={handleSubmit} className="text-base flex flex-col gap-3">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="text-sm flex flex-col gap-3"
+      >
         <div className="flex flex-col">
           <div className="flex items-start gap-1">
-            <label htmlFor="name">Название</label>
-            {errorsValidation(name)}
+            <label htmlFor="name" className="relative">
+              Название
+              {
+                <span className="absolute top-0.5 -right-2 z-10 leading-none text-red-600 text-xs">
+                  {errors?.product?.name && "*"}
+                </span>
+              }
+            </label>
           </div>
 
           <input
             type="text"
             placeholder="Название"
-            name="name"
-            className="px-2 py-1 rounded-md text-black border border-greenT"
-            value={formData.name}
-            onChange={(e) => {
-              name.onChange(e);
-              handleChange(e);
-            }}
-            onBlur={() => name.onBlur()}
+            className="px-2 py-1 rounded-md text-black border border-greenT leading-none"
+            {...register("product.name", {
+              required: true,
+              minLength: 6,
+              maxLength: 80,
+            })}
           />
         </div>
 
-        <div className="flex flex-col">
-          <div className="flex items-start gap-1">
-            <label htmlFor="description">Описание</label>
-            {errorsValidation(description)}
-          </div>
-          <textarea
-            id="largeText"
-            name="description"
-            rows={5}
-            cols={50}
-            placeholder="Описание"
-            className="p-2 rounded-md text-black border border-greenT"
-            value={formData.description}
-            onChange={(e) => {
-              description.onChange(e);
-              handleChange(e);
-            }}
-            onBlur={() => description.onBlur()}
-          ></textarea>
-        </div>
-
-        <div className="flex flex-col justify-start items-start gap-1">
+        <div className="w-full columns-2">
           <div className="flex flex-col">
             <div className="flex items-start gap-1">
-              <label htmlFor="price">Цена</label>
-              {errorsValidation(price)}
+              <label htmlFor="price" className="relative">
+                Цена
+                {
+                  <span className="absolute top-0.5 -right-2 z-10 leading-none text-red-600 text-xs">
+                    {errors?.product?.price && "*"}
+                  </span>
+                }
+              </label>
             </div>
             <input
               id="price"
               type="number"
-              name="price"
               placeholder="Цена"
-              maxLength={4}
-              className="px-2 py-1 rounded-md max-w-20 text-black border border-greenT"
-              value={formData.price}
-              onChange={(e) => {
-                price.onChange(e);
-                handleChange(e);
-              }}
-              onBlur={() => price.onBlur()}
+              maxLength={5}
+              className="px-2 py-1 rounded-md text-black border border-greenT leading-none"
+              {...register("product.price", {
+                required: true,
+                min: 1,
+                max: 20000,
+              })}
             />
           </div>
 
           <div className="flex flex-col">
             <div className="flex items-start gap-1">
-              <label htmlFor="color">Цвет</label>
-              {errorsValidation(color)}
+              <label htmlFor="quantity" className="relative">
+                Количество
+                {
+                  <span className="absolute top-0.5 -right-2 z-10 leading-none text-red-600 text-xs">
+                    {errors?.product?.quantities && "*"}
+                  </span>
+                }
+              </label>
             </div>
 
-            <div className="flex items-center gap-1">
-              <select
-                id="color"
-                className="rounded-md text-black px-2 py-[3px] text-base max-h-10 overflow-auto border border-greenT"
-                name="color"
-                value={formData.color}
-                onChange={(e) => {
-                  color.onChange(e);
-                  handleChange(e);
-                }}
-                onBlur={() => color.onBlur()}
-              >
-                <option value="">Выбрать</option>
-
-                {colors.map((item) => (
-                  <option key={item.value} value={item.name}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-
-              <div
-                className="h-6 w-6 rounded-full border-2 border-white"
-                style={{
-                  backgroundColor: color.value,
-                }}
-              ></div>
-            </div>
-          </div>
-
-          <div className="flex flex-col">
-            <div className="flex items-start gap-1">
-              <label htmlFor="category">Категория</label>
-              {errorsValidation(categoryName)}
-            </div>
-
-            <div className="flex items-center gap-3">
-              <select
-                id="category"
-                className="rounded-md text-black px-2 py-[3px] text-base border border-greenT"
-                name="categoryName"
-                value={formData.categoryName}
-                onChange={(e) => {
-                  categoryName.onChange(e);
-                  handleChange(e);
-                }}
-                onBlur={() => categoryName.onBlur()}
-              >
-                <option value="">Выбрать</option>
-
-                {selectCategoryies.map((category) => (
-                  <option key={category.value} value={category.value}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <input
+              id="quantity"
+              type="number"
+              placeholder="Количество"
+              maxLength={5}
+              className="px-2 py-1 rounded-md text-black border border-greenT leading-none"
+              {...register("product.quantities", {
+                required: true,
+                min: 1,
+                max: 10000,
+              })}
+            />
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <div className="flex justify-between items-start gap-3">
-            <div className="flex flex-col w-1/2">
-              <div className="flex items-start gap-1">
-                <label htmlFor="quantity">Количество</label>
-                {errorsValidation(quantity)}
-              </div>
+        <div className="flex flex-col">
+          <div className="flex items-start gap-1">
+            <label htmlFor="categoryName" className="relative">
+              Категория
+              {
+                <span className="absolute top-0.5 -right-2 z-10 leading-none text-red-600 text-xs">
+                  {errors?.product?.categoryName && "*"}
+                </span>
+              }
+            </label>
+          </div>
 
-              <input
-                id="quantity"
-                type="number"
-                name="quantities"
-                placeholder="Количество"
-                maxLength={4}
-                className="px-2 py-1 rounded-md text-black border border-greenT"
-                value={quantity.value}
-                onChange={(e) => {
-                  quantity.onChange(e);
-                }}
-                onBlur={() => quantity.onBlur()}
-              />
-            </div>
+          <div className="flex items-center gap-3">
+            <select
+              id="categoryName"
+              className="px-2 py-1 rounded-md text-black border border-greenT leading-none"
+              {...register("product.categoryName", {
+                required: true,
+              })}
+            >
+              <option value="">Выбрать</option>
+
+              {selectCategoryies.map((category) => (
+                <option key={category.value} value={category.value}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="flex flex-col">
+          <div className="flex items-start gap-1">
+            <label htmlFor="color" className="relative">
+              Цвет
+              {
+                <span className="absolute top-0.5 -right-2 z-10 leading-none text-red-600 text-xs">
+                  {errors?.product?.color && "*"}
+                </span>
+              }
+            </label>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <select
+              id="color"
+              className="px-2 py-1 rounded-md text-black border border-greenT leading-none max-h-10 overflow-auto"
+              {...register("product.color", {
+                required: true,
+              })}
+            >
+              <option value="">Выбрать</option>
+
+              {colors.map((item) => (
+                <option key={item.value} value={item.name}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+
+            <div
+              className="h-6 w-6 rounded-full border-2 border-white"
+              style={{
+                backgroundColor: color.value,
+              }}
+            ></div>
           </div>
         </div>
 
         <div>
           <div className="flex items-start gap-1">
-            <label htmlFor="files">Фото</label>
-            {/* {(!selectedFiles || selectedFiles.length === 0) && (
-              <span className="text-red-600 text-base">Выберите фото</span>
-            )} */}
+            <label htmlFor="files" className="relative">
+              Фото
+              {
+                <span className="absolute top-0.5 -right-2 z-10 leading-none text-red-600 text-xs">
+                  {errors?.product?.color && (errors?.files?.message || "*")}
+                </span>
+              }
+            </label>
           </div>
 
           <input
             id="files"
-            name="files"
             type="file"
             multiple
-            onChange={handleFileChange}
+            {...register("files", {
+              required: true,
+              validate: {
+                minFiles: (value) => value.length >= 1 || "Минимум 1 файл",
+                maxFiles: (value) => value.length <= 5 || "Максимум 5 файлов",
+              },
+            })}
           />
         </div>
 
-        {errorSubmit && (
-          <span className="text-red-600 text-base">{errorSubmit}</span>
-        )}
+        <div className="flex flex-col">
+          <div className="flex items-start gap-1">
+            <label htmlFor="description" className="relative">
+              Описание
+              {
+                <span className="absolute top-0.5 -right-2 z-10 leading-none text-red-600 text-xs">
+                  {errors?.product?.description && "*"}
+                </span>
+              }
+            </label>
+          </div>
+          <textarea
+            id="largeText"
+            rows={5}
+            cols={50}
+            placeholder="Описание"
+            className="p-2 rounded-md text-black border border-greenT"
+            {...register("product.description", {
+              required: true,
+              minLength: 200,
+              maxLength: 1500,
+            })}
+          ></textarea>
+        </div>
 
         <div className="flex justify-center items-center w-full">
           <button
