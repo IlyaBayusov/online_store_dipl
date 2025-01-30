@@ -35,6 +35,8 @@ export const messageCount = "Нет на складе";
 export const roleAdmin = "ADMIN";
 export const roleUser = "USER";
 
+export const amountImagesInAdmin = 5;
+
 export const paramsPopularProducts = {
   page: mainPage,
   btnCart: true,
