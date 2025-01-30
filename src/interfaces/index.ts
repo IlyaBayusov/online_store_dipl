@@ -131,7 +131,7 @@ export interface IProductCharacteristics {
 
 export interface IPostFormDataNewProduct {
   product: IPostNewProduct;
-  files: File[];
+  // files: File[];
 }
 
 export interface IPostNewProduct {

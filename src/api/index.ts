@@ -8,6 +8,7 @@ import {
   IProductInCart,
 } from "@/interfaces";
 import { decodeToken } from "@/utils";
+import axios from "axios";
 
 export const getProductsCart = async () => {
   try {
@@ -109,7 +110,18 @@ export const postProductAdmin = async (product: FormData) => {
 
     return response;
   } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+
+      if (status === 409) {
+        return { message: "Товар с таким названием уже существует" };
+      }
+
+      return { message: "Ошибка при добавлении товара" };
+    }
+
     console.error("Ошибка добавления товара в админке: ", error);
+    return { message: "Неизвестная ошибка" };
   }
 };
 

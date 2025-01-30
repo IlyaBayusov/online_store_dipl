@@ -15,6 +15,8 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaCamera } from "react-icons/fa";
+import { IoClose } from "react-icons/io5";
+import { BsPinAngleFill } from "react-icons/bs";
 
 interface ISelectedFiles {
   file: File;
@@ -24,8 +26,6 @@ interface ISelectedFiles {
 export default function FormByModalNewProductAdmin() {
   const { data, updateData } = useFormNewProductStore();
   const { openModal, closeModal } = useModalStore();
-
-  const [formData, setFormData] = useState<IPostNewProduct>(data);
 
   const {
     formState: { errors, isValid },
@@ -38,7 +38,7 @@ export default function FormByModalNewProductAdmin() {
   const [errorFiles, setErrorFiles] = useState<string>("");
   const [errorSubmit, setErrorSubmit] = useState<string>("");
 
-  const onSubmit = async () => {
+  const onSubmit = async (data: IPostFormDataNewProduct) => {
     if (!isValid) {
       setErrorSubmit("Не все поля заполнены, либо заполнены неверно");
       return;
@@ -49,26 +49,26 @@ export default function FormByModalNewProductAdmin() {
     const fData = new FormData();
 
     const newFormData = {
-      ...formData,
-      quantities: Number(formData.quantities),
+      ...data.product,
+      quantities: Number(data.product.quantities),
       characteristics: JSON.stringify({ age: "12", text: "text" }),
     };
-    setFormData(newFormData);
+
+    console.log(newFormData);
 
     fData.append("product", JSON.stringify(newFormData));
 
     selectedFiles.forEach((file) => {
-      fData.append("files", file);
+      fData.append("files", file.file);
     });
-
-    console.log(formData);
-    console.log(fData.getAll("files"));
 
     const response = await postProductAdmin(fData); //response для обработки ошибки "товар с таким именем уже существует" и прочее
 
-    console.log(response);
+    if (response?.message) {
+      setErrorSubmit(response.message);
+    }
 
-    if (response) {
+    if (!response?.message) {
       closeModal(modalNewProductAdmin);
     }
   };
@@ -93,6 +93,12 @@ export default function FormByModalNewProductAdmin() {
 
     const validFiles = newFiles
       .slice(0, 5)
+      .filter(
+        (file) =>
+          !selectedFiles.some(
+            (selectedFile) => selectedFile.file.name === file.name
+          )
+      )
       .filter((file) => file.type.startsWith("image/"))
       .map((file) => ({
         file,
@@ -101,7 +107,7 @@ export default function FormByModalNewProductAdmin() {
 
     if (validFiles.length < newFiles.length) {
       setErrorFiles(
-        "Некоторые файлы были отклонены, так как они не являются изображениями"
+        "Некоторые файлы были отклонены, так как они не являются изображениями и дублируются"
       );
     }
 
@@ -119,15 +125,25 @@ export default function FormByModalNewProductAdmin() {
     });
   };
 
-  // const { onChange, onBlur, name, ref } = register("files", {
-  //   required: true,
-  //   validate: {
-  //     minFiles: (value) => value.length >= 1 || "Минимум 1 файл",
-  //     maxFiles: (value) => value.length <= 5 || "Максимум 5 файлов",
-  //   },
-  // });
+  const handleSetMainImage = (
+    { file, preview }: ISelectedFiles,
+    indexToSetMain: number
+  ) => {
+    setErrorFiles("");
+    setSelectedFiles((prevFiles) => {
+      const updatedFiles = prevFiles.filter(
+        (_, index) => index !== indexToSetMain
+      );
+      return [{ file, preview }, ...updatedFiles];
+    });
+  };
 
-  console.log(selectedFiles);
+  const handleDeleteImage = (indexToRemove: number) => {
+    setErrorFiles("");
+    setSelectedFiles((prevFiles) =>
+      prevFiles.filter((_, index) => index !== indexToRemove)
+    );
+  };
 
   return (
     <div className="mt-3">
@@ -161,7 +177,16 @@ export default function FormByModalNewProductAdmin() {
 
         <div className="w-full">
           <div
-            className={`grid gap-4 ${
+            className={
+              "w-full flex justify-end mb-1" +
+              (selectedFiles.length != 0 ? "" : " hidden")
+            }
+          >
+            <p className="px-2 py-px bg-greenT text-white rounded-md text-xs">{`Загружено ${selectedFiles.length} из ${amountImagesInAdmin}`}</p>
+          </div>
+
+          <div
+            className={`relative grid gap-4 ${
               selectedFiles.length > 0
                 ? "grid-cols-[repeat(auto-fit,minmax(150px,1fr))]"
                 : "grid-cols-1"
@@ -180,6 +205,30 @@ export default function FormByModalNewProductAdmin() {
                   sizes="(max-width: 768px) 50vw"
                   className="rounded-md object-contain object-center mix-blend-multiply"
                 />
+
+                {index != 0 ? (
+                  <div
+                    className="absolute top-1 left-1 z-10 p-1 rounded-full bg-black bg-opacity-30"
+                    onClick={() => handleSetMainImage({ file, preview }, index)}
+                  >
+                    <BsPinAngleFill className="text-white w-[14px] h-[14px]" />
+                  </div>
+                ) : (
+                  <div className="absolute top-1 left-1 z-10 flex items-center gap-1 bg-greenT px-1 py-px rounded-md">
+                    <BsPinAngleFill className="text-white w-2 h-2" />
+                    <p className="text-xs text-white">Главная</p>
+                  </div>
+                )}
+
+                <div
+                  className="absolute top-1 right-1 z-10 p-1 rounded-full bg-black bg-opacity-30"
+                  onClick={() => handleDeleteImage(index)}
+                >
+                  <IoClose
+                    className="text-white w-[14px] h-[14px]"
+                    viewBox="75 75 350 350"
+                  />
+                </div>
               </div>
             ))}
 
@@ -187,7 +236,7 @@ export default function FormByModalNewProductAdmin() {
               htmlFor="files"
               className={
                 `bg-gray-300 rounded-md flex items-center justify-center px-1 cursor-pointer 
-          ${selectedFiles.length === 1 ? "col-span-1 w-full h-40" : "h-32"}` +
+          ${selectedFiles.length === 0 ? "col-span-1 w-full h-40" : "h-32"}` +
                 (selectedFiles.length >= amountImagesInAdmin ? " hidden" : "")
               }
             >
@@ -367,10 +416,14 @@ export default function FormByModalNewProductAdmin() {
           ></textarea>
         </div>
 
-        <div className="flex justify-center items-center w-full">
+        <div className="relative flex justify-center items-center w-full">
+          <span className="absolute -top-[7px] left-0 z-10 text-red-600 text-xs">
+            {errorSubmit}
+          </span>
+
           <button
             type="submit"
-            className="mt-3 px-3 py-2 rounded-md bg-greenT text-sm text-white"
+            className="mt-3 px-5 py-2 rounded-md bg-greenT text-sm text-white"
           >
             Создать
           </button>
