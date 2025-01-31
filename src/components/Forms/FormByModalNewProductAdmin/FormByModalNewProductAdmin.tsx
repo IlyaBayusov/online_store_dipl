@@ -8,7 +8,7 @@ import {
   modalNewProductAdmin,
   selectCategoryies,
 } from "@/constans";
-import { IPostFormDataNewProduct, IPostNewProduct } from "@/interfaces";
+import { IPostFormDataNewProduct } from "@/interfaces";
 import { useFormNewProductStore } from "@/stores/useFormNewProduct";
 import { useModalStore } from "@/stores/useModalStore";
 import Image from "next/image";
@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { FaCamera } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { BsPinAngleFill } from "react-icons/bs";
+import GetCompCategory from "@/components/Characteristics/GetCompCategory";
 
 interface ISelectedFiles {
   file: File;
@@ -31,12 +32,15 @@ export default function FormByModalNewProductAdmin() {
     formState: { errors, isValid },
     handleSubmit,
     register,
+    watch,
   } = useForm<IPostFormDataNewProduct>({ mode: "onBlur" });
 
   const [selectedFiles, setSelectedFiles] = useState<ISelectedFiles[]>([]);
 
   const [errorFiles, setErrorFiles] = useState<string>("");
   const [errorSubmit, setErrorSubmit] = useState<string>("");
+
+  const categoryName = watch("product.categoryName");
 
   const onSubmit = async (data: IPostFormDataNewProduct) => {
     if (!isValid) {
@@ -324,6 +328,31 @@ export default function FormByModalNewProductAdmin() {
 
         <div className="flex flex-col">
           <div className="flex items-start gap-1">
+            <label htmlFor="description" className="relative">
+              Описание
+              {
+                <span className="absolute top-0.5 -right-2 z-10 leading-none text-red-600 text-xs">
+                  {errors?.product?.description && "*"}
+                </span>
+              }
+            </label>
+          </div>
+          <textarea
+            id="largeText"
+            rows={5}
+            cols={50}
+            placeholder="Описание"
+            className="p-2 rounded-md text-black border border-greenT"
+            {...register("product.description", {
+              required: true,
+              minLength: 200,
+              maxLength: 1500,
+            })}
+          ></textarea>
+        </div>
+
+        <div className="flex flex-col">
+          <div className="flex items-start gap-1">
             <label htmlFor="categoryName" className="relative">
               Категория
               {
@@ -353,7 +382,9 @@ export default function FormByModalNewProductAdmin() {
           </div>
         </div>
 
-        <div className="flex flex-col">
+        {categoryName && <GetCompCategory category={categoryName} />}
+
+        {/* <div className="flex flex-col">
           <div className="flex items-start gap-1">
             <label htmlFor="color" className="relative">
               Цвет
@@ -382,39 +413,14 @@ export default function FormByModalNewProductAdmin() {
               ))}
             </select>
 
-            {/* <div
+            <div
               className="h-6 w-6 rounded-full border-2 border-white"
               style={{
                 backgroundColor: color.value,
               }}
-            ></div> */}
+            ></div> 
           </div>
-        </div>
-
-        <div className="flex flex-col">
-          <div className="flex items-start gap-1">
-            <label htmlFor="description" className="relative">
-              Описание
-              {
-                <span className="absolute top-0.5 -right-2 z-10 leading-none text-red-600 text-xs">
-                  {errors?.product?.description && "*"}
-                </span>
-              }
-            </label>
-          </div>
-          <textarea
-            id="largeText"
-            rows={5}
-            cols={50}
-            placeholder="Описание"
-            className="p-2 rounded-md text-black border border-greenT"
-            {...register("product.description", {
-              required: true,
-              minLength: 200,
-              maxLength: 1500,
-            })}
-          ></textarea>
-        </div>
+        </div> */}
 
         <div className="relative flex justify-center items-center w-full">
           <span className="absolute -top-[7px] left-0 z-10 text-red-600 text-xs">
