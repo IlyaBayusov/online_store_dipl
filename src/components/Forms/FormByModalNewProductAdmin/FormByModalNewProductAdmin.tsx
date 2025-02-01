@@ -3,13 +3,10 @@
 import { postProductAdmin } from "@/api";
 import {
   amountImagesInAdmin,
-  colors,
-  modalDeleteEditNewProduct,
   modalNewProductAdmin,
   selectCategoryies,
 } from "@/constans";
 import { IPostFormDataNewProduct } from "@/interfaces";
-import { useFormNewProductStore } from "@/stores/useFormNewProduct";
 import { useModalStore } from "@/stores/useModalStore";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -18,6 +15,7 @@ import { FaCamera } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { BsPinAngleFill } from "react-icons/bs";
 import GetCompCategory from "@/components/Characteristics/GetCompCategory";
+import { useCharacteristicsStore } from "@/stores/useCharacteristicsStore";
 
 interface ISelectedFiles {
   file: File;
@@ -25,8 +23,7 @@ interface ISelectedFiles {
 }
 
 export default function FormByModalNewProductAdmin() {
-  const { data, updateData } = useFormNewProductStore();
-  const { openModal, closeModal } = useModalStore();
+  const { closeModal } = useModalStore();
 
   const {
     formState: { errors, isValid },
@@ -34,6 +31,8 @@ export default function FormByModalNewProductAdmin() {
     register,
     watch,
   } = useForm<IPostFormDataNewProduct>({ mode: "onBlur" });
+
+  const { characteristics } = useCharacteristicsStore();
 
   const [selectedFiles, setSelectedFiles] = useState<ISelectedFiles[]>([]);
 
@@ -68,18 +67,14 @@ export default function FormByModalNewProductAdmin() {
 
     const response = await postProductAdmin(fData); //response для обработки ошибки "товар с таким именем уже существует" и прочее
 
-    if (response?.message) {
+    if (response) {
       setErrorSubmit(response.message);
     }
 
-    if (!response?.message) {
+    if (!response) {
       closeModal(modalNewProductAdmin);
     }
   };
-
-  // const handleOpenModalDeleteEdit = () => {
-  //   openModal(modalDeleteEditNewProduct);
-  // };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setErrorFiles("");
@@ -148,6 +143,8 @@ export default function FormByModalNewProductAdmin() {
       prevFiles.filter((_, index) => index !== indexToRemove)
     );
   };
+
+  console.log(characteristics);
 
   return (
     <div className="mt-3">

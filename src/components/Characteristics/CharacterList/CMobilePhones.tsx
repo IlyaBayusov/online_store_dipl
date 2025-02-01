@@ -1,6 +1,5 @@
 "use client";
 
-import SwitchBtn from "@/components/Switch/SwitchBtn";
 import {
   diagonalListMobile,
   memoryListMobile,
@@ -9,39 +8,62 @@ import {
   ramListMobile,
 } from "@/constans/characteristics";
 import { C_mobilePhones } from "@/interfaces/characteristics";
-import React from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useRef } from "react";
+import { Controller, useForm } from "react-hook-form";
 import * as Switch from "@radix-ui/react-switch";
+import { useCharacteristicsStore } from "@/stores/useCharacteristicsStore";
 
 export default function CMobilePhones() {
   const {
+    control,
     formState: { errors },
-    handleSubmit,
     register,
+    watch,
   } = useForm<C_mobilePhones>({ mode: "onBlur" });
 
-  const onSubmit = (data: C_mobilePhones) => {
-    console.log("Форма отправлена:", data);
-  };
+  const { updateData } = useCharacteristicsStore();
+  const prevValues = useRef<C_mobilePhones>({} as C_mobilePhones);
+
+  const currentValues = watch();
+  useEffect(() => {
+    if (JSON.stringify(currentValues) !== JSON.stringify(prevValues.current)) {
+      updateData(currentValues);
+      prevValues.current = currentValues;
+    }
+  }, [currentValues, updateData]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2">
       <label
         htmlFor="pushButtonPhone"
         className="flex justify-between items-center"
       >
         Кнопочный телефон
-        <Switch.Root
-          id="pushButtonPhone"
-          {...register("pushButtonPhone")}
-          className="relative h-[25px] w-[42px] cursor-default rounded-full outline-none bg-gray-300"
-        >
-          <Switch.Thumb className="block size-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[19px]" />
-        </Switch.Root>
+        <Controller
+          control={control}
+          name="pushButtonPhone"
+          render={({ field }) => (
+            <Switch.Root
+              checked={field.value || false}
+              onCheckedChange={field.onChange}
+              className="relative h-[25px] w-[42px] cursor-default rounded-full outline-none bg-gray-300"
+            >
+              <Switch.Thumb className="block size-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[19px]" />
+            </Switch.Root>
+          )}
+        />
       </label>
 
       <label htmlFor="producer" className="flex justify-between items-center">
-        Производитель
+        <div className="relative">
+          Производитель
+          {
+            <span className="absolute top-0.5 -right-2 z-10 leading-none text-red-600 text-xs">
+              {errors?.producer && "*"}
+            </span>
+          }
+        </div>
+
         <select
           id="producer"
           {...register("producer", { required: "Выберите производителя" })}
@@ -57,81 +79,86 @@ export default function CMobilePhones() {
         </select>
       </label>
 
-      {errors.producer && (
-        <p className="text-red-500 text-sm">{errors.producer.message}</p>
-      )}
-
       <fieldset>
-        <legend className="">Операционная система</legend>
+        <legend className="mb-1">Операционная система</legend>
 
         <div className="flex flex-wrap gap-x-2 gap-y-2">
           {OSListMobile.map((os) => (
-            <label key={os} className="flex items-center gap-2">
-              <input
-                type="radio"
-                {...register("OS")}
-                value={os}
-                className="hidden"
-              />
-
-              <button
-                className={
-                  "px-2.5 py-1 text-nowrap font-bold text-gray-500 outline outline-1 outline-gray-300 rounded-full"
-                }
-              >
-                {os}
-              </button>
-            </label>
+            <Controller
+              control={control}
+              name="OS"
+              key={os}
+              render={({ field }) => (
+                <button
+                  type="button"
+                  onClick={() => field.onChange(os)}
+                  className={
+                    "px-2.5 py-1 text-nowrap font-bold transition-all text-gray-500 outline outline-1 outline-gray-300 rounded-full" +
+                    (field.value === os
+                      ? " text-greenT outline outline-1 outline-greenT"
+                      : "")
+                  }
+                >
+                  {os}
+                </button>
+              )}
+            />
           ))}
         </div>
       </fieldset>
 
       <fieldset>
-        <legend className="">Диагональ экрана</legend>
+        <legend className="mb-1">Диагональ экрана</legend>
 
         <div className="flex flex-wrap gap-x-2 gap-y-2">
           {diagonalListMobile.map((diag) => (
-            <label key={diag} className="flex items-center gap-2">
-              <input
-                type="radio"
-                {...register("diagonal")}
-                value={diag}
-                className="hidden"
-              />
-
-              <button
-                className={
-                  "px-2.5 py-1 text-nowrap font-bold text-gray-500 outline outline-1 outline-gray-300 rounded-full"
-                }
-              >
-                {diag}
-              </button>
-            </label>
+            <Controller
+              control={control}
+              name="diagonal"
+              key={diag}
+              render={({ field }) => (
+                <button
+                  type="button"
+                  onClick={() => field.onChange(diag)}
+                  className={
+                    "px-2.5 py-1 text-nowrap font-bold transition-all text-gray-500 outline outline-1 outline-gray-300 rounded-full" +
+                    (field.value === diag
+                      ? " text-greenT outline outline-1 outline-greenT"
+                      : "")
+                  }
+                >
+                  {diag}
+                </button>
+              )}
+            />
           ))}
         </div>
       </fieldset>
 
       <fieldset>
-        <legend className="">Память</legend>
+        <legend className="mb-1">Память</legend>
 
         <div className="flex flex-wrap gap-x-2 gap-y-2">
           {memoryListMobile.map((itemMemory) => (
-            <label key={itemMemory} className="flex items-center gap-2">
-              <input
-                type="radio"
-                {...register("memory")}
-                value={itemMemory}
-                className="hidden"
-              />
-
-              <button
-                className={
-                  "px-2.5 py-1 text-nowrap font-bold text-gray-500 outline outline-1 outline-gray-300 rounded-full"
-                }
-              >
-                {itemMemory}
-              </button>
-            </label>
+            <Controller
+              control={control}
+              name="memory"
+              key={itemMemory}
+              render={({ field }) => (
+                <button
+                  type="button"
+                  onClick={() => field.onChange(itemMemory)}
+                  className={
+                    "px-2.5 py-1 text-nowrap font-bold transition-all text-gray-500 outline outline-1 outline-gray-300 rounded-full" +
+                    (field.value === itemMemory
+                      ? " text-greenT outline outline-1 outline-greenT"
+                      : "")
+                  }
+                >
+                  {itemMemory}
+                </button>
+              )}
+            />
           ))}
         </div>
       </fieldset>
@@ -160,26 +187,38 @@ export default function CMobilePhones() {
         className="flex justify-between items-center"
       >
         Поддержка 2-х симкарт
-        <Switch.Root
-          id="twoSimCards"
-          {...register("twoSimCards")}
-          className="relative h-[25px] w-[42px] cursor-default rounded-full outline-none bg-gray-300"
-        >
-          <Switch.Thumb className="block size-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[19px]" />
-        </Switch.Root>
+        <Controller
+          control={control}
+          name="twoSimCards"
+          render={({ field }) => (
+            <Switch.Root
+              checked={field.value || false}
+              onCheckedChange={field.onChange}
+              className="relative h-[25px] w-[42px] cursor-default rounded-full outline-none bg-gray-300"
+            >
+              <Switch.Thumb className="block size-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[19px]" />
+            </Switch.Root>
+          )}
+        />
       </label>
 
       <div className="w-full h-[0.2px] bg-gray-300"></div>
 
       <label htmlFor="nfc" className="flex justify-between items-center">
         Поддержка NFC
-        <Switch.Root
-          id="nfc"
-          {...register("nfc")}
-          className="relative h-[25px] w-[42px] cursor-default rounded-full outline-none bg-gray-300"
-        >
-          <Switch.Thumb className="block size-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[19px]" />
-        </Switch.Root>
+        <Controller
+          control={control}
+          name="nfc"
+          render={({ field }) => (
+            <Switch.Root
+              checked={field.value || false}
+              onCheckedChange={field.onChange}
+              className="relative h-[25px] w-[42px] cursor-default rounded-full outline-none bg-gray-300"
+            >
+              <Switch.Thumb className="block size-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[19px]" />
+            </Switch.Root>
+          )}
+        />
       </label>
 
       <div className="w-full h-[0.2px] bg-gray-300"></div>
@@ -189,26 +228,38 @@ export default function CMobilePhones() {
         className="flex justify-between items-center"
       >
         Сканер отпечатка пальца
-        <Switch.Root
-          id="fingerprintScanner"
-          {...register("fingerprintScanner")}
-          className="relative h-[25px] w-[42px] cursor-default rounded-full outline-none bg-gray-300"
-        >
-          <Switch.Thumb className="block size-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[19px]" />
-        </Switch.Root>
+        <Controller
+          control={control}
+          name="fingerprintScanner"
+          render={({ field }) => (
+            <Switch.Root
+              checked={field.value || false}
+              onCheckedChange={field.onChange}
+              className="relative h-[25px] w-[42px] cursor-default rounded-full outline-none bg-gray-300"
+            >
+              <Switch.Thumb className="block size-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[19px]" />
+            </Switch.Root>
+          )}
+        />
       </label>
 
       <div className="w-full h-[0.2px] bg-gray-300"></div>
 
       <label htmlFor="memoryСard" className="flex justify-between items-center">
         Слот для карты памяти
-        <Switch.Root
-          id="memoryСard"
-          {...register("memoryСard")}
-          className="relative h-[25px] w-[42px] cursor-default rounded-full outline-none bg-gray-300"
-        >
-          <Switch.Thumb className="block size-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[19px]" />
-        </Switch.Root>
+        <Controller
+          control={control}
+          name="memoryСard"
+          render={({ field }) => (
+            <Switch.Root
+              checked={field.value || false}
+              onCheckedChange={field.onChange}
+              className="relative h-[25px] w-[42px] cursor-default rounded-full outline-none bg-gray-300"
+            >
+              <Switch.Thumb className="block size-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[19px]" />
+            </Switch.Root>
+          )}
+        />
       </label>
 
       <div className="w-full h-[0.2px] bg-gray-300"></div>
@@ -218,14 +269,20 @@ export default function CMobilePhones() {
         className="flex justify-between items-center"
       >
         Функция беспроводной зарядки
-        <Switch.Root
-          id="wirelessСharging"
-          {...register("wirelessСharging")}
-          className="relative h-[25px] w-[42px] cursor-default rounded-full outline-none bg-gray-300"
-        >
-          <Switch.Thumb className="block size-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[19px]" />
-        </Switch.Root>
+        <Controller
+          control={control}
+          name="wirelessСharging"
+          render={({ field }) => (
+            <Switch.Root
+              checked={field.value || false}
+              onCheckedChange={field.onChange}
+              className="relative h-[25px] w-[42px] cursor-default rounded-full outline-none bg-gray-300"
+            >
+              <Switch.Thumb className="block size-[21px] translate-x-0.5 rounded-full bg-white transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[19px]" />
+            </Switch.Root>
+          )}
+        />
       </label>
-    </form>
+    </div>
   );
 }
