@@ -6,7 +6,6 @@ import {
   modalNewProductAdmin,
   selectCategoryies,
 } from "@/constans";
-import { IPostFormDataNewProduct } from "@/interfaces";
 import { useModalStore } from "@/stores/useModalStore";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -15,7 +14,9 @@ import { FaCamera } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { BsPinAngleFill } from "react-icons/bs";
 import GetCompCategory from "@/components/Characteristics/GetCompCategory";
+import { IPostFormDataNewProduct } from "@/interfaces";
 import { useCharacteristicsStore } from "@/stores/useCharacteristicsStore";
+import { C_mobilePhones } from "@/interfaces/characteristics";
 
 interface ISelectedFiles {
   file: File;
@@ -25,14 +26,16 @@ interface ISelectedFiles {
 export default function FormByModalNewProductAdmin() {
   const { closeModal } = useModalStore();
 
+  const { characteristics, isValidChar, setIsSubmitChar, updateData } =
+    useCharacteristicsStore();
+
   const {
     formState: { errors, isValid },
     handleSubmit,
     register,
     watch,
+    reset,
   } = useForm<IPostFormDataNewProduct>({ mode: "onBlur" });
-
-  const { characteristics } = useCharacteristicsStore();
 
   const [selectedFiles, setSelectedFiles] = useState<ISelectedFiles[]>([]);
 
@@ -54,7 +57,7 @@ export default function FormByModalNewProductAdmin() {
     const newFormData = {
       ...data.product,
       quantities: Number(data.product.quantities),
-      characteristics: JSON.stringify({ age: "12", text: "text" }),
+      characteristics: JSON.stringify(characteristics),
     };
 
     console.log(newFormData);
@@ -65,13 +68,16 @@ export default function FormByModalNewProductAdmin() {
       fData.append("files", file.file);
     });
 
-    const response = await postProductAdmin(fData); //response для обработки ошибки "товар с таким именем уже существует" и прочее
+    const response = await postProductAdmin(fData);
 
     if (response) {
       setErrorSubmit(response.message);
     }
 
-    if (!response) {
+    if (!response.message) {
+      reset();
+      setSelectedFiles([]);
+      updateData({} as C_mobilePhones);
       closeModal(modalNewProductAdmin);
     }
   };
@@ -144,7 +150,16 @@ export default function FormByModalNewProductAdmin() {
     );
   };
 
-  console.log(characteristics);
+  const handleClickSubmit = () => {
+    if (!isValidChar && categoryName) {
+      setIsSubmitChar(true);
+      return;
+    }
+
+    if (!isValid) {
+      return;
+    }
+  };
 
   return (
     <div className="mt-3">
@@ -426,6 +441,7 @@ export default function FormByModalNewProductAdmin() {
 
           <button
             type="submit"
+            onClick={handleClickSubmit}
             className="mt-3 px-5 py-2 rounded-md bg-greenT text-sm text-white"
           >
             Создать

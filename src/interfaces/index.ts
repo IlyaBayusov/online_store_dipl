@@ -1,4 +1,5 @@
 import { StaticImageData } from "next/image";
+import { C_mobilePhones } from "./characteristics";
 
 export interface ICatalog {
   id: number;

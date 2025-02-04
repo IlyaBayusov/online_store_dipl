@@ -14,15 +14,10 @@ export default function TableRowAdmin({ product }: Props) {
   const handleClickIsActive = async (productId: number) => {
     const data = await postEnableProductAdmin(productId, !isActive);
 
-    console.log(data);
-
     if (data) {
       setIsActive((prev) => !prev);
     }
   };
-  console.log(product.isActive);
-
-  console.log(`${product.id}, ${isActive}`);
 
   return (
     <tr className="border-b border-slate-300" key={product.name}>
@@ -40,7 +35,7 @@ export default function TableRowAdmin({ product }: Props) {
               alt={product.name}
             />
           </div>
-          <div className="pl-1 w-full flex flex-col items-start max-w-32 text-wrap">
+          <div className="pl-1 w-full flex-grow flex flex-col items-start text-wrap">
             <p>{product.name}</p>
           </div>
         </div>

@@ -7,30 +7,42 @@ import {
   producerListMobile,
   ramListMobile,
 } from "@/constans/characteristics";
-import { C_mobilePhones } from "@/interfaces/characteristics";
 import React, { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as Switch from "@radix-ui/react-switch";
+import { C_mobilePhones } from "@/interfaces/characteristics";
 import { useCharacteristicsStore } from "@/stores/useCharacteristicsStore";
 
 export default function CMobilePhones() {
   const {
     control,
-    formState: { errors },
+    formState: { errors, isValid },
     register,
     watch,
+    trigger,
   } = useForm<C_mobilePhones>({ mode: "onBlur" });
 
-  const { updateData } = useCharacteristicsStore();
+  const { isSubmitChar, updateData, setIsValidChar, setIsSubmitChar } =
+    useCharacteristicsStore();
   const prevValues = useRef<C_mobilePhones>({} as C_mobilePhones);
 
   const currentValues = watch();
   useEffect(() => {
     if (JSON.stringify(currentValues) !== JSON.stringify(prevValues.current)) {
       updateData(currentValues);
+      setIsValidChar(isValid);
       prevValues.current = currentValues;
     }
-  }, [currentValues, updateData]);
+  }, [currentValues, updateData, isValid]);
+
+  useEffect(() => {
+    if (isSubmitChar) {
+      console.log("submit");
+
+      trigger("producer");
+      setIsSubmitChar(false);
+    }
+  }, [isSubmitChar]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -66,7 +78,9 @@ export default function CMobilePhones() {
 
         <select
           id="producer"
-          {...register("producer", { required: "Выберите производителя" })}
+          {...register("producer", {
+            required: "Выберите производителя",
+          })}
           className="px-2 py-1 max-w-fit rounded-md text-black border border-greenT w-full"
         >
           <option value="">Выбрать</option>
