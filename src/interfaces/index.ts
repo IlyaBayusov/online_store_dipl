@@ -201,3 +201,9 @@ export interface IFormByAuth {
   username: string;
   password: string;
 }
+
+export interface ICategories {
+  id: number;
+  name: string;
+  urlName: string;
+}

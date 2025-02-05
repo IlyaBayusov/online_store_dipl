@@ -1,6 +1,6 @@
 "use client";
 
-import { postProductAdmin } from "@/api";
+import { getCategories, postProductAdmin } from "@/api";
 import {
   amountImagesInAdmin,
   modalNewProductAdmin,
@@ -8,13 +8,13 @@ import {
 } from "@/constans";
 import { useModalStore } from "@/stores/useModalStore";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaCamera } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { BsPinAngleFill } from "react-icons/bs";
 import GetCompCategory from "@/components/Characteristics/GetCompCategory";
-import { IPostFormDataNewProduct } from "@/interfaces";
+import { ICategories, IPostFormDataNewProduct } from "@/interfaces";
 import { useCharacteristicsStore } from "@/stores/useCharacteristicsStore";
 import { C_mobilePhones } from "@/interfaces/characteristics";
 
@@ -41,6 +41,20 @@ export default function FormByModalNewProductAdmin() {
 
   const [errorFiles, setErrorFiles] = useState<string>("");
   const [errorSubmit, setErrorSubmit] = useState<string>("");
+
+  const [categories, setCategories] = useState<ICategories[]>([]);
+
+  useLayoutEffect(() => {
+    const getCat = async () => {
+      const data: ICategories[] = await getCategories();
+
+      if (data) {
+        setCategories(data);
+      }
+    };
+
+    getCat();
+  }, []);
 
   const categoryName = watch("product.categoryName");
 
@@ -385,8 +399,8 @@ export default function FormByModalNewProductAdmin() {
             >
               <option value="">Выбрать</option>
 
-              {selectCategoryies.map((category) => (
-                <option key={category.value} value={category.value}>
+              {categories.map((category) => (
+                <option key={category.name} value={category.name}>
                   {category.name}
                 </option>
               ))}
