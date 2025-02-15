@@ -35,7 +35,7 @@ export default function TableRowAdmin({ product }: Props) {
               alt={product.name}
             />
           </div>
-          <div className="pl-1 w-full flex-grow flex flex-col items-start text-wrap">
+          <div className="pl-1 w-full flex-1 flex flex-col items-start text-wrap">
             <p>{product.name}</p>
           </div>
         </div>

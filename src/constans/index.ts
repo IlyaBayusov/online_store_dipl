@@ -5,6 +5,7 @@ import img_books from "../../public/main/category/img_books.png";
 import img_eat from "../../public/main/category/img_eat.png";
 import img_test_shoes1 from "../../public/testImg/img_test_shoes1.png";
 import { ICatalog, IProductsCardParams } from "@/interfaces";
+import CMobilePhones from "@/components/Characteristics/CharacterList/CMobilePhones";
 
 export const mainPage = "/";
 export const cartPage = "/cart";
@@ -25,7 +26,7 @@ export const modalSuccessOrder = "modalSuccessOrder";
 export const modalNewProductAdmin = "modalNewProductAdmin";
 export const modalDeleteEditNewProduct = "modalDeleteEditNewProduct";
 
-export const sizeProducts = 2;
+export const sizePaginationProductsInAdmin = 5;
 
 export const nameTitlePopularProducts = "Новинки";
 export const nameTitleFavoritsProducts = "Избранные";
@@ -36,6 +37,10 @@ export const roleAdmin = "ADMIN";
 export const roleUser = "USER";
 
 export const amountImagesInAdmin = 5;
+
+export const categoryComp: Record<string, React.ElementType> = {
+  mobile_phones: CMobilePhones,
+};
 
 export const paramsPopularProducts = {
   page: mainPage,

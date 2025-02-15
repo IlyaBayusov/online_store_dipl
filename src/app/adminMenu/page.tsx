@@ -11,8 +11,15 @@ import {
   MdOutlineKeyboardDoubleArrowLeft,
   MdOutlineKeyboardDoubleArrowRight,
 } from "react-icons/md";
+import { IoSearchSharp } from "react-icons/io5";
+import { FaPlus } from "react-icons/fa6";
+import { IoIosOptions } from "react-icons/io";
+import { useModalStore } from "@/stores/useModalStore";
+import { modalNewProductAdmin } from "@/constans";
 
 export default function AdminMenu() {
+  const { openModal } = useModalStore();
+
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState<IProductInfo[]>([]);
   const [pagination, setPagination] = useState<IPagination>({} as IPagination);
@@ -20,6 +27,8 @@ export default function AdminMenu() {
   useEffect(() => {
     getProducts();
   }, []);
+
+  console.log(products);
 
   async function getProducts(page: number = 0) {
     const data = await getProductAdmin(page);
@@ -56,6 +65,32 @@ export default function AdminMenu() {
 
   return (
     <div className="w-full">
+      <div className="w-full flex gap-3 items-center px-3 py-1 bg-white border-b">
+        <button className="py-1 px-2">
+          <IoIosOptions className="h-5 w-5 p-px text-green-600" />
+        </button>
+
+        <div className="flex-1 flex items-center gap-1">
+          <input
+            type="text"
+            placeholder="Найти"
+            className="flex-1 border border-gray-300 text-slate-400 text-sm py-1 px-2 rounded-md"
+          />
+          <button className="py-1 px-1">
+            <IoSearchSharp className="h-5 w-5 text-green-600" />
+          </button>
+        </div>
+      </div>
+
+      <div className="py-1 flex justify-center items-center gap-1 bg-white border-b">
+        <button
+          className="flex justify-center items-center h-8 w-8 bg-greenT rounded-full"
+          onClick={() => openModal(modalNewProductAdmin)}
+        >
+          <FaPlus className="h-5 w-5 p-px text-white" />
+        </button>
+      </div>
+
       {isLoading ? (
         <Loader />
       ) : (
@@ -86,9 +121,9 @@ export default function AdminMenu() {
               />
             </button>
 
-            <p className="text-greenT text-sm">{`${
-              (pagination.currentPage + 1) * products.length
-            } из ${pagination.totalItems}`}</p>
+            {/* <p className="text-greenT text-sm">{`${
+              products[products.length - 1].id || 0
+            } из ${pagination.totalItems}`}</p> */}
 
             <button
               className="px-2 py-1 border rounded-md"

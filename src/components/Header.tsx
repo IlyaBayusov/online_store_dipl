@@ -50,7 +50,7 @@ export default function Header() {
 
   const [isAuth, setIsAuth] = useState(false);
 
-  const { cart } = useCartStore();
+  const { cart, getProductsInCart } = useCartStore();
 
   const router = useRouter();
 

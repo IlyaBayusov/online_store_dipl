@@ -1,5 +1,5 @@
 import { api } from "@/axios";
-import { sizeProducts } from "@/constans";
+import { sizePaginationProductsInAdmin } from "@/constans";
 import {
   IGetFav,
   IOrderPost,
@@ -128,7 +128,7 @@ export const postProductAdmin = async (product: FormData) => {
 export const getProductAdmin = async (page: number) => {
   try {
     const response = await api.get(
-      `/v1/products/admin?size=${sizeProducts}&page=${page}`
+      `/v1/products/admin?size=${sizePaginationProductsInAdmin}&page=${page}`
     );
     const data = await response.data;
 

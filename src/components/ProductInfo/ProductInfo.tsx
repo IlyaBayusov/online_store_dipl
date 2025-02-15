@@ -39,7 +39,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
   const [nowCartItem, setNowCartItem] = useState<IProductInCart>();
   const [nowFavItem, setNowFavItem] = useState<IGetFav>();
 
-  const { addProduct, removeProduct } = useCartStore();
+  const { getProductsInCart } = useCartStore();
 
   const params = useParams();
 
@@ -82,7 +82,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
         setIsActiveCart(false);
         //удаление из корзины
         await api.delete(`/v1/cart/${cartItemId}`);
-        removeProduct(nowProduct);
+        getProductsInCart();
       } else {
         setIsActiveCart(true);
         //добавление в корзину
@@ -98,7 +98,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
           productId: nowProduct.id,
           quantity: 1,
         });
-        addProduct(nowProduct);
+        getProductsInCart();
       }
     } catch (error) {
       console.error("Ошибка запроса добавления/удаления в корзину: ", error);
@@ -230,7 +230,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
                 <p className="text-greenT mt-1">Все характеристики</p>
               </div>
 
-              <div className="flex flex-col mt-3">
+              {/* <div className="flex flex-col mt-3">
                 <p className="font-bold">Цвет: </p>
                 <p className="text-[#B9B9B9] mt-1">{selectedColor}</p>
               </div>
@@ -255,7 +255,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
                     ></div>
                   </Link>
                 ))}
-              </div>
+              </div> */}
             </div>
 
             <div className="flex justify-between items-center w-full bg-white px-3 py-6 gap-3 mt-3 shadow-md drop-shadow-md rounded-md">

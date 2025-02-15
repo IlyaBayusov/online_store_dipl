@@ -1,11 +1,7 @@
 "use client";
 
 import { getCategories, postProductAdmin } from "@/api";
-import {
-  amountImagesInAdmin,
-  modalNewProductAdmin,
-  selectCategoryies,
-} from "@/constans";
+import { amountImagesInAdmin, modalNewProductAdmin } from "@/constans";
 import { useModalStore } from "@/stores/useModalStore";
 import Image from "next/image";
 import React, { useLayoutEffect, useState } from "react";
@@ -25,7 +21,6 @@ interface ISelectedFiles {
 
 export default function FormByModalNewProductAdmin() {
   const { closeModal } = useModalStore();
-
   const { characteristics, isValidChar, setIsSubmitChar, updateData } =
     useCharacteristicsStore();
 
@@ -400,7 +395,7 @@ export default function FormByModalNewProductAdmin() {
               <option value="">Выбрать</option>
 
               {categories.map((category) => (
-                <option key={category.name} value={category.name}>
+                <option key={category.name} value={category.urlName}>
                   {category.name}
                 </option>
               ))}
