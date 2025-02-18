@@ -13,6 +13,7 @@ import GetCompCategory from "@/components/Characteristics/GetCompCategory";
 import { ICategories, IPostFormDataNewProduct } from "@/interfaces";
 import { useCharacteristicsStore } from "@/stores/useCharacteristicsStore";
 import { C_mobilePhones } from "@/interfaces/characteristics";
+import { usePaginationAdmin } from "@/stores/usePaginationAdmin";
 
 interface ISelectedFiles {
   file: File;
@@ -23,6 +24,7 @@ export default function FormByModalNewProductAdmin() {
   const { closeModal } = useModalStore();
   const { characteristics, isValidChar, setIsSubmitChar, updateData } =
     useCharacteristicsStore();
+  const getProducts = usePaginationAdmin((state) => state.getProducts)
 
   const {
     formState: { errors, isValid },
@@ -84,6 +86,7 @@ export default function FormByModalNewProductAdmin() {
     }
 
     if (!response.message) {
+      getProducts()
       reset();
       setSelectedFiles([]);
       updateData({} as C_mobilePhones);

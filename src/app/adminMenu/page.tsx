@@ -1,10 +1,8 @@
 "use client";
 
-import { getProductAdmin } from "@/api";
 import ProductsAdmin from "@/components/AdminPage/ProductsAdmin/ProductsAdmin";
 import Loader from "@/components/Loader/Loader";
-import { IPagination, IProductInfo } from "@/interfaces";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   MdOutlineKeyboardArrowLeft,
   MdOutlineKeyboardArrowRight,
@@ -16,13 +14,19 @@ import { FaPlus } from "react-icons/fa6";
 import { IoIosOptions } from "react-icons/io";
 import { useModalStore } from "@/stores/useModalStore";
 import { modalNewProductAdmin } from "@/constans";
+import { usePaginationAdmin } from "@/stores/usePaginationAdmin";
 
 export default function AdminMenu() {
   const { openModal } = useModalStore();
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [products, setProducts] = useState<IProductInfo[]>([]);
-  const [pagination, setPagination] = useState<IPagination>({} as IPagination);
+  const products = usePaginationAdmin((state) => state.products)
+  const pagination = usePaginationAdmin((state) => state.pagination)
+  const isLoading = usePaginationAdmin((state) => state.isLoading)
+  const getProducts = usePaginationAdmin((state) => state.getProducts)
+
+  // const [isLoading, setIsLoading] = useState(true);
+  // const [products, setProducts] = useState<IProductInfo[]>([]);
+  // const [pagination, setPagination] = useState<IPagination>({} as IPagination);
 
   useEffect(() => {
     getProducts();
@@ -30,22 +34,22 @@ export default function AdminMenu() {
 
   console.log(products);
 
-  async function getProducts(page: number = 0) {
-    const data = await getProductAdmin(page);
+  // async function getProducts(page: number = 0) {
+  //   const data = await getProductAdmin(page);
 
-    if (data) {
-      console.log(data);
-      setIsLoading(false);
+  //   if (data) {
+  //     console.log(data);
+  //     setIsLoading(false);
 
-      setProducts(data.products);
-      setPagination((prev) => ({
-        ...prev,
-        currentPage: data.currentPage,
-        totalPages: data.totalPages,
-        totalItems: data.totalItems,
-      }));
-    }
-  }
+  //     setProducts(data.products);
+  //     setPagination((prev) => ({
+  //       ...prev,
+  //       currentPage: data.currentPage,
+  //       totalPages: data.totalPages,
+  //       totalItems: data.totalItems,
+  //     }));
+  //   }
+  // }
 
   const handleDoubleLeftClick = () => {
     getProducts();
@@ -121,9 +125,9 @@ export default function AdminMenu() {
               />
             </button>
 
-            {/* <p className="text-greenT text-sm">{`${
+            <p className="text-greenT text-sm">{`${
               products[products.length - 1].id || 0
-            } из ${pagination.totalItems}`}</p> */}
+            } из ${pagination.totalItems}`}</p>
 
             <button
               className="px-2 py-1 border rounded-md"
