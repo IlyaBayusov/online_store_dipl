@@ -9,7 +9,7 @@ type Props = {
   products: IProductInfo[];
 };
 
-export default function ProductsAdmin({ products }: Props) {
+const ProductsAdmin = React.memo(function ProductsAdmin({ products }: Props) {
   return (
     <div className="flex flex-col w-full bg-white">
       {products ? (
@@ -38,4 +38,6 @@ export default function ProductsAdmin({ products }: Props) {
       )}
     </div>
   );
-}
+})
+
+export default ProductsAdmin;

@@ -2,7 +2,7 @@
 
 import ProductsAdmin from "@/components/AdminPage/ProductsAdmin/ProductsAdmin";
 import Loader from "@/components/Loader/Loader";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MdOutlineKeyboardArrowLeft,
   MdOutlineKeyboardArrowRight,
@@ -15,41 +15,30 @@ import { IoIosOptions } from "react-icons/io";
 import { useModalStore } from "@/stores/useModalStore";
 import { modalNewProductAdmin } from "@/constans";
 import { usePaginationAdmin } from "@/stores/usePaginationAdmin";
+import { getSearchAdmin } from "@/api";
 
 export default function AdminMenu() {
   const { openModal } = useModalStore();
 
-  const products = usePaginationAdmin((state) => state.products)
-  const pagination = usePaginationAdmin((state) => state.pagination)
-  const isLoading = usePaginationAdmin((state) => state.isLoading)
-  const getProducts = usePaginationAdmin((state) => state.getProducts)
+  const products = usePaginationAdmin((state) => state.products);
+  const setProducts = usePaginationAdmin((state) => state.setProducts);
+  const pagination = usePaginationAdmin((state) => state.pagination);
+  const setPagination = usePaginationAdmin((state) => state.setPagination);
+  const isLoading = usePaginationAdmin((state) => state.isLoading);
+  const setIsLoading = usePaginationAdmin((state) => state.setIsLoading);
+  const getProducts = usePaginationAdmin((state) => state.getProducts);
 
-  // const [isLoading, setIsLoading] = useState(true);
-  // const [products, setProducts] = useState<IProductInfo[]>([]);
-  // const [pagination, setPagination] = useState<IPagination>({} as IPagination);
+  const [inputValue, setInputValue] = useState<string>("");
 
   useEffect(() => {
     getProducts();
   }, []);
 
-  console.log(products);
-
-  // async function getProducts(page: number = 0) {
-  //   const data = await getProductAdmin(page);
-
-  //   if (data) {
-  //     console.log(data);
-  //     setIsLoading(false);
-
-  //     setProducts(data.products);
-  //     setPagination((prev) => ({
-  //       ...prev,
-  //       currentPage: data.currentPage,
-  //       totalPages: data.totalPages,
-  //       totalItems: data.totalItems,
-  //     }));
-  //   }
-  // }
+  useEffect(() => {
+    if (products.length && pagination) {
+      setIsLoading(false);
+    }
+  }, []);
 
   const handleDoubleLeftClick = () => {
     getProducts();
@@ -67,6 +56,24 @@ export default function AdminMenu() {
     getProducts(pagination.currentPage + 1);
   };
 
+  const handleInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleClickSearch = async () => {
+    const response = await getSearchAdmin(inputValue);
+
+    if (response.products) {
+      setProducts(response.products);
+      setPagination({
+        pageSize: response.pageSize,
+        currentPage: response.currentPage,
+        totalPages: response.totalPages,
+        totalItems: response.totalItems,
+      });
+    }
+  };
+
   return (
     <div className="w-full">
       <div className="w-full flex gap-3 items-center px-3 py-1 bg-white border-b">
@@ -76,11 +83,13 @@ export default function AdminMenu() {
 
         <div className="flex-1 flex items-center gap-1">
           <input
+            value={inputValue}
+            onChange={handleInputValue}
             type="text"
             placeholder="Найти"
             className="flex-1 border border-gray-300 text-slate-400 text-sm py-1 px-2 rounded-md"
           />
-          <button className="py-1 px-1">
+          <button className="py-1 px-1" onClick={handleClickSearch}>
             <IoSearchSharp className="h-5 w-5 text-green-600" />
           </button>
         </div>

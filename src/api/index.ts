@@ -209,3 +209,16 @@ export const getCategories = async () => {
     console.error("Ошибка получения категорий: ", error);
   }
 };
+
+export const getSearchAdmin = async (search: string) => {
+  try {
+    const response = await api.get(
+      `/v1/products/admin?search=${search}&size=${sizePaginationProductsInAdmin}`
+    );
+    const data = await response.data;
+
+    return data;
+  } catch (error) {
+    console.error("Ошибка получения поиска: ", error);
+  }
+};
