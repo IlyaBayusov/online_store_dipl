@@ -24,7 +24,7 @@ export default function FormByModalNewProductAdmin() {
   const { closeModal } = useModalStore();
   const { characteristics, isValidChar, setIsSubmitChar, updateData } =
     useCharacteristicsStore();
-  const getProducts = usePaginationAdmin((state) => state.getProducts)
+  const getProducts = usePaginationAdmin((state) => state.getProducts);
 
   const {
     formState: { errors, isValid },
@@ -46,7 +46,7 @@ export default function FormByModalNewProductAdmin() {
       const data: ICategories[] = await getCategories();
 
       if (data) {
-        setCategories(data);
+        setCategories(data.data);
       }
     };
 
@@ -86,7 +86,7 @@ export default function FormByModalNewProductAdmin() {
     }
 
     if (!response.message) {
-      getProducts()
+      getProducts();
       reset();
       setSelectedFiles([]);
       updateData({} as C_mobilePhones);

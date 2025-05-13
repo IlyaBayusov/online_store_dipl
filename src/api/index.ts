@@ -92,7 +92,7 @@ export const getFav = async () => {
     }
 
     const response = await api.get(`/v1/favorites/${decodedToken.id}`);
-    const data: IGetFav[] = await response.data;
+    const data = await response.data;
 
     return data;
   } catch (error) {

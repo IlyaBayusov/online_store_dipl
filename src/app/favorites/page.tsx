@@ -4,7 +4,7 @@ import { getFav } from "@/api";
 import Loader from "@/components/Loader/Loader";
 import ProductCardList from "@/components/ProductCard/ProductCardList/ProductCardList";
 import { paramsFavoritsProducts } from "@/constans";
-import { IFavsGet, IProductsCardBody } from "@/interfaces";
+import { IProductsCardBody } from "@/interfaces";
 import { mapToUnifiedProduct } from "@/utils";
 import React, { useEffect, useState } from "react";
 
@@ -14,12 +14,10 @@ export default function Favorites() {
 
   useEffect(() => {
     const getFavsList = async () => {
-      const data: IFavsGet[] | undefined = await getFav();
+      const data = await getFav();
 
       if (data) {
-        const products = data.map(mapToUnifiedProduct);
-
-        console.log("data", products);
+        const products = data.data; //const products = data.map(mapToUnifiedProduct);
 
         setFavs(products);
         setIsLoading(false);

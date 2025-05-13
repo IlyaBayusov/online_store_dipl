@@ -3,6 +3,7 @@
 import { getProductsCart } from "@/api";
 import CartList from "@/components/Cart/CartList/CartList";
 import FormByCart from "@/components/Forms/FormByCart/FormByCart";
+import Loader from "@/components/Loader/Loader";
 import { modalCartDeleteProduct } from "@/constans";
 import { IProductInCart } from "@/interfaces";
 import { useCartStore } from "@/stores/useCartStore";
@@ -11,6 +12,7 @@ import React, { useEffect, useState } from "react";
 
 export default React.memo(function Cart() {
   const [products, setProducts] = useState<IProductInCart[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const { modalsProps } = useModalStore();
   const { getProductsInCart } = useCartStore();
@@ -25,30 +27,24 @@ export default React.memo(function Cart() {
       getProducts();
     }
   }, [modalsProps]);
+  console.log(products);
 
   const getProducts = async () => {
     const data: IProductInCart[] | undefined = await getProductsCart();
 
     if (data) {
-      setProducts(data);
+      setProducts(data.data);
+      setIsLoading(false);
     }
   };
 
-  if (!products) return <h1>Loading...</h1>;
+  const showElems = () => {
+    if (isLoading) {
+      return <Loader />;
+    }
 
-  return (
-    <div className="flex flex-col justify-start">
-      {products.length === 0 ? (
-        <>
-          <h2 className="text-lg font-semibold text-start mt-3 mb-5">
-            Корзина
-          </h2>
-
-          <p className="text-sm text-center text-[#B3B3B3] font-semibold mb-3">
-            Корзина пуста
-          </p>
-        </>
-      ) : (
+    if (products.length !== 0 && products !== undefined) {
+      return (
         <>
           <h1 className="text-lg font-semibold mt-3 mb-3">
             Оформление товаров
@@ -58,7 +54,21 @@ export default React.memo(function Cart() {
 
           <FormByCart />
         </>
-      )}
+      );
+    }
+
+    return (
+      <p className="text-sm text-center text-[#B3B3B3] font-semibold mb-3">
+        Корзина пуста
+      </p>
+    );
+  };
+
+  return (
+    <div className="flex flex-col justify-start">
+      <h2 className="text-lg font-semibold text-start mt-3 mb-5">Корзина</h2>
+
+      {showElems()}
     </div>
   );
 });

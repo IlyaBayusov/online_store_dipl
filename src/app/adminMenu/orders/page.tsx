@@ -13,8 +13,9 @@ export default function OrdersAdmin() {
   useEffect(() => {
     const getOrdersList = async () => {
       const data = await getOrdersAdmin();
-      console.log(data);
-      if (data.orders) setOrders(data.orders);
+      if (data.orders) {
+        setOrders(data.orders);
+      }
     };
 
     getOrdersList();
