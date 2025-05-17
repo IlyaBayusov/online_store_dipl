@@ -9,29 +9,20 @@ import {
   favPage,
   mainPage,
   ordersPage,
-  profilePage,
-  roleAdmin,
 } from "@/constans";
 import Link from "next/link";
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import img_logo from "../../public/main/img_logo.png";
-import {
-  CiUser,
-  CiShoppingBasket,
-  CiHeart,
-  CiShoppingCart,
-} from "react-icons/ci";
+import { CiShoppingBasket, CiHeart, CiShoppingCart } from "react-icons/ci";
 
 import { IoIosSearch, IoIosArrowForward } from "react-icons/io";
 import { HiMenuAlt2 } from "react-icons/hi";
 import { ICatalog } from "@/interfaces";
-import { decodeToken } from "@/utils";
-import { ProfileDDMNotAuth } from "./DropDownMenu/ProfileDDMNotAuth";
 import { useCartStore } from "@/stores/useCartStore";
-import ProfileDDMAuth from "./DropDownMenu/ProfileDDMAuth";
 import { getProductsCart } from "@/api";
+import { ProfileDropDownMenu } from "./DropDownMenu/ProfileDDM";
 
 export default function Header() {
   const [selectedCategoryNameSecond, setSelectedCategoryNameSecond] =
@@ -47,9 +38,6 @@ export default function Header() {
 
   const [isTranslatedX, setIsTranslatedX] = useState<string>("");
   const [isActive, setIsActive] = useState(false);
-  const [role, setRole] = useState<string>("");
-
-  const [isAuth, setIsAuth] = useState(false);
 
   const { cart, getCount, updatedDataInCart } = useCartStore();
 
@@ -59,22 +47,6 @@ export default function Header() {
   const noHeaderPages = [adminMenuPage, adminOrdersPage, adminProfilesPage];
 
   const showHeader = !noHeaderPages.includes(path);
-
-  useLayoutEffect(() => {
-    const decodedToken = decodeToken();
-
-    if (decodedToken?.id) {
-      setRole(decodedToken.roles);
-    }
-  });
-
-  useEffect(() => {
-    if (decodeToken()?.id) {
-      setIsAuth(true);
-    } else {
-      setIsAuth(false);
-    }
-  });
 
   useEffect(() => {
     getProductsInCart();
@@ -161,24 +133,7 @@ export default function Header() {
             <nav>
               <ul className="flex items-center gap-3 text-[10px]">
                 <li className="">
-                  {isAuth ? (
-                    role === roleAdmin ? (
-                      <ProfileDDMAuth />
-                    ) : (
-                      <Link
-                        href={profilePage}
-                        className="relative flex gap-1 flex-col items-center"
-                      >
-                        <div className="relative">
-                          <CiUser className="h-5 w-5" />
-                        </div>
-
-                        <p className="leading-none">Профиль</p>
-                      </Link>
-                    )
-                  ) : (
-                    <ProfileDDMNotAuth />
-                  )}
+                  <ProfileDropDownMenu />
                 </li>
 
                 <li className="" onClick={() => setIsActive(false)}>

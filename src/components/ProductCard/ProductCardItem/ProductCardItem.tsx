@@ -14,7 +14,6 @@ import { api } from "@/axios";
 import Link from "next/link";
 import CartBtn from "@/components/Buttons/CartBtn/CartBtn";
 import { useCartStore } from "@/stores/useCartStore";
-import { useRouter } from "next/navigation";
 
 type Props = { productCard: IProductsCardBody; params: IProductsCardParams };
 
@@ -22,8 +21,6 @@ export default React.memo(
   function ProductCardItem({ productCard, params }: Props) {
     const [isActiveFav, setIsActiveFav] = useState(false);
     const [isActiveCart, setIsActiveCart] = useState(false);
-
-    const router = useRouter();
 
     const { deleteProductInCart, updatedDataInCart } = useCartStore();
 

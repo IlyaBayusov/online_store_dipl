@@ -5,7 +5,7 @@ import Loader from "@/components/Loader/Loader";
 import ProductCardList from "@/components/ProductCard/ProductCardList/ProductCardList";
 import { paramsFavoritsProducts } from "@/constans";
 import { IProductsCardBody } from "@/interfaces";
-import { mapToUnifiedProduct } from "@/utils";
+// import { mapToUnifiedProduct } from "@/utils";
 import React, { useEffect, useState } from "react";
 
 export default function Favorites() {

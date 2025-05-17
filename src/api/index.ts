@@ -1,6 +1,12 @@
 import { api } from "@/axios";
 import { sizePaginationProductsInAdmin } from "@/constans";
-import { IOrderPost, IPostFav, IProductInCart } from "@/interfaces";
+import {
+  IFormDataProfileUserInfo,
+  IOrderPost,
+  IPostFav,
+  IProductInCart,
+  IPutUserPassInProfile,
+} from "@/interfaces";
 import { decodeToken } from "@/utils";
 import axios from "axios";
 
@@ -214,5 +220,98 @@ export const getSearchAdmin = async (search: string) => {
     return data;
   } catch (error) {
     console.error("Ошибка получения поиска: ", error);
+  }
+};
+
+export const getUserInfoInProfile = async (userId: number) => {
+  try {
+    if (userId) {
+      const response = await api.get(`/v1/users/${userId}`);
+      const data = await response.data;
+
+      return data;
+    }
+
+    throw "Неверный id";
+  } catch (error) {
+    if (typeof error === "string") {
+      console.error(error);
+    } else if (error instanceof Error) {
+      console.error("Ошибка получения инфо о юзере по айди в профиле: ", error);
+    } else {
+      console.error("Неизвестная ошибка");
+    }
+  }
+};
+
+export const putUserInfoInProfile = async (data: IFormDataProfileUserInfo) => {
+  try {
+    if (!decodeToken()?.id) {
+      throw "Не найден id";
+    }
+
+    const response = await api.put(`/v1/users/${decodeToken()?.id}`, data);
+    const dataP = await response.data;
+
+    return dataP;
+  } catch (error) {
+    if (typeof error === "string") {
+      console.error(error);
+    } else if (error instanceof Error) {
+      console.error("Ошибка изменения инфо о юзере по айди в профиле: ", error);
+    } else {
+      console.error("Неизвестная ошибка");
+    }
+  }
+};
+
+export const putUserEmailInProfile = async (data: {
+  newEmail: string;
+  code: string;
+}) => {
+  try {
+    if (!decodeToken()?.id) {
+      throw "Не найден id";
+    }
+
+    const response = await api.put(
+      `/v1/users/email/${decodeToken()?.id}`,
+      data
+    );
+
+    return response;
+  } catch (error) {
+    if (typeof error === "string") {
+      console.error(error);
+    } else if (error instanceof Error) {
+      console.error("Ошибка изменения почты юзера по айди в профиле: ", error);
+    } else {
+      console.error("Неизвестная ошибка");
+    }
+  }
+};
+
+export const putUserPassInProfile = async (
+  newPassData: IPutUserPassInProfile
+) => {
+  try {
+    if (!decodeToken()?.id) {
+      throw "Не найден id";
+    }
+
+    const response = await api.put(`/v1/users/change/password`, newPassData);
+
+    return response;
+  } catch (error) {
+    if (typeof error === "string") {
+      console.error(error);
+    } else if (error instanceof Error) {
+      console.error(
+        "Ошибка изменения пароля юзера по почте в профиле: ",
+        error
+      );
+    } else {
+      console.error("Неизвестная ошибка");
+    }
   }
 };

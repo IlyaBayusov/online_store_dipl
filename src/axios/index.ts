@@ -104,3 +104,15 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export const getSendCodeOnEmail = async (email: string) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8080/api/v1/mail?email=${email}`
+    );
+
+    return response;
+  } catch (error) {
+    console.log("Ошибка отправки запроса на подтверждение кода", error);
+  }
+};

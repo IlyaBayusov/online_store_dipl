@@ -1,5 +1,5 @@
 import { StaticImageData } from "next/image";
-import { C_mobilePhones } from "./characteristics";
+// import { C_mobilePhones } from "./characteristics";
 
 export interface ICatalog {
   id: number;
@@ -206,4 +206,38 @@ export interface ICategories {
   id: number;
   name: string;
   urlName: string;
+}
+
+export interface IGetUserInfoInProfile {
+  id: number;
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+}
+
+export interface IFormDataProfileUserInfo {
+  firstName: string;
+  lastName: string;
+  username: string;
+}
+
+export interface IFormNewPassInProfile {
+  newPassword: string;
+  secondNewPassword: string;
+  code: string;
+}
+
+export interface IPutUserPassInProfile {
+  email: string;
+  newPassword: string;
+  code: string;
+}
+
+export interface IGetUserInfoInProfile {
+  id: number;
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
 }

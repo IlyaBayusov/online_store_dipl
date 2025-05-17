@@ -3,7 +3,7 @@
 import React from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import { IOrderItems } from "@/interfaces";
-import { getDate, getStatusRu } from "@/utils";
+import { getDate, getPaymentMethod, getStatusRu } from "@/utils";
 
 type Props = { orders: IOrderItems[] };
 
@@ -32,10 +32,8 @@ export default function OrdersAccordion({ orders }: Props) {
                 <div className="flex items-center gap-3">
                   <p className="text-greenT">{`№${order.orders[0].orderId}`}</p>
                   <div
-                    className={
-                      "px-2 py-px rounded-[4px] text-white " +
-                      getStatusRu(order.status).color
-                    }
+                    style={{ backgroundColor: getStatusRu(order.status).color }}
+                    className="px-2 py-px rounded-[4px] text-white"
                   >
                     {getStatusRu(order.status).value}
                   </div>
@@ -50,9 +48,12 @@ export default function OrdersAccordion({ orders }: Props) {
           <Accordion.Content className="">
             {order.orders.map((product) => (
               <div key={product.productName} className="text-xs mt-2">
-                <p className="w-full">{product.productName}</p>
+                <div className="flex justify-between items-center">
+                  <p>{product.productName}</p>
+                  <p>{getPaymentMethod(order.paymentMethod)}</p>
+                </div>
 
-                <div className="flex justify-between items-cente">
+                <div className="flex justify-between items-center">
                   <p>{`${product.quantity} шт.`}</p>
                   <p>{`${product.price} руб.`}</p>
                 </div>

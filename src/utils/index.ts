@@ -10,10 +10,11 @@ import { jwtDecode } from "jwt-decode";
 import { notFound } from "next/navigation";
 
 export const decodeToken = (): IDecodedToken | null => {
+  if (typeof window === "undefined") return null;
+
   const token = localStorage.getItem("accessToken");
 
   if (!token) {
-    // window.location.href = "http://localhost:3000/auth";
     return null;
   }
 
@@ -21,7 +22,6 @@ export const decodeToken = (): IDecodedToken | null => {
     const decoded: IDecodedToken = jwtDecode(token);
 
     if (!decoded) {
-      // window.location.href = "http://localhost:3000/auth";
       return null;
     }
 
@@ -66,15 +66,28 @@ export function getCodeColor(color: string) {
 export function getStatusRu(status: string) {
   switch (status.toLowerCase()) {
     case "created":
-      return { value: "Создан", color: "bg-yellow-500" };
+      return { value: "Создан", color: "#eab308" };
     case "en_route":
-      return { value: "В пути", color: "bg-orange-500" };
+      return { value: "В пути", color: "#f97316" };
     case "completed":
-      return { value: "Доставлен", color: "bg-greenT" };
+      return { value: "Доставлен", color: "#2cb708" };
     case "canceled":
-      return { value: "Отменён", color: "bg-red-600" };
+      return { value: "Отменён", color: "#dc2626" };
     default:
-      return { value: "В обработке", color: "bg-gray-500" };
+      return { value: "В обработке", color: "#6b7280" };
+  }
+}
+
+export function getPaymentMethod(method: string) {
+  switch (method.toLowerCase()) {
+    case "cash":
+      return "Наличными";
+
+    case "card":
+      return "Картой";
+
+    default:
+      break;
   }
 }
 
