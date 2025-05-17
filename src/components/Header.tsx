@@ -31,6 +31,7 @@ import { decodeToken } from "@/utils";
 import { ProfileDDMNotAuth } from "./DropDownMenu/ProfileDDMNotAuth";
 import { useCartStore } from "@/stores/useCartStore";
 import ProfileDDMAuth from "./DropDownMenu/ProfileDDMAuth";
+import { getProductsCart } from "@/api";
 
 export default function Header() {
   const [selectedCategoryNameSecond, setSelectedCategoryNameSecond] =
@@ -50,7 +51,7 @@ export default function Header() {
 
   const [isAuth, setIsAuth] = useState(false);
 
-  const { cart, getProductsInCart } = useCartStore();
+  const { cart, getCount, updatedDataInCart } = useCartStore();
 
   const router = useRouter();
 
@@ -76,6 +77,10 @@ export default function Header() {
   });
 
   useEffect(() => {
+    getProductsInCart();
+  }, []);
+
+  useEffect(() => {
     if (isActive) {
       document.body.classList.add("fixed");
     } else {
@@ -83,6 +88,24 @@ export default function Header() {
       document.body.classList.remove("fixed");
     }
   }, [isActive]);
+
+  const getProductsInCart = async () => {
+    const data = await getProductsCart();
+
+    if (data) {
+      const products = data.data;
+      const pagination = {
+        currentPage: data.currentPage,
+        pageSize: data.pageSize,
+        totalItems: data.totalItems,
+        totalPages: data.totalPages,
+      };
+
+      updatedDataInCart(products, pagination);
+
+      getCount(products.length);
+    }
+  };
 
   const handleClickFirst = (category: ICatalog) => {
     setSelectedCategoryNameSecond(category.name);

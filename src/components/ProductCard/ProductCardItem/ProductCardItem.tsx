@@ -2,8 +2,6 @@
 
 import {
   IDecodedToken,
-  IGetFav,
-  IProductInCart,
   IProductsCardBody,
   IProductsCardParams,
 } from "@/interfaces";
@@ -15,6 +13,8 @@ import { decodeToken, getStatusRu } from "@/utils";
 import { api } from "@/axios";
 import Link from "next/link";
 import CartBtn from "@/components/Buttons/CartBtn/CartBtn";
+import { useCartStore } from "@/stores/useCartStore";
+import { useRouter } from "next/navigation";
 
 type Props = { productCard: IProductsCardBody; params: IProductsCardParams };
 
@@ -23,108 +23,114 @@ export default React.memo(
     const [isActiveFav, setIsActiveFav] = useState(false);
     const [isActiveCart, setIsActiveCart] = useState(false);
 
+    const router = useRouter();
+
+    const { deleteProductInCart, updatedDataInCart } = useCartStore();
+
     useEffect(() => {
       setActiveBtnFav();
       setActiveBtnCart();
+
+      getProducts();
+
       console.log("монтирование");
     }, []);
 
-    async function setActiveBtnFav() {
-      try {
-        const data = await getFav();
+    const getProducts = async () => {
+      const data = await getProductsCart();
 
-        if (!data) return;
+      if (data) {
+        const products = data.data;
+        const pagination = {
+          currentPage: data.currentPage,
+          pageSize: data.pageSize,
+          totalItems: data.totalItems,
+          totalPages: data.totalPages,
+        };
 
-        for (const item of data.data) {
-          if (item.productId === productCard.productId) {
-            setIsActiveFav(true);
-            return item.favoriteId;
-          }
-        }
-
-        return;
-      } catch (error) {
-        console.error("Ошибка запроса получения избранных", error);
-        return;
+        updatedDataInCart(products, pagination);
       }
+    };
+
+    async function setActiveBtnFav() {
+      const data = await getFav();
+
+      if (!data) return;
+
+      for (const item of data.data) {
+        if (item.productId === productCard.productId) {
+          setIsActiveFav(true);
+          return item.favoriteId;
+        }
+      }
+
+      return;
     }
 
     const handleClickFav = async () => {
-      try {
-        const favoriteId = await setActiveBtnFav();
+      const favoriteId = await setActiveBtnFav();
 
-        const decodedToken: IDecodedToken = decodeToken();
+      const decodedToken: IDecodedToken = decodeToken();
 
-        if (isActiveFav && favoriteId) {
-          setIsActiveFav(false);
-          //удаление из избранных
-          await api.delete(`/v1/favorites/${favoriteId}`);
-        } else {
-          setIsActiveFav(true);
-          //добавление в избранные
-          await postFav({
-            userId: decodedToken.id,
-            productId: productCard.productId,
-          });
-        }
-      } catch (error) {
-        console.error(
-          "Ошибка запроса добавления/удаления в избранных: ",
-          error
-        );
+      if (isActiveFav && favoriteId) {
+        setIsActiveFav(false);
+        //удаление из избранных
+        await api.delete(`/v1/favorites/${favoriteId}`);
+
+        window.location.reload();
+      } else {
+        setIsActiveFav(true);
+        //добавление в избранные
+        await postFav({
+          userId: decodedToken.id,
+          productId: productCard.productId,
+        });
       }
     };
 
     async function setActiveBtnCart() {
-      try {
-        const data = await getProductsCart();
+      const data = await getProductsCart();
 
-        if (!data) return;
+      if (!data) return;
 
-        for (const item of data.data) {
-          if (item.productId === productCard.productId) {
-            setIsActiveCart(true);
-            return item.cartItemId;
-          }
+      for (const item of data.data) {
+        if (item.productId === productCard.productId) {
+          setIsActiveCart(true);
+          return item.cartItemId;
         }
-
-        return;
-      } catch (error) {
-        console.error("Ошибка запроса получения корзины", error);
-        return;
       }
+
+      return;
     }
 
     const handleClickCart = async () => {
-      try {
-        const cartItemId = await setActiveBtnCart();
+      const cartItemId = await setActiveBtnCart();
 
-        const decodedToken: IDecodedToken = decodeToken();
+      const decodedToken: IDecodedToken = decodeToken();
 
-        if (isActiveCart) {
-          setIsActiveCart(false);
-          //удаление из корзины
-          await api.delete(`/v1/cart/${cartItemId}`);
-          //удаление из стора
-        } else {
-          setIsActiveCart(true);
-          //добавление в корзину
+      if (isActiveCart) {
+        setIsActiveCart(false);
+        //удаление из корзины
+        await api.delete(`/v1/cart/${cartItemId}`);
+        //удаление из стора
+        deleteProductInCart(cartItemId);
+      } else {
+        setIsActiveCart(true);
+        //добавление в корзину
 
-          console.log({
-            userId: decodedToken.id,
-            productId: productCard.productId,
-            quantity: 1,
-          });
+        console.log({
+          userId: decodedToken.id,
+          productId: productCard.productId,
+          quantity: 1,
+        });
 
-          await api.post("/v1/cart", {
-            userId: decodedToken.id,
-            productId: productCard.productId,
-            quantity: 1,
-          });
-          //добавление в стор
-        }
-      } catch (error) {
-        console.error("Ошибка запроса добавления/удаления в корзину: ", error);
+        await api.post("/v1/cart", {
+          userId: decodedToken.id,
+          productId: productCard.productId,
+          quantity: 1,
+        });
+        //добавление в стор
+        getProducts();
       }
     };
 

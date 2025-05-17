@@ -5,21 +5,21 @@ import CartList from "@/components/Cart/CartList/CartList";
 import FormByCart from "@/components/Forms/FormByCart/FormByCart";
 import Loader from "@/components/Loader/Loader";
 import { modalCartDeleteProduct } from "@/constans";
-import { IProductInCart } from "@/interfaces";
+import { IPagination, IProductInCart } from "@/interfaces";
 import { useCartStore } from "@/stores/useCartStore";
 import { useModalStore } from "@/stores/useModalStore";
 import React, { useEffect, useState } from "react";
 
 export default React.memo(function Cart() {
   const [products, setProducts] = useState<IProductInCart[]>([]);
+  const [pagination, setPagination] = useState<IPagination>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const { modalsProps } = useModalStore();
-  const { getProductsInCart } = useCartStore();
+  const { updatedDataInCart, getCount } = useCartStore();
 
   useEffect(() => {
     getProducts();
-    getProductsInCart();
   }, []);
 
   useEffect(() => {
@@ -30,11 +30,24 @@ export default React.memo(function Cart() {
   console.log(products);
 
   const getProducts = async () => {
-    const data: IProductInCart[] | undefined = await getProductsCart();
+    const data = await getProductsCart();
 
     if (data) {
-      setProducts(data.data);
+      const products = data.data;
+      const pagination = {
+        currentPage: data.currentPage,
+        pageSize: data.pageSize,
+        totalItems: data.totalItems,
+        totalPages: data.totalPages,
+      };
+
+      setProducts(products);
+      setPagination(pagination);
       setIsLoading(false);
+
+      updatedDataInCart(products, pagination);
+
+      getCount(products.length);
     }
   };
 
