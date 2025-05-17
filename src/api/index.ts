@@ -20,7 +20,7 @@ export const getProductsCart = async () => {
     }
 
     const response = await api.get(`/v1/cart/${decodedToken.id}`);
-    const data: IProductInCart[] = await response.data;
+    const data = await response.data;
 
     return data;
   } catch (error) {
@@ -64,7 +64,7 @@ export const getOrders = async () => {
     }
 
     const response = await api.get(`/v1/orders/${decodedToken.id}`);
-    const data: IOrdersGet = await response.data;
+    const data = await response.data;
 
     return data;
   } catch (error) {

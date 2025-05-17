@@ -31,11 +31,11 @@ export default React.memo(
 
     async function setActiveBtnFav() {
       try {
-        const data: IGetFav[] | undefined = await getFav();
+        const data = await getFav();
 
         if (!data) return;
 
-        for (const item of data) {
+        for (const item of data.data) {
           if (item.productId === productCard.productId) {
             setIsActiveFav(true);
             return item.favoriteId;
@@ -77,11 +77,11 @@ export default React.memo(
 
     async function setActiveBtnCart() {
       try {
-        const data: IProductInCart[] | undefined = await getProductsCart();
+        const data = await getProductsCart();
 
         if (!data) return;
 
-        for (const item of data) {
+        for (const item of data.data) {
           if (item.productId === productCard.productId) {
             setIsActiveCart(true);
             return item.cartItemId;

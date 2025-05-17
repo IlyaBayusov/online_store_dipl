@@ -14,7 +14,7 @@ export default function Orders() {
     const getOrdersList = async () => {
       const data = await getOrders();
       if (data) {
-        setOrders(data);
+        setOrders(data.data);
         setIsLoading(false);
       }
     };
