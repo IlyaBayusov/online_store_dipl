@@ -1,12 +1,6 @@
 import { api } from "@/axios";
 import { sizePaginationProductsInAdmin } from "@/constans";
-import {
-  IGetFav,
-  IOrderPost,
-  IOrdersGet,
-  IPostFav,
-  IProductInCart,
-} from "@/interfaces";
+import { IOrderPost, IPostFav, IProductInCart } from "@/interfaces";
 import { decodeToken } from "@/utils";
 import axios from "axios";
 

@@ -2,20 +2,12 @@
 
 import React from "react";
 import * as Accordion from "@radix-ui/react-accordion";
-import { IOrdersGet } from "@/interfaces";
+import { IOrderItems } from "@/interfaces";
 import { getDate, getStatusRu } from "@/utils";
 
-type Props = { orders: IOrdersGet };
+type Props = { orders: IOrderItems[] };
 
 export default function OrdersAccordion({ orders }: Props) {
-  if (!orders.orderItems.length) {
-    return (
-      <p className="text-sm text-center text-[#B3B3B3] font-semibold mb-3">
-        Список пуст
-      </p>
-    );
-  }
-
   return (
     <Accordion.Root
       type="single"
@@ -23,7 +15,7 @@ export default function OrdersAccordion({ orders }: Props) {
       collapsible
       className="w-full"
     >
-      {orders.orderItems.map((order, index) => (
+      {orders.map((order, index) => (
         <Accordion.Item
           value={index.toString()}
           key={index}

@@ -77,7 +77,7 @@ export interface IOrderPost {
 
 export interface IOrdersGet {
   orderItems: IOrderItems[];
-  pageInfo: IPagination;
+  pagination: IPagination;
 }
 
 export interface IProductsInOrder {
