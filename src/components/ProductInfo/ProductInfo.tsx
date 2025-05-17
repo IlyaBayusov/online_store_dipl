@@ -32,6 +32,9 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
   // const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [selectedColor, setSelectedColor] = useState<string>(nowProduct.color);
+  const [selectedImage, setSelectedImage] = useState<string>(
+    nowProduct.images[0]
+  );
 
   const [isActiveCart, setIsActiveCart] = useState(false);
   const [isActiveFav, setIsActiveFav] = useState(false);
@@ -39,7 +42,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
   const [nowCartItem, setNowCartItem] = useState<IProductInCart>();
   const [nowFavItem, setNowFavItem] = useState<IGetFav>();
 
-  const { getProductsInCart } = useCartStore();
+  const { updatedDataInCart, deleteProductInCart } = useCartStore();
 
   const params = useParams();
 
@@ -53,11 +56,11 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
 
   async function setActiveBtnCart() {
     try {
-      const data: IProductInCart[] | undefined = await getProductsCart();
+      const data = await getProductsCart();
 
       if (!data) return;
 
-      for (const item of data) {
+      for (const item of data.data) {
         if (item.productId === nowProduct.id) {
           setIsActiveCart(true);
           setNowCartItem(item);
@@ -82,7 +85,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
         setIsActiveCart(false);
         //удаление из корзины
         await api.delete(`/v1/cart/${cartItemId}`);
-        getProductsInCart();
+        deleteProductInCart(cartItemId);
       } else {
         setIsActiveCart(true);
         //добавление в корзину
@@ -98,7 +101,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
           productId: nowProduct.id,
           quantity: 1,
         });
-        getProductsInCart();
+        getProducts();
       }
     } catch (error) {
       console.error("Ошибка запроса добавления/удаления в корзину: ", error);
@@ -107,11 +110,11 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
 
   async function setActiveBtnFav() {
     try {
-      const data: IGetFav[] | undefined = await getFav();
+      const data = await getFav();
 
       if (!data) return;
 
-      for (const item of data) {
+      for (const item of data.data) {
         if (item.productId === nowProduct.id) {
           setIsActiveFav(true);
           setNowFavItem(item);
@@ -146,6 +149,22 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
       }
     } catch (error) {
       console.error("Ошибка запроса добавления/удаления в избранных: ", error);
+    }
+  };
+
+  const getProducts = async () => {
+    const data = await getProductsCart();
+
+    if (data) {
+      const products = data.data;
+      const pagination = {
+        currentPage: data.currentPage,
+        pageSize: data.pageSize,
+        totalItems: data.totalItems,
+        totalPages: data.totalPages,
+      };
+
+      updatedDataInCart(products, pagination);
     }
   };
 
@@ -191,7 +210,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
 
           <div className="relative w-full aspect-square flex justify-center items-center rounded-md">
             <Image
-              src={nowProduct.images[0]}
+              src={selectedImage}
               alt={nowProduct.name}
               fill
               style={{
@@ -212,6 +231,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
                 height={494}
                 alt={nowProduct.name}
                 className="max-w-16 rounded-md"
+                onClick={() => setSelectedImage(item)}
               />
             ))}
           </div>

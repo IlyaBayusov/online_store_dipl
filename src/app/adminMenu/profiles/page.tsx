@@ -19,8 +19,8 @@ export default function ProfilesAdmin() {
     const getUsers = async () => {
       const data = await getUsersAdmin();
 
-      if (data.users) {
-        setUsers(data.users);
+      if (data) {
+        setUsers(data.data);
       }
     };
     getUsers();

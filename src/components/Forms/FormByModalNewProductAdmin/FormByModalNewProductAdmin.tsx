@@ -43,7 +43,7 @@ export default function FormByModalNewProductAdmin() {
 
   useLayoutEffect(() => {
     const getCat = async () => {
-      const data: ICategories[] = await getCategories();
+      const data = await getCategories();
 
       if (data) {
         setCategories(data.data);

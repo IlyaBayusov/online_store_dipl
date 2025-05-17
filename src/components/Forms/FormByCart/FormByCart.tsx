@@ -1,6 +1,11 @@
 "use client";
 
-import { IOrderDetails, IOrderPost, IProductInCart } from "@/interfaces";
+import {
+  IOrderDetails,
+  IOrderPost,
+  IPagination,
+  IProductInCart,
+} from "@/interfaces";
 import React, { useEffect, useState } from "react";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { decodeToken } from "@/utils";
@@ -22,7 +27,7 @@ export default React.memo(function FormByCart() {
     setValue,
   } = useForm<IOrderDetails>({ mode: "onBlur" });
 
-  const { cart } = useCartStore();
+  const { cart, updatedDataInCart } = useCartStore();
 
   const [errorSubmit, setErrorSubmit] = useState<string>("");
 
@@ -78,6 +83,7 @@ export default React.memo(function FormByCart() {
 
     if (response) {
       router.push(`/orders`);
+      updatedDataInCart([], {} as IPagination);
     }
   };
 
@@ -277,7 +283,6 @@ export default React.memo(function FormByCart() {
         <RadioGroup.Root
           className="flex flex-col gap-2.5"
           defaultValue="CASH"
-          {...register("paymentMethod", { required: true })}
           onValueChange={(value) => {
             setValue("paymentMethod", value, { shouldValidate: true });
           }}
@@ -288,10 +293,7 @@ export default React.memo(function FormByCart() {
               id="cash"
               className="size-5 cursor-default rounded-full border border-[#B3B3B3] focus:border-greenT bg-white outline-none data-[state=checked]:border-greenT"
             >
-              <RadioGroup.Indicator
-                aria-hidden="true"
-                className="relative flex size-full items-center justify-center after:block after:size-[10px] after:rounded-full after:bg-greenT"
-              />
+              <RadioGroup.Indicator className="relative flex size-full items-center justify-center after:block after:size-[10px] after:rounded-full after:bg-greenT" />
             </RadioGroup.Item>
             <label className="pl-2 cursor-pointer text-sm" htmlFor="cash">
               Наличными
@@ -304,16 +306,18 @@ export default React.memo(function FormByCart() {
               id="card"
               className="size-5 cursor-default rounded-full border border-[#B3B3B3] focus:border-greenT bg-white outline-none data-[state=checked]:border-greenT"
             >
-              <RadioGroup.Indicator
-                aria-hidden="true"
-                className="relative flex size-full items-center justify-center after:block after:size-[10px] after:rounded-full after:bg-greenT"
-              />
+              <RadioGroup.Indicator className="relative flex size-full items-center justify-center after:block after:size-[10px] after:rounded-full after:bg-greenT" />
             </RadioGroup.Item>
             <label className="pl-2 cursor-pointer text-sm" htmlFor="card">
               Банковской картой
             </label>
           </div>
         </RadioGroup.Root>
+
+        <input
+          type="hidden"
+          {...register("paymentMethod", { required: true })}
+        />
 
         {errorSubmit && (
           <span className="text-red-600 text-base">{errorSubmit}</span>

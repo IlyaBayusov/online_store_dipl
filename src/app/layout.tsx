@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="ru" className={roboto.className + " hide-scrollbar-y"}>
       <body className="">
-        <div className="wrapper flex flex-col hide-scrollbar-y">
+        <div className="wrapper max-w-[100vw] flex flex-col hide-scrollbar-y">
           <Header />
           {/* <Nav /> */}
 

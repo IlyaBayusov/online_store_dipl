@@ -16,18 +16,9 @@ import {
 import { useRouter } from "next/navigation";
 
 export const ProfileDropDownMenu = () => {
-  const [role, setRole] = useState<string>("");
   const [isAuth, setIsAuth] = useState(false);
 
   const router = useRouter();
-
-  useEffect(() => {
-    const decoded = decodeToken();
-
-    if (decoded?.roles) {
-      setRole(decoded.roles);
-    }
-  }, []);
 
   useEffect(() => {
     const decoded = decodeToken();
@@ -49,13 +40,11 @@ export const ProfileDropDownMenu = () => {
   const showElems = () => {
     const decoded = decodeToken();
 
-    if (!decoded?.id) return;
-
     if (!isAuth) {
       return (
         <DropdownMenu.Portal>
           <DropdownMenu.Content
-            className="relative top-10 left-10 z-[50] min-w-[220px] rounded-md bg-black border border-white border-opacity-30 "
+            className="relative z-[50] min-w-[220px] rounded-md bg-white border border-greenT text-black"
             sideOffset={5}
           >
             <div className="flex flex-col items-center">
@@ -78,29 +67,25 @@ export const ProfileDropDownMenu = () => {
       );
     }
 
-    if (decoded.roles === roleAdmin) {
+    if (decoded?.roles === roleAdmin) {
       return (
         <DropdownMenu.Portal>
           <DropdownMenu.Content
-            className="relative top-10 left-10 z-[50] min-w-[220px] rounded-md bg-black border border-white border-opacity-30 "
+            className="relative z-[50] min-w-[220px] rounded-md bg-white border border-greenT text-black"
             sideOffset={5}
           >
             <div className="flex flex-col items-center">
-              <button>
+              <button onClick={handleClick}>
                 <DropdownMenu.Item className="group text-sm px-3 pt-1.5">
-                  <button className="px-3 py-0.5 rounded-md">Профиль</button>
+                  <p className="px-3 py-0.5 rounded-md">Профиль</p>
                 </DropdownMenu.Item>
               </button>
 
-              {role === roleAdmin && (
-                <Link href={adminMenuPage}>
-                  <DropdownMenu.Item className="group text-sm px-3 py-1.5">
-                    <button className="px-3 py-0.5 rounded-md">
-                      Админ меню
-                    </button>
-                  </DropdownMenu.Item>
-                </Link>
-              )}
+              <Link href={adminMenuPage}>
+                <DropdownMenu.Item className="group text-sm px-3 py-1.5">
+                  <button className="px-3 py-0.5 rounded-md">Админ меню</button>
+                </DropdownMenu.Item>
+              </Link>
             </div>
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
