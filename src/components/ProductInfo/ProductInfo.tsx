@@ -18,6 +18,7 @@ import { api } from "@/axios";
 import { getFav, getProductsCart, postFav } from "@/api";
 import * as Tabs from "@radix-ui/react-tabs";
 import { useCartStore } from "@/stores/useCartStore";
+import Loader from "../Loader/Loader";
 
 type Props = {
   arrProduct: IProductInfo[];
@@ -247,7 +248,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
                   {nowProduct.id}
                 </p>
 
-                <p className="text-greenT mt-1">Все характеристики</p>
+                {/* <p className="text-greenT mt-1">Все характеристики</p> */}
               </div>
 
               {/* <div className="flex flex-col mt-3">
@@ -307,7 +308,13 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
         </div>
 
         {/* 3 блок */}
-        <Tabs.Root
+        <div className="w-full">
+          <p className="font-semibold text-base">Описание</p>
+
+          <p className="mt-1">{nowProduct.description}</p>
+        </div>
+
+        {/* <Tabs.Root
           className="flex flex-col w-full mt-3"
           defaultValue="characteristics"
         >
@@ -323,7 +330,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
               value="graphPrice"
             >
               График цен
-            </Tabs.Trigger>
+            </Tabs.Trigger> 
           </Tabs.List>
 
           <Tabs.Content
@@ -368,7 +375,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
                 </tbody>
               </table>
             ) : (
-              <div>Loading...</div>
+              <Loader />
             )}
           </Tabs.Content>
 
@@ -378,7 +385,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
           >
             график цен
           </Tabs.Content>
-        </Tabs.Root>
+        </Tabs.Root> */}
       </div>
     </div>
   );

@@ -20,7 +20,7 @@ export default function TableRowAdmin({ product }: Props) {
   };
 
   return (
-    <tr className="border-b border-slate-300" key={product.name}>
+    <tr className="border-b border-slate-300 text-sm" key={product.name}>
       <td>
         <div className="ml-1 w-full flex text-start">
           <div className="relative h-[80px] w-[60px] bg-[#F0F0F0] flex justify-center items-center rounded-md">
@@ -48,13 +48,13 @@ export default function TableRowAdmin({ product }: Props) {
           {isActive ? "Вкл." : "Выкл."}
         </button>
       </td>
-      <td className="h-full">
+      {/* <td className="h-full">
         <div className="flex justify-center items-center ">
           <button className="py-1 px-2">
             <CiSettings className="h-6 w-6 p-px" />
           </button>
         </div>
-      </td>
+      </td> */}
     </tr>
   );
 }

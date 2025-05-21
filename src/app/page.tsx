@@ -59,7 +59,7 @@ export default function Home() {
 
       <Brands />
 
-      <Viewed />
+      {/* <Viewed /> */}
     </div>
   );
 }

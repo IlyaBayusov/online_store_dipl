@@ -369,7 +369,7 @@ export default function FormByModalNewProductAdmin() {
             className="p-2 rounded-md text-black border border-greenT"
             {...register("product.description", {
               required: true,
-              minLength: 200,
+              minLength: 10,
               maxLength: 1500,
             })}
           ></textarea>

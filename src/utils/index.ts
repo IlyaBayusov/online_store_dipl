@@ -81,7 +81,7 @@ export function getStatusRu(status: string) {
 export function getPaymentMethod(method: string) {
   switch (method.toLowerCase()) {
     case "cash":
-      return "Наличными";
+      return "Наличными курьеру";
 
     case "card":
       return "Картой";

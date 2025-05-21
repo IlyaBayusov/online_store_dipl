@@ -33,24 +33,34 @@ export default function OrdersAccordion({ orders }: Props) {
                   <p className="text-greenT">{`№${order.orders[0].orderId}`}</p>
                   <div
                     style={{ backgroundColor: getStatusRu(order.status).color }}
-                    className="px-2 py-px rounded-[4px] text-white"
+                    className="px-2 py-px rounded-[4px] text-white text-xs"
                   >
                     {getStatusRu(order.status).value}
                   </div>
                 </div>
 
-                <p className="text-xs text-greenT cursor-pointer hover:underline">
-                  Подробнее
-                </p>
+                <div className="flex flex-row items-center gap-3">
+                  <p className="text-xs text-greenT cursor-pointer hover:underline">
+                    Подробнее
+                  </p>
+
+                  {getPaymentMethod(order.paymentMethod) === "Картой" && (
+                    <button className="px-3 py-1 rounded-md bg-greenT text-white">
+                      Оплатить
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </Accordion.Trigger>
           <Accordion.Content className="">
             {order.orders.map((product) => (
               <div key={product.productName} className="text-xs mt-2">
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between">
                   <p>{product.productName}</p>
-                  <p>{getPaymentMethod(order.paymentMethod)}</p>
+                  <p className="h-full text-start align-text-top">
+                    {getPaymentMethod(order.paymentMethod)}
+                  </p>
                 </div>
 
                 <div className="flex justify-between items-center">

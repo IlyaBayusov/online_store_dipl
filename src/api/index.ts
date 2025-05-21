@@ -142,6 +142,7 @@ export const postCount = async (productId: number) => {
   try {
     const response = await api.post(`/v1/products/count`, { productId });
     const data: { productCount: number } = await response.data;
+    console.log(data);
 
     return data;
   } catch (error) {

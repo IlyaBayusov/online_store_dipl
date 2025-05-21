@@ -15,6 +15,9 @@ export default function CategoryList() {
     ICatalog[]
   >([]);
 
+  const [isPrev, setIsPrev] = useState<boolean>(false);
+  const [num, setNum] = useState<number>(0);
+
   const [isTranslatedX, setIsTranslatedX] = useState<string>("");
 
   const router = useRouter();
@@ -23,6 +26,8 @@ export default function CategoryList() {
     if (category.next) {
       setSelectedCategoryNextSecond(category.next);
       setIsTranslatedX(" -translate-x-[100vw]");
+      setIsPrev(true);
+      setNum(2);
     }
   };
 
@@ -30,15 +35,48 @@ export default function CategoryList() {
     if (category.next) {
       setSelectedCategoryNextThird(category.next);
       setIsTranslatedX(" -translate-x-[200vw]");
+      setIsPrev(true);
+      setNum(3);
     }
   };
 
   const handleClickThird = (category: ICatalog) => {
     router.push(`/${category.urlName}`);
+    setIsPrev(true);
   };
+
+  const handleClickPrev = () => {
+    if (num === 2) {
+      setIsTranslatedX(" -translate-x-[0vw]");
+      setIsPrev(false);
+      setNum(1);
+    } else if (num === 3) {
+      setIsTranslatedX(" -translate-x-[100vw]");
+      setIsPrev(true);
+      setNum(2);
+    } else {
+      setIsPrev(false);
+    }
+  };
+
+  console.log(num);
 
   return (
     <>
+      <div className="relative mt-3 w-full flex justify-end">
+        <button
+          className={
+            "absolute top-0 right-0 z-50 px-3 py-0.5 text-xs text-greenT border border-greenT rounded-md" +
+            (isPrev
+              ? " opacity-100 pointer-events-auto"
+              : " opacity-0 pointer-events-none")
+          }
+          onClick={handleClickPrev}
+        >
+          Назад
+        </button>
+      </div>
+
       <div className="-ml-2.5">
         <div
           className={
@@ -46,7 +84,7 @@ export default function CategoryList() {
             isTranslatedX
           }
         >
-          <div className="my-3 px-2.5 w-screen grid grid-cols-2 grid-rows-2 gap-3">
+          <div className="my-3 px-2.5 w-screen grid grid-cols-2 grid-rows-1 gap-3">
             {categories.map((category, index) => {
               return (
                 <button key={index} onClick={() => handleClickFirst(category)}>
@@ -56,7 +94,7 @@ export default function CategoryList() {
             })}
           </div>
 
-          <div className="my-3 px-2.5 w-screen grid grid-cols-2 grid-rows-2 gap-3">
+          <div className="my-3 px-2.5 w-screen grid grid-cols-2 grid-rows-1 gap-3">
             {selectedCategoryNextSecond.map((category, index) => {
               return (
                 <button key={index} onClick={() => handleClickSecond(category)}>
@@ -66,7 +104,7 @@ export default function CategoryList() {
             })}
           </div>
 
-          <div className="my-3 px-2.5 w-screen grid grid-cols-2 grid-rows-2 gap-3">
+          <div className="my-3 px-2.5 w-screen grid grid-cols-2 grid-rows-1 gap-3">
             {selectedCategoryNextThird.map((category, index) => {
               return (
                 <Link

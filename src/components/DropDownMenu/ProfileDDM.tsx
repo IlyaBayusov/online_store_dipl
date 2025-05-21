@@ -14,11 +14,15 @@ import {
   roleUser,
 } from "@/constans";
 import { useRouter } from "next/navigation";
+import { useCartStore } from "@/stores/useCartStore";
+import { IPagination } from "@/interfaces";
 
 export const ProfileDropDownMenu = () => {
   const [isAuth, setIsAuth] = useState(false);
 
   const router = useRouter();
+
+  const { getCount, updatedDataInCart } = useCartStore();
 
   useEffect(() => {
     const decoded = decodeToken();
@@ -33,8 +37,17 @@ export const ProfileDropDownMenu = () => {
   const handleClick = () => {
     const decoded = decodeToken();
 
-    if (decoded?.id && decoded.roles === roleUser)
-      router.push(`${profilePage}/${decoded?.id}`);
+    if (decoded?.id) router.push(`${profilePage}/${decoded?.id}`);
+  };
+
+  const handleClickLogOut = () => {
+    getCount(0);
+    updatedDataInCart([], {} as IPagination);
+
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+
+    router.push(authPage);
   };
 
   const showElems = () => {
@@ -75,17 +88,23 @@ export const ProfileDropDownMenu = () => {
             sideOffset={5}
           >
             <div className="flex flex-col items-center">
-              <button onClick={handleClick}>
+              {/* <button onClick={handleClick}>
                 <DropdownMenu.Item className="group text-sm px-3 pt-1.5">
                   <p className="px-3 py-0.5 rounded-md">Профиль</p>
                 </DropdownMenu.Item>
-              </button>
+              </button> */}
 
               <Link href={adminMenuPage}>
                 <DropdownMenu.Item className="group text-sm px-3 py-1.5">
                   <button className="px-3 py-0.5 rounded-md">Админ меню</button>
                 </DropdownMenu.Item>
               </Link>
+
+              <button onClick={handleClickLogOut}>
+                <DropdownMenu.Item className="group text-sm px-3 py-1.5">
+                  <p className="px-3 py-0.5 rounded-md">Выйти</p>
+                </DropdownMenu.Item>
+              </button>
             </div>
           </DropdownMenu.Content>
         </DropdownMenu.Portal>

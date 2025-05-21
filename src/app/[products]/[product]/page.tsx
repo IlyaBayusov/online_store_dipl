@@ -19,6 +19,7 @@ const fetchProducts = async (productId: string) => {
     }
 
     const data = await response.data;
+    console.log(data);
 
     return data;
   } catch (error) {

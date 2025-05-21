@@ -31,7 +31,7 @@ export default React.memo(
           setCount(dataCount);
         }
 
-        if (!quantity) {
+        if (!dataCount || dataCount.productCount <= 0) {
           setIsDisabledPlus(true);
           setIsDisabledMinus(true);
 
@@ -40,12 +40,16 @@ export default React.memo(
           return;
         }
 
-        setQuantity(product.quantity);
+        setQuantity(0);
+        setIsDisabledPlus(false);
+        setIsDisabledMinus(false);
+        // setQuantity(product.quantity);
         setTitleCount("");
       };
 
       getCount();
     }, []);
+    console.log(titleCount);
 
     useEffect(() => {
       updateQuantity(product.productId, quantity);

@@ -18,7 +18,7 @@ export default function HeaderAdmin() {
         <div className="flex justify-between items-center px-3 bg-greenT py-1 w-full">
           <div className="flex items-center gap-3">
             <Link href={mainPage}>
-              <FaHouse className="h-4 w-4 text-white" />
+              <FaHouse className="mr-3 h-4 w-4 text-white" />
             </Link>
 
             <Link href={adminProfilesPage} className="py-2">
@@ -39,9 +39,9 @@ export default function HeaderAdmin() {
             </Link>
           </div>
 
-          <div>
+          {/* <div>
             <IoIosNotifications className="h-5 w-5 text-white" />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

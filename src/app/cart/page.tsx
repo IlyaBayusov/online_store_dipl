@@ -51,6 +51,8 @@ export default React.memo(function Cart() {
     }
   };
 
+  console.log(products);
+
   const showElems = () => {
     if (isLoading) {
       return <Loader />;

@@ -22,7 +22,7 @@ const ProductsAdmin = React.memo(function ProductsAdmin({ products }: Props) {
                 <th className="">Цена</th>
                 <th className="">Кол-во</th>
                 <th className="">Статус</th>
-                <th className="">Изменить</th>
+                {/* <th className="">Изменить</th> */}
               </tr>
             </thead>
 
@@ -38,6 +38,6 @@ const ProductsAdmin = React.memo(function ProductsAdmin({ products }: Props) {
       )}
     </div>
   );
-})
+});
 
 export default ProductsAdmin;

@@ -185,12 +185,12 @@ export default function Header() {
             </nav>
 
             <div className="mt-3 w-full flex justify-between items-center gap-10 ">
-              <div
+              {/* <div
                 className="py-1 px-2  bg-greenT rounded-sm"
                 onClick={() => setIsActive(!isActive)}
               >
                 <HiMenuAlt2 className="h-4 w-4 text-white" />
-              </div>
+              </div> */}
 
               <div className="h-6 flex-grow flex items-center rounded-md">
                 <input

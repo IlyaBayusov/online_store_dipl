@@ -27,7 +27,7 @@ export const modalSuccessOrder = "modalSuccessOrder";
 export const modalNewProductAdmin = "modalNewProductAdmin";
 export const modalDeleteEditNewProduct = "modalDeleteEditNewProduct";
 
-export const sizePaginationProductsInAdmin = 2;
+export const sizePaginationProductsInAdmin = 1;
 
 export const nameTitlePopularProducts = "Новинки";
 export const nameTitleFavoritsProducts = "Избранные";
@@ -112,106 +112,106 @@ export const categories: ICatalog[] = [
             urlName: "mobile_phones",
             img: img_categoryBig,
           },
-          {
-            id: 2,
-            name: "Кнопочные телефоны",
-            urlName: "feature_phones",
-            img: img_categoryBig,
-          },
-          {
-            id: 1,
-            name: "Наушники",
-            urlName: "headphones",
-            img: img_categoryBig,
-          },
-          {
-            id: 2,
-            name: "Фитнес браслеты",
-            urlName: "fitness_bracelets",
-            img: img_categoryBig,
-          },
+          // {
+          //   id: 2,
+          //   name: "Кнопочные телефоны",
+          //   urlName: "feature_phones",
+          //   img: img_categoryBig,
+          // },
+          // {
+          //   id: 1,
+          //   name: "Наушники",
+          //   urlName: "headphones",
+          //   img: img_categoryBig,
+          // },
+          // {
+          //   id: 2,
+          //   name: "Фитнес браслеты",
+          //   urlName: "fitness_bracelets",
+          //   img: img_categoryBig,
+          // },
         ],
       },
-      {
-        id: 2,
-        name: "Телевидение и видео",
-        urlName: "tv_video",
-        img: img_categoryBig,
-      },
-      {
-        id: 1,
-        name: "Планшеты, электронные книги",
-        urlName: "tablets_e-readers",
-        img: img_categoryBig,
-      },
-      {
-        id: 2,
-        name: "Наушники и аудиотехника",
-        urlName: "headphones_audio-equipmen",
-        img: img_categoryBig,
-      },
+      // {
+      //   id: 2,
+      //   name: "Телевидение и видео",
+      //   urlName: "tv_video",
+      //   img: img_categoryBig,
+      // },
+      // {
+      //   id: 1,
+      //   name: "Планшеты, электронные книги",
+      //   urlName: "tablets_e-readers",
+      //   img: img_categoryBig,
+      // },
+      // {
+      //   id: 2,
+      //   name: "Наушники и аудиотехника",
+      //   urlName: "headphones_audio-equipmen",
+      //   img: img_categoryBig,
+      // },
     ],
   },
-  {
-    id: 2,
-    name: "Бытовая техника",
-    urlName: "household",
-    img: img_household,
-    next: [
-      {
-        id: 1,
-        name: "Холодильники",
-        urlName: "holod",
-        img: img_household,
-      },
-      {
-        id: 2,
-        name: "Плиты",
-        urlName: "pliti",
-        img: img_household,
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: "Книги, хобби, канцелярия",
-    urlName: "books",
-    img: img_books,
-    next: [
-      {
-        id: 1,
-        name: "Художественная литература",
-        urlName: "hudojlit",
-        img: img_books,
-      },
-      {
-        id: 2,
-        name: "Научная литература",
-        urlName: "nauchlit",
-        img: img_books,
-      },
-    ],
-  },
-  {
-    id: 4,
-    name: "Продукты питания",
-    urlName: "eat",
-    img: img_eat,
-    next: [
-      {
-        id: 1,
-        name: "Кофе",
-        urlName: "coffee",
-        img: img_eat,
-      },
-      {
-        id: 2,
-        name: "Молоко",
-        urlName: "milk",
-        img: img_eat,
-      },
-    ],
-  },
+  // {
+  //   id: 2,
+  //   name: "Бытовая техника",
+  //   urlName: "household",
+  //   img: img_household,
+  //   next: [
+  //     {
+  //       id: 1,
+  //       name: "Холодильники",
+  //       urlName: "holod",
+  //       img: img_household,
+  //     },
+  //     // {
+  //     //   id: 2,
+  //     //   name: "Плиты",
+  //     //   urlName: "pliti",
+  //     //   img: img_household,
+  //     // },
+  //   ],
+  // },
+  // {
+  //   id: 3,
+  //   name: "Книги, хобби, канцелярия",
+  //   urlName: "books",
+  //   img: img_books,
+  //   next: [
+  //     {
+  //       id: 1,
+  //       name: "Художественная литература",
+  //       urlName: "hudojlit",
+  //       img: img_books,
+  //     },
+  //     {
+  //       id: 2,
+  //       name: "Научная литература",
+  //       urlName: "nauchlit",
+  //       img: img_books,
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: 4,
+  //   name: "Продукты питания",
+  //   urlName: "eat",
+  //   img: img_eat,
+  //   next: [
+  //     {
+  //       id: 1,
+  //       name: "Кофе",
+  //       urlName: "coffee",
+  //       img: img_eat,
+  //     },
+  //     {
+  //       id: 2,
+  //       name: "Молоко",
+  //       urlName: "milk",
+  //       img: img_eat,
+  //     },
+  //   ],
+  // },
 ];
 
 export const categoriesList = [

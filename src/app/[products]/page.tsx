@@ -60,7 +60,15 @@ export default function Products() {
       .map((item) => item.url_name)
       .find((item) => item.toLowerCase() === params.products.toLowerCase())
   ) {
-    return notFound();
+    return (
+      <>
+        <p className="mt-3 text-sm text-center text-[#B3B3B3] font-semibold mb-3">
+          Список пуст
+        </p>
+      </>
+    );
+
+    // return notFound();
   }
 
   return (

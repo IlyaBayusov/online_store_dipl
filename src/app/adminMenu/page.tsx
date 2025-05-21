@@ -40,6 +40,12 @@ export default function AdminMenu() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!inputValue) {
+      getProducts();
+    }
+  }, [inputValue]);
+
   const handleDoubleLeftClick = () => {
     getProducts();
   };
@@ -74,39 +80,13 @@ export default function AdminMenu() {
     }
   };
 
-  return (
-    <div className="w-full">
-      <div className="w-full flex gap-3 items-center px-3 py-1 bg-white border-b">
-        <button className="py-1 px-2">
-          <IoIosOptions className="h-5 w-5 p-px text-green-600" />
-        </button>
+  const showElems = () => {
+    if (isLoading) {
+      return <Loader />;
+    }
 
-        <div className="flex-1 flex items-center gap-1">
-          <input
-            value={inputValue}
-            onChange={handleInputValue}
-            type="text"
-            placeholder="Найти"
-            className="flex-1 border border-gray-300 text-slate-400 text-sm py-1 px-2 rounded-md"
-          />
-          <button className="py-1 px-1" onClick={handleClickSearch}>
-            <IoSearchSharp className="h-5 w-5 text-green-600" />
-          </button>
-        </div>
-      </div>
-
-      <div className="py-1 flex justify-center items-center gap-1 bg-white border-b">
-        <button
-          className="flex justify-center items-center h-8 w-8 bg-greenT rounded-full"
-          onClick={() => openModal(modalNewProductAdmin)}
-        >
-          <FaPlus className="h-5 w-5 p-px text-white" />
-        </button>
-      </div>
-
-      {isLoading ? (
-        <Loader />
-      ) : (
+    if (products.length) {
+      return (
         <>
           <div className="flex justify-center items-center gap-1 py-1">
             <button
@@ -178,7 +158,47 @@ export default function AdminMenu() {
 
           <ProductsAdmin products={products} />
         </>
-      )}
+      );
+    }
+
+    return (
+      <p className="mt-3 text-sm text-center text-[#B3B3B3] font-semibold mb-3">
+        Список пуст
+      </p>
+    );
+  };
+
+  return (
+    <div className="w-full">
+      <div className="w-full flex gap-3 items-center px-3 py-1 bg-white border-b">
+        {/* <button className="py-1 px-2">
+          <IoIosOptions className="h-5 w-5 p-px text-green-600" />
+        </button> */}
+
+        <div className="flex-1 flex items-center gap-1">
+          <input
+            value={inputValue}
+            onChange={handleInputValue}
+            type="text"
+            placeholder="Найти"
+            className="flex-1 border border-gray-300 text-slate-400 text-sm py-1 px-2 rounded-md"
+          />
+          <button className="py-1 px-1" onClick={handleClickSearch}>
+            <IoSearchSharp className="h-5 w-5 text-green-600" />
+          </button>
+        </div>
+      </div>
+
+      <div className="py-1 flex justify-center items-center gap-1 bg-white border-b">
+        <button
+          className="flex justify-center items-center h-8 w-8 bg-greenT rounded-full"
+          onClick={() => openModal(modalNewProductAdmin)}
+        >
+          <FaPlus className="h-5 w-5 p-px text-white" />
+        </button>
+      </div>
+
+      {showElems()}
     </div>
   );
 }
