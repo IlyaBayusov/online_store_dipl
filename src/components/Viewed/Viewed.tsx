@@ -1,14 +1,29 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { Carousel } from "../Carousels/Carousel/Carousel";
 import Link from "next/link";
 import img_test from "../../../public/testImg/img_test.png";
 import { EmblaOptionsType } from "embla-carousel";
 import Image from "next/image";
+import { IProductCategory } from "@/interfaces";
 
 const OPTIONS: EmblaOptionsType = {};
 
-export default function Viewed() {
-  // запрос на получение просмотренных
+type Props = {
+  viewed: IProductCategory[];
+};
+
+export default function Viewed({ viewed }: Props) {
+  const [length, setLength] = useState<number>(viewed.length);
+
+  const showElems = () => {
+    if (!length) {
+      return;
+    }
+
+    const filteredViewed = viewed.map((item) => {});
+  };
 
   return (
     <div className="flex flex-col justify-start">

@@ -1,8 +1,8 @@
 import img_shoes from "../../public/main/category/img_shoes.png";
 import img_categoryBig from "../../public/main/category/img_categoryBig.png";
-import img_household from "../../public/main/category/img_household.png";
-import img_books from "../../public/main/category/img_books.png";
-import img_eat from "../../public/main/category/img_eat.png";
+// import img_household from "../../public/main/category/img_household.png";
+// import img_books from "../../public/main/category/img_books.png";
+// import img_eat from "../../public/main/category/img_eat.png";
 import img_test_shoes1 from "../../public/testImg/img_test_shoes1.png";
 import { ICatalog, IProductsCardParams } from "@/interfaces";
 import CMobilePhones from "@/components/Characteristics/CharacterList/CMobilePhones";

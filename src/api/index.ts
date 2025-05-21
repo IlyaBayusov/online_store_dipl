@@ -92,6 +92,7 @@ export const getFav = async () => {
 
     const response = await api.get(`/v1/favorites/${decodedToken.id}`);
     const data = await response.data;
+    console.log(data);
 
     return data;
   } catch (error) {
@@ -288,5 +289,24 @@ export const putUserEmailInProfile = async (data: {
     } else {
       console.error("Неизвестная ошибка");
     }
+  }
+};
+
+export const getViewed = async () => {
+  try {
+    const decodedToken = decodeToken();
+
+    if (!decodedToken?.id) {
+      console.log("Токен не найден или недействителен");
+      return;
+    }
+
+    const response = await api.get(`/v1/viewed/${decodedToken.id}`);
+    const data = await response.data;
+    console.log(data);
+
+    return data;
+  } catch (error) {
+    console.error("Ошибка получения избранных: ", error);
   }
 };

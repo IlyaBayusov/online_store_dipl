@@ -9,31 +9,41 @@ import Brands from "@/components/Brands/Brands";
 import Viewed from "@/components/Viewed/Viewed";
 import Loader from "@/components/Loader/Loader";
 import { mapToUnifiedProduct } from "@/utils";
+import { getViewed } from "@/api";
+import { IProductCategory } from "@/interfaces";
 
 export default function Home() {
   const [newArrivals, setNewArrivals] = useState([]);
+  const [viewed, setViewed] = useState<IProductCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchNewArrivals = async () => {
-      try {
-        const response = await api.get("/v1/products");
-        const data = await response.data;
+      const response = await api.get("/v1/products");
+      const data = await response.data;
 
-        if (data) {
-          const products = data.map(mapToUnifiedProduct);
+      if (data) {
+        const products = data.map(mapToUnifiedProduct);
 
-          setNewArrivals(products);
-          setIsLoading(false);
-
-          console.log(newArrivals);
-        }
-      } catch (error) {
-        console.log("главная страница: ", error);
+        setNewArrivals(products);
       }
     };
 
+    const fetchGetViewed = async () => {
+      setIsLoading(true);
+
+      const response = await getViewed();
+      const data = await response.data;
+
+      if (data) {
+        setViewed(data);
+      }
+    };
+
+    fetchGetViewed();
     fetchNewArrivals();
+
+    setIsLoading(false);
   }, []);
 
   return (
@@ -59,7 +69,7 @@ export default function Home() {
 
       <Brands />
 
-      {/* <Viewed /> */}
+      <Viewed viewed={viewed} />
     </div>
   );
 }

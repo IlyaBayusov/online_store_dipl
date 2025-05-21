@@ -11,18 +11,13 @@ import {
   profilePage,
   registrPage,
   roleAdmin,
-  roleUser,
 } from "@/constans";
 import { useRouter } from "next/navigation";
-import { useCartStore } from "@/stores/useCartStore";
-import { IPagination } from "@/interfaces";
 
 export const ProfileDropDownMenu = () => {
   const [isAuth, setIsAuth] = useState(false);
 
   const router = useRouter();
-
-  const { getCount, updatedDataInCart } = useCartStore();
 
   useEffect(() => {
     const decoded = decodeToken();
@@ -38,16 +33,6 @@ export const ProfileDropDownMenu = () => {
     const decoded = decodeToken();
 
     if (decoded?.id) router.push(`${profilePage}/${decoded?.id}`);
-  };
-
-  const handleClickLogOut = () => {
-    getCount(0);
-    updatedDataInCart([], {} as IPagination);
-
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-
-    router.push(authPage);
   };
 
   const showElems = () => {
