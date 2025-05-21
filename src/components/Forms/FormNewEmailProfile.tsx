@@ -37,7 +37,7 @@ export default function FormNewEmailProfile({ profileData }: Props) {
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const response = await axios.post(
-        "http://localhost:8080/api/v1/users/email/check",
+        "http://localhost:8080/api/v1/users/email",
         {
           field: email,
         }
@@ -89,9 +89,10 @@ export default function FormNewEmailProfile({ profileData }: Props) {
     }
 
     const response = await axios.post(
-      "http://localhost:8080/api/v1/mail/verification",
+      "http://localhost:8080/api/v1/verification",
       { email, code }
     );
+
     const data: { code: number; message: string } = await response.data;
 
     switch (data.message) {
@@ -138,7 +139,12 @@ export default function FormNewEmailProfile({ profileData }: Props) {
           </div>
 
           {!isActiveEmail ? (
-            <EditBtnInForm onClick={() => setIsActiveEmail(true)}>
+            <EditBtnInForm
+              onClick={() => {
+                console.log("test");
+                setIsActiveEmail(true);
+              }}
+            >
               Изменить
             </EditBtnInForm>
           ) : (
@@ -146,8 +152,8 @@ export default function FormNewEmailProfile({ profileData }: Props) {
               disabled={isTimer}
               onClick={onSendEmail}
               className={
-                "relative py-1.5 text-nowrap " +
-                (isTimer ? "text-gray-500" : "text-white")
+                "relative py-1.5 text-nowrap text-sm " +
+                (isTimer ? "text-gray-500" : "text-greenT")
               }
             >
               Отправить код

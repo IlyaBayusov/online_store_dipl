@@ -61,10 +61,6 @@ export default React.memo(function Cart() {
     if (products.length !== 0 && products !== undefined) {
       return (
         <>
-          <h1 className="text-lg font-semibold mt-3 mb-3">
-            Оформление товаров
-          </h1>
-
           <CartList products={products} />
 
           <FormByCart />

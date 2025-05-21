@@ -27,7 +27,7 @@ export const modalSuccessOrder = "modalSuccessOrder";
 export const modalNewProductAdmin = "modalNewProductAdmin";
 export const modalDeleteEditNewProduct = "modalDeleteEditNewProduct";
 
-export const sizePaginationProductsInAdmin = 1;
+export const sizePaginationProductsInAdmin = 2;
 
 export const nameTitlePopularProducts = "Новинки";
 export const nameTitleFavoritsProducts = "Избранные";

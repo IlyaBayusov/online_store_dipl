@@ -1,3 +1,5 @@
+import { IPutUserPassInProfile } from "@/interfaces";
+import { decodeToken } from "@/utils";
 import axios from "axios";
 
 // Типизация для refreshSubscribers
@@ -108,11 +110,41 @@ api.interceptors.response.use(
 export const getSendCodeOnEmail = async (email: string) => {
   try {
     const response = await axios.get(
-      `http://localhost:8080/api/v1/mail?email=${email}`
+      `http://localhost:8080/api/v1/verification?email=${email}`
     );
 
     return response;
   } catch (error) {
     console.log("Ошибка отправки запроса на подтверждение кода", error);
+  }
+};
+
+export const putUserPassInProfile = async (
+  newPassData: IPutUserPassInProfile
+) => {
+  try {
+    const decoded = decodeToken();
+
+    if (!decoded?.id) {
+      throw "Не найден id";
+    }
+
+    const response = await axios.put(
+      `http://localhost:8080/api/v1/users/${decoded.id}/password`,
+      newPassData
+    );
+
+    return response;
+  } catch (error) {
+    if (typeof error === "string") {
+      console.error(error);
+    } else if (error instanceof Error) {
+      console.error(
+        "Ошибка изменения пароля юзера по почте в профиле: ",
+        error
+      );
+    } else {
+      console.error("Неизвестная ошибка");
+    }
   }
 };

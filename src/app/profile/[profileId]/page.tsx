@@ -31,6 +31,8 @@ export default async function ProfileId({
 
   const data: IGetUserInfoInProfile = await response.json();
 
+  console.log(data);
+
   return (
     <div className="container px-3 pt-3">
       <div className="w-full flex flex-col items-center gap-3">
@@ -38,7 +40,7 @@ export default async function ProfileId({
 
         <div className="w-full pb-5 border-b border-white">
           <div className="flex justify-center mt-3 mb-5">
-            <h2 id="subTitleLine" className="relative uppercase font-medium">
+            <h2 className="relative uppercase font-semibold text-greenT">
               Подробная информация
             </h2>
           </div>

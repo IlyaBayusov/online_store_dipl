@@ -1,7 +1,6 @@
 "use client";
 
-import { putUserPassInProfile } from "@/api";
-import { getSendCodeOnEmail } from "@/axios";
+import { getSendCodeOnEmail, putUserPassInProfile } from "@/axios";
 
 import { IFormNewPassInProfile, IGetUserInfoInProfile } from "@/interfaces";
 import React, { useEffect, useState } from "react";
@@ -70,15 +69,13 @@ export default function FormNewPassProfile({ profileData }: Props) {
       return;
     }
 
-    console.log();
+    console.log(data.newPassword);
 
     const response = await putUserPassInProfile({
-      email: profileData.email,
-      newPassword: data.newPassword,
-      code: data.code,
+      password: data.newPassword,
     });
 
-    if (response?.status === 204) {
+    if (response?.status === 200) {
       setIsActivePass(false);
       setMessChangePass("Пароль изменен");
     } else {
@@ -189,8 +186,8 @@ export default function FormNewPassProfile({ profileData }: Props) {
                 disabled={isTimer}
                 onClick={onGetCode}
                 className={
-                  "relative py-1.5 text-nowrap " +
-                  (isTimer ? "text-gray-500" : "text-white")
+                  "relative py-1.5 text-nowrap text-sm  " +
+                  (isTimer ? "text-gray-500" : "text-greenT")
                 }
               >
                 Отправить код

@@ -32,7 +32,7 @@ export const ProfileDropDownMenu = () => {
     } else {
       setIsAuth(false);
     }
-  }, []);
+  });
 
   const handleClick = () => {
     const decoded = decodeToken();
@@ -88,23 +88,17 @@ export const ProfileDropDownMenu = () => {
             sideOffset={5}
           >
             <div className="flex flex-col items-center">
-              {/* <button onClick={handleClick}>
+              <button onClick={handleClick}>
                 <DropdownMenu.Item className="group text-sm px-3 pt-1.5">
                   <p className="px-3 py-0.5 rounded-md">Профиль</p>
                 </DropdownMenu.Item>
-              </button> */}
+              </button>
 
               <Link href={adminMenuPage}>
                 <DropdownMenu.Item className="group text-sm px-3 py-1.5">
                   <button className="px-3 py-0.5 rounded-md">Админ меню</button>
                 </DropdownMenu.Item>
               </Link>
-
-              <button onClick={handleClickLogOut}>
-                <DropdownMenu.Item className="group text-sm px-3 py-1.5">
-                  <p className="px-3 py-0.5 rounded-md">Выйти</p>
-                </DropdownMenu.Item>
-              </button>
             </div>
           </DropdownMenu.Content>
         </DropdownMenu.Portal>

@@ -118,9 +118,7 @@ export default function Auth() {
           }
         </div>
 
-        <Link href={"/forgotPass"} className="text-greenT text-base">
-          Забыли пароль?
-        </Link>
+        <button className="text-greenT text-base">Забыли пароль?</button>
 
         <button
           className="bg-greenT text-white py-2 px-6 rounded-md"

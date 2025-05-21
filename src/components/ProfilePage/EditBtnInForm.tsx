@@ -12,7 +12,7 @@ export default function EditBtnInForm({
   return (
     <button
       type={type}
-      className="relative text-white py-1.5 text-nowrap text-base"
+      className="relative text-greenT py-1.5 text-nowrap text-sm"
       {...rest}
     >
       {children}

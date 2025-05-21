@@ -54,11 +54,15 @@ export default React.memo(function FormByCart() {
     setSum(totalSum);
   }, [cart]);
 
+  console.log(isValid, errors);
+
   const onSubmit = async (formData: IOrderDetails) => {
     if (!isValid) {
       setErrorSubmit("Не все поля заполнены, либо заполнены неверно");
       return;
     }
+
+    console.log("render");
 
     setErrorSubmit("");
 

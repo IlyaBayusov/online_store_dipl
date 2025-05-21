@@ -229,9 +229,7 @@ export interface IFormNewPassInProfile {
 }
 
 export interface IPutUserPassInProfile {
-  email: string;
-  newPassword: string;
-  code: string;
+  password: string;
 }
 
 export interface IGetUserInfoInProfile {

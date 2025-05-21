@@ -7,7 +7,7 @@ const InputInForm = forwardRef<HTMLInputElement, Props>(({ ...rest }, ref) => {
     <input
       ref={ref}
       type="text"
-      className="py-2 px-4 rounded-md mt-1 w-full text-white bg-transparent border border-[#6F00FF]"
+      className="py-1.5 px-4 rounded-md mt-1 w-full max-w-72 bg-transparent border border-gray-300"
       {...rest}
     />
   );
