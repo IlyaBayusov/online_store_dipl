@@ -59,8 +59,6 @@ export default function CategoryList() {
     }
   };
 
-  console.log(num);
-
   return (
     <>
       <div className="relative mt-3 w-full flex justify-end">

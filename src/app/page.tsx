@@ -2,7 +2,7 @@
 
 import CategoryList from "@/components/Category/CategoryList/CategoryList";
 import { useEffect, useState } from "react";
-import { api } from "@/axios";
+import { api, getProductsMainPage } from "@/axios";
 import ProductCardList from "@/components/ProductCard/ProductCardList/ProductCardList";
 import { paramsPopularProducts } from "@/constans";
 import Brands from "@/components/Brands/Brands";
@@ -19,8 +19,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchNewArrivals = async () => {
-      const response = await api.get("/v1/products");
-      const data = await response.data;
+      const data = await getProductsMainPage();
 
       if (data) {
         const products = data.map(mapToUnifiedProduct);

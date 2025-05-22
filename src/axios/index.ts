@@ -42,14 +42,13 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
-    // console.log("Ответ пришел: ", response);
     return response;
   },
   async (error) => {
     const originalRequest = error.config;
     const statusCode = error.response ? error.response.status : null;
 
-    console.log("Ошибка 401: статус = ", statusCode, error);
+    console.log("статус:", statusCode, "ошибка: ", error);
 
     if (statusCode === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -68,6 +67,8 @@ api.interceptors.response.use(
           }
 
           const response = await api.post("/auth/refresh", { refreshToken });
+          console.warn(response);
+
           console.log("Ответ от обновления токена: ", response.data);
 
           const data = response.data;
@@ -146,5 +147,16 @@ export const putUserPassInProfile = async (
     } else {
       console.error("Неизвестная ошибка");
     }
+  }
+};
+
+export const getProductsMainPage = async () => {
+  try {
+    const response = await axios.get("http://localhost:8080/api/v1/products");
+    const data = await response.data;
+
+    return data;
+  } catch (error) {
+    console.log("Ошибка отправки запроса получения продуктов, главная", error);
   }
 };

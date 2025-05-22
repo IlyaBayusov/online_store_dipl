@@ -83,6 +83,16 @@ export const paramsProductsCategoryProducts = {
   price: true,
 } as IProductsCardParams;
 
+export const paramsViewed = {
+  page: mainPage,
+  btnCart: true,
+  btnFav: true,
+  markTitle: false,
+  status: false,
+  quantity: false,
+  price: true,
+} as IProductsCardParams;
+
 export const categoriesPages = [
   {
     id: 1,
