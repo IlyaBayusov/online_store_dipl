@@ -15,6 +15,8 @@ export default function FormDetailedInfoProfile({ profileData }: Props) {
     formState: { errors, isValid },
     handleSubmit,
     register,
+    reset,
+    clearErrors,
   } = useForm<IFormDataProfileUserInfo>({
     mode: "onSubmit",
     defaultValues: {
@@ -52,6 +54,16 @@ export default function FormDetailedInfoProfile({ profileData }: Props) {
 
   const handleClickChange = () => {
     setIsActive(true);
+  };
+
+  const handleExist = () => {
+    setIsActive(false);
+
+    setErrorMess("");
+    setErrorMessForm("");
+
+    clearErrors();
+    reset();
   };
 
   return (
@@ -140,17 +152,30 @@ export default function FormDetailedInfoProfile({ profileData }: Props) {
         </div>
 
         {isActive && (
-          <EditBtnInForm type="submit">
-            <span className="pt-3 absolute -top-4 left-1/2 z-10 -translate-x-1/2 text-nowrap text-red-600 text-xs">
+          <>
+            <div className="w-full flex justify-center pt-1 text-nowrap text-red-600 text-xs">
               {errorMessForm}
-            </span>
+            </div>
 
-            <span>Готово</span>
-          </EditBtnInForm>
+            <div className="w-full mt-3 flex justify-center items-center gap-5">
+              <EditBtnInForm
+                type="submit"
+                className="relative px-4 py-1.5 text-greenT border border-greenT rounded-md text-nowrap text-sm"
+              >
+                Готово
+              </EditBtnInForm>
+              <EditBtnInForm
+                className="relative px-4 py-1.5 text-red-600 border border-red-600 rounded-md text-nowrap text-sm"
+                onClick={handleExist}
+              >
+                Отмена
+              </EditBtnInForm>
+            </div>
+          </>
         )}
       </form>
 
-      {isActive || (
+      {!isActive && (
         <div className="pt-3 w-full flex justify-center">
           <EditBtnInForm type="button" onClick={handleClickChange}>
             Изменить

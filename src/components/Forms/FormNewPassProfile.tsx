@@ -15,6 +15,8 @@ export default function FormNewPassProfile({ profileData }: Props) {
     register,
     handleSubmit,
     watch,
+    clearErrors,
+    reset,
     formState: { errors, isValid },
   } = useForm<IFormNewPassInProfile>({ mode: "onSubmit" });
 
@@ -30,7 +32,8 @@ export default function FormNewPassProfile({ profileData }: Props) {
   const [errorMessSecondNewPass, setErrorMessSecondNewPass] =
     useState<string>("");
 
-  const [errorMessageForm, setErrorMessageForm] = useState<string>("");
+  const [errorMessageForm, setErrorMessageForm] =
+    useState<string>("35135136136136");
 
   const [messChangePass, setMessChangePass] = useState<string>("");
 
@@ -94,6 +97,9 @@ export default function FormNewPassProfile({ profileData }: Props) {
     setErrorMessageForm("");
 
     setMessChangePass("");
+
+    clearErrors();
+    reset();
   };
 
   return (
@@ -124,7 +130,7 @@ export default function FormNewPassProfile({ profileData }: Props) {
               type="password"
               placeholder="********"
               {...register("newPassword", {
-                required: "Поле обязательно для заполнения",
+                required: "Поле обязательное",
                 minLength: {
                   value: 6,
                   message: "Минимум 6 символов",
@@ -164,7 +170,7 @@ export default function FormNewPassProfile({ profileData }: Props) {
                   type="password"
                   placeholder="********"
                   {...register("secondNewPassword", {
-                    required: "Поле обязательно для заполнения",
+                    required: "Поле обязательное",
                     minLength: {
                       value: 6,
                       message: "Минимум 6 символов",
@@ -202,7 +208,7 @@ export default function FormNewPassProfile({ profileData }: Props) {
                   type="number"
                   placeholder="Введите код"
                   {...register("code", {
-                    required: "Поле обязательно для заполнения",
+                    required: "Поле обязательное",
                     minLength: {
                       value: 6,
                       message: "Минимум 6 символов",
@@ -232,14 +238,15 @@ export default function FormNewPassProfile({ profileData }: Props) {
             </div>
           </label>
 
-          <div className="w-full mt-3 flex justify-center items-center gap-5">
+          <div className="w-full flex justify-center pt-1 text-nowrap text-red-600 text-xs">
+            {errorMessageForm}
+          </div>
+
+          <div className="w-full flex justify-center items-center gap-5">
             <EditBtnInForm
               type="submit"
               className="relative px-4 py-1.5 text-greenT border border-greenT rounded-md text-nowrap text-sm"
             >
-              <span className="pt-3 absolute -top-4 left-1/2 z-10 -translate-x-1/2 text-nowrap text-red-600 text-xs">
-                {errorMessageForm}
-              </span>
               Готово
             </EditBtnInForm>
             <EditBtnInForm
