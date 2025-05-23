@@ -67,7 +67,6 @@ api.interceptors.response.use(
           }
 
           const response = await api.post("/auth/refresh", { refreshToken });
-          console.warn(response);
 
           console.log("Ответ от обновления токена: ", response.data);
 

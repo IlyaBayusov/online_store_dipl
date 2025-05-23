@@ -15,7 +15,7 @@ import ProductTabs from "../Tabs/ProductTabs";
 import { RiShoppingBasketLine, RiShoppingBasketFill } from "react-icons/ri";
 import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
 import { api } from "@/axios";
-import { getFav, getProductsCart, postFav } from "@/api";
+import { getFav, getProductsCart, postFav, postViewed } from "@/api";
 import * as Tabs from "@radix-ui/react-tabs";
 import { useCartStore } from "@/stores/useCartStore";
 import Loader from "../Loader/Loader";
@@ -48,10 +48,17 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
   const params = useParams();
 
   useEffect(() => {
-    setActiveBtnCart();
-  }, []);
+    const fetchPostViewed = async () => {
+      const response = await postViewed(nowProduct.id);
 
-  useEffect(() => {
+      if (!response) {
+        return;
+      }
+    };
+
+    fetchPostViewed();
+
+    setActiveBtnCart();
     setActiveBtnFav();
   }, []);
 

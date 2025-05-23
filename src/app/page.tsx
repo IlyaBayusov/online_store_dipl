@@ -2,7 +2,7 @@
 
 import CategoryList from "@/components/Category/CategoryList/CategoryList";
 import { useEffect, useState } from "react";
-import { api, getProductsMainPage } from "@/axios";
+import { getProductsMainPage } from "@/axios";
 import ProductCardList from "@/components/ProductCard/ProductCardList/ProductCardList";
 import { paramsPopularProducts } from "@/constans";
 import Brands from "@/components/Brands/Brands";
@@ -18,31 +18,27 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchNewArrivals = async () => {
-      const data = await getProductsMainPage();
-
-      if (data) {
-        const products = data.map(mapToUnifiedProduct);
-
-        setNewArrivals(products);
-      }
-    };
-
-    const fetchGetViewed = async () => {
+    const fetchData = async () => {
       setIsLoading(true);
 
-      const response = await getViewed();
-      const data = await response.data;
+      const [productsData, viewedResponse] = await Promise.all([
+        getProductsMainPage(),
+        getViewed(),
+      ]);
 
-      if (data) {
-        setViewed(data);
+      if (productsData) {
+        const products = productsData.map(mapToUnifiedProduct);
+        setNewArrivals(products);
       }
+
+      if (viewedResponse) {
+        setViewed(viewedResponse);
+      }
+
+      setIsLoading(false);
     };
 
-    fetchGetViewed();
-    fetchNewArrivals();
-
-    setIsLoading(false);
+    fetchData();
   }, []);
 
   return (
@@ -68,7 +64,7 @@ export default function Home() {
 
       <Brands />
 
-      <Viewed viewed={viewed} />
+      {viewed.length !== 0 && <Viewed viewed={viewed} />}
     </div>
   );
 }

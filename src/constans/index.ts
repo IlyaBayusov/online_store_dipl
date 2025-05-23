@@ -85,8 +85,8 @@ export const paramsProductsCategoryProducts = {
 
 export const paramsViewed = {
   page: mainPage,
-  btnCart: true,
-  btnFav: true,
+  btnCart: false,
+  btnFav: false,
   markTitle: false,
   status: false,
   quantity: false,

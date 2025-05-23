@@ -92,7 +92,6 @@ export const getFav = async () => {
 
     const response = await api.get(`/v1/favorites/${decodedToken.id}`);
     const data = await response.data;
-    console.log(data);
 
     return data;
   } catch (error) {
@@ -306,6 +305,26 @@ export const getViewed = async () => {
     console.log(data);
 
     return data;
+  } catch (error) {
+    console.error("Ошибка получения избранных: ", error);
+  }
+};
+
+export const postViewed = async (productId: number) => {
+  try {
+    const decodedToken = decodeToken();
+
+    if (!decodedToken?.id) {
+      console.log("Токен не найден или недействителен");
+      return;
+    }
+
+    const response = await api.post(`/v1/viewed`, {
+      userId: decodedToken.id,
+      productId: productId,
+    });
+
+    return response;
   } catch (error) {
     console.error("Ошибка получения избранных: ", error);
   }

@@ -8,8 +8,6 @@ type Props = {
 };
 
 export default function ProductCardList({ productsCard, params }: Props) {
-  console.log(productsCard);
-
   return (
     <>
       {productsCard.length ? (
