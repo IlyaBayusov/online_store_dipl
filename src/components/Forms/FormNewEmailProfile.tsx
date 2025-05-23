@@ -45,10 +45,6 @@ export default function FormNewEmailProfile({ profileData }: Props) {
       const data: { code: number; message: string } = await response.data;
 
       if (data.code === 200) {
-        setSendCodeEmail("Код отправлен");
-        setIsActiveCodeBlock(true);
-        setErrorMessageEmail("");
-
         const responseSendEmail = await getSendCodeOnEmail(email);
 
         if (responseSendEmail?.status !== 200) {
@@ -56,6 +52,10 @@ export default function FormNewEmailProfile({ profileData }: Props) {
           setErrorMessageEmail(
             "Ошибка отправки. Отключите VPN и попробуйте снова"
           );
+        } else {
+          setSendCodeEmail("Код отправлен");
+          setIsActiveCodeBlock(true);
+          setErrorMessageEmail("");
         }
       }
     } catch (error) {
@@ -121,10 +121,35 @@ export default function FormNewEmailProfile({ profileData }: Props) {
     }
   };
 
+  const handleExist = () => {
+    setIsActiveEmail(false);
+    setIsActiveCodeBlock(false);
+
+    setCode("");
+    setEmail("");
+
+    setErrorMessageEmail("");
+    setErrorMessageEmailCode("");
+
+    setSendCodeEmail("");
+  };
+
   return (
     <div className="flex flex-col justify-start items-center gap-3">
       <label htmlFor="email" className="relative w-full">
-        <p>Почта</p>
+        <div className="w-full flex justify-start items-center gap-3">
+          <p>Почта</p>
+
+          {!errorMessageEmail ? (
+            <span className="-mb-0.5 text-nowrap text-green-500 text-xs">
+              {sendCodeEmail}
+            </span>
+          ) : (
+            <span className="-mb-0.5 text-nowrap text-red-600 text-xs">
+              {errorMessageEmail}
+            </span>
+          )}
+        </div>
 
         <div className="w-full flex justify-between items-center">
           <div className="w-full flex justify-between items-center max-w-60">
@@ -138,42 +163,40 @@ export default function FormNewEmailProfile({ profileData }: Props) {
             />
           </div>
 
-          {!isActiveEmail ? (
+          {isActiveEmail ? (
+            <div className="absolute -bottom-6 left-0 z-10">
+              <EditBtnInForm
+                disabled={isTimer}
+                onClick={onSendEmail}
+                className={
+                  "relative py-1.5 text-nowrap text-sm " +
+                  (isTimer ? "text-gray-500" : "text-greenT")
+                }
+              >
+                Отправить код
+              </EditBtnInForm>
+            </div>
+          ) : (
             <EditBtnInForm
               onClick={() => {
-                console.log("test");
                 setIsActiveEmail(true);
               }}
             >
               Изменить
             </EditBtnInForm>
-          ) : (
-            <EditBtnInForm
-              disabled={isTimer}
-              onClick={onSendEmail}
-              className={
-                "relative py-1.5 text-nowrap text-sm " +
-                (isTimer ? "text-gray-500" : "text-greenT")
-              }
-            >
-              Отправить код
-            </EditBtnInForm>
           )}
         </div>
-        {!errorMessageEmail ? (
-          <span className="absolute -bottom-4 left-0 z-10 text-nowrap text-green-500 text-xs">
-            {sendCodeEmail}
-          </span>
-        ) : (
-          <span className="absolute -bottom-4 left-0 z-10 text-nowrap text-red-600 text-xs">
-            {errorMessageEmail}
-          </span>
-        )}
       </label>
 
       {isActiveCodeBlock && (
         <label htmlFor="code" className="relative w-full">
-          <p>Код подтверждения</p>
+          <div className="w-full flex justify-start items-center gap-3">
+            <p>Код подтверждения</p>
+
+            <span className="-mb-0.5 text-nowrap text-red-600 text-xs">
+              {errorMessageEmailCode}
+            </span>
+          </div>
 
           <div className="w-full flex justify-between items-center">
             <div className="w-full flex justify-between items-center max-w-60">
@@ -186,13 +209,25 @@ export default function FormNewEmailProfile({ profileData }: Props) {
                 placeholder="Введите код"
               />
             </div>
-
-            <EditBtnInForm onClick={onSendEmailCode}>Готово</EditBtnInForm>
           </div>
-          <span className="absolute -bottom-4 left-0 z-10 text-nowrap text-red-600 text-xs">
-            {errorMessageEmailCode}
-          </span>
         </label>
+      )}
+
+      {isActiveEmail && (
+        <div className="w-full mt-3 flex justify-center items-center gap-5">
+          <EditBtnInForm
+            className="relative px-4 py-1.5 text-greenT border border-greenT rounded-md text-nowrap text-sm"
+            onClick={onSendEmailCode}
+          >
+            Готово
+          </EditBtnInForm>
+          <EditBtnInForm
+            className="relative px-4 py-1.5 text-red-600 border border-red-600 rounded-md text-nowrap text-sm"
+            onClick={handleExist}
+          >
+            Отмена
+          </EditBtnInForm>
+        </div>
       )}
     </div>
   );

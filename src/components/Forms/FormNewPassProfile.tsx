@@ -83,13 +83,38 @@ export default function FormNewPassProfile({ profileData }: Props) {
     }
   };
 
+  const handleExist = () => {
+    setIsActivePass(false);
+    setIsActiveCodeBlock(false);
+
+    setMessSendCode("");
+    setErrorMessageSendCode("");
+
+    setErrorMessSecondNewPass("");
+    setErrorMessageForm("");
+
+    setMessChangePass("");
+  };
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="my-3 flex flex-col justify-start items-center gap-3 "
     >
       <label htmlFor="newPassword" className="relative w-full">
-        <p>{isActivePass ? "Новый пароль" : "Пароль"}</p>
+        <div className="w-full flex justify-start items-center gap-3">
+          <p>{isActivePass ? "Новый пароль" : "Пароль"}</p>
+
+          {messChangePass ? (
+            <span className="-mb-0.5 text-nowrap text-green-500 text-xs">
+              {messChangePass}
+            </span>
+          ) : (
+            <span className="-mb-0.5 text-nowrap text-red-600 text-xs">
+              {errors.newPassword?.message}
+            </span>
+          )}
+        </div>
 
         <div className="w-full flex justify-between items-center">
           <div className="w-full flex justify-between items-center max-w-60">
@@ -110,27 +135,26 @@ export default function FormNewPassProfile({ profileData }: Props) {
                 },
               })}
             />
-
-            <span className="absolute -bottom-4 left-0 z-10 text-nowrap text-green-500 text-xs">
-              {messChangePass}
-            </span>
           </div>
 
-          {isActivePass || (
+          {!isActivePass && (
             <EditBtnInForm onClick={() => setIsActivePass(true)}>
               Изменить
             </EditBtnInForm>
           )}
         </div>
-        <span className="absolute -bottom-4 left-0 z-10 text-nowrap text-red-600 text-xs">
-          {errors.newPassword?.message}
-        </span>
       </label>
 
       {isActivePass && (
         <>
           <label htmlFor="secondNewPassword" className="relative w-full">
-            <p>Подтвердите пароль</p>
+            <div className="w-full flex justify-start items-center gap-3">
+              <p>Подтвердите пароль</p>
+
+              <span className="-mb-0.5 text-nowrap text-red-600 text-xs">
+                {errors.secondNewPassword?.message || errorMessSecondNewPass}
+              </span>
+            </div>
 
             <div className="w-full flex justify-between items-center">
               <div className="w-full flex justify-between items-center max-w-60">
@@ -153,13 +177,22 @@ export default function FormNewPassProfile({ profileData }: Props) {
                 />
               </div>
             </div>
-            <span className="absolute -bottom-4 left-0 z-10 text-nowrap text-red-600 text-xs">
-              {errors.secondNewPassword?.message || errorMessSecondNewPass}
-            </span>
           </label>
 
           <label htmlFor="email" className="relative w-full mb-1">
-            <p>Код подтверждения</p>
+            <div className="w-full flex justify-start items-center gap-3">
+              <p>Код подтверждения</p>
+
+              {errorMessageSendCode ? (
+                <span className="-mb-0.5 text-nowrap text-red-600 text-xs">
+                  {errorMessageSendCode}
+                </span>
+              ) : (
+                <span className="-mb-0.5 text-nowrap text-green-500 text-xs">
+                  {messSendCode}
+                </span>
+              )}
+            </div>
 
             <div className="w-full flex justify-between items-center">
               <div className="w-full flex justify-between items-center max-w-60">
@@ -180,38 +213,42 @@ export default function FormNewPassProfile({ profileData }: Props) {
                     },
                   })}
                 />
+
+                {isActivePass && (
+                  <div className="absolute -bottom-6 left-0 z-10">
+                    <EditBtnInForm
+                      disabled={isTimer}
+                      onClick={onGetCode}
+                      className={
+                        "relative py-1.5 text-nowrap text-sm  " +
+                        (isTimer ? "text-gray-500" : "text-greenT")
+                      }
+                    >
+                      Отправить код
+                    </EditBtnInForm>
+                  </div>
+                )}
               </div>
-
-              <EditBtnInForm
-                disabled={isTimer}
-                onClick={onGetCode}
-                className={
-                  "relative py-1.5 text-nowrap text-sm  " +
-                  (isTimer ? "text-gray-500" : "text-greenT")
-                }
-              >
-                Отправить код
-              </EditBtnInForm>
             </div>
-
-            {errorMessageSendCode ? (
-              <span className="absolute -bottom-4 left-0 z-10 text-nowrap text-red-600 text-xs">
-                {errorMessageSendCode}
-              </span>
-            ) : (
-              <span className="absolute -bottom-4 left-0 z-10 text-nowrap text-green-500 text-xs">
-                {messSendCode}
-              </span>
-            )}
           </label>
 
-          <EditBtnInForm type="submit">
-            <span className="pt-3 absolute -top-4 left-1/2 z-10 -translate-x-1/2 text-nowrap text-red-600 text-xs">
-              {errorMessageForm}
-            </span>
-
-            <span>Готово</span>
-          </EditBtnInForm>
+          <div className="w-full mt-3 flex justify-center items-center gap-5">
+            <EditBtnInForm
+              type="submit"
+              className="relative px-4 py-1.5 text-greenT border border-greenT rounded-md text-nowrap text-sm"
+            >
+              <span className="pt-3 absolute -top-4 left-1/2 z-10 -translate-x-1/2 text-nowrap text-red-600 text-xs">
+                {errorMessageForm}
+              </span>
+              Готово
+            </EditBtnInForm>
+            <EditBtnInForm
+              className="relative px-4 py-1.5 text-red-600 border border-red-600 rounded-md text-nowrap text-sm"
+              onClick={handleExist}
+            >
+              Отмена
+            </EditBtnInForm>
+          </div>
         </>
       )}
     </form>
