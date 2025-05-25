@@ -13,7 +13,6 @@ export default function FormByAuthFPReset({
   setIsSubmitActiveEmail,
 }: Props) {
   const [error, setError] = useState("");
-  const [isActiveEmail, setIsActiveEmail] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -38,11 +37,6 @@ export default function FormByAuthFPReset({
   };
 
   const onSubmit = async (formData: IFormByAuthFPReset) => {
-    if (formData.newPassword && formData.secondPassword) {
-      setIsActiveEmail(true);
-      return;
-    }
-
     if (!isValid) {
       setError("Некоторые поля заполнены неверно.");
       return;
@@ -110,6 +104,8 @@ export default function FormByAuthFPReset({
                 value: 50,
                 message: "Максимум 50 символов",
               },
+              validate: (value) =>
+                value === newPassword || "Пароли не совпадают",
             })}
             className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-gray-300"
           />

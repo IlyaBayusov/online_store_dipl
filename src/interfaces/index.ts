@@ -171,7 +171,7 @@ export interface IProductsCardBody {
   categoryName: string;
   name: string;
   image: string;
-  brand: string;
+  brand?: string;
   price?: number;
   cartItemId?: number;
   favoriteId?: number;

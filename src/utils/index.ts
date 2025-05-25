@@ -115,6 +115,7 @@ export function mapToUnifiedProduct(
 ): IProductsCardBody {
   return {
     productId: data.productId,
+    brand: data.brand,
     categoryName: data.categoryName,
     name:
       (data as IProductCategory).name ||

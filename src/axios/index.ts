@@ -154,6 +154,8 @@ export const getProductsMainPage = async () => {
     const response = await axios.get("http://localhost:8080/api/v1/products");
     const data = await response.data;
 
+    console.log(response);
+
     return data;
   } catch (error) {
     console.log("Ошибка отправки запроса получения продуктов, главная", error);
