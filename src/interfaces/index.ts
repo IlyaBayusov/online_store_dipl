@@ -171,6 +171,7 @@ export interface IProductsCardBody {
   categoryName: string;
   name: string;
   image: string;
+  brand: string;
   price?: number;
   cartItemId?: number;
   favoriteId?: number;
@@ -200,6 +201,16 @@ export interface IFormDataRegistr {
 export interface IFormByAuth {
   username: string;
   password: string;
+}
+
+export interface IFormByAuthForgotPass {
+  email: string;
+  code: string;
+}
+
+export interface IFormByAuthFPReset {
+  newPassword: string;
+  secondPassword: string;
 }
 
 export interface ICategories {
