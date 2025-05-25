@@ -129,6 +129,8 @@ export default React.memo(
       }
     };
 
+    console.log(productCard);
+
     return (
       <div className="flex flex-col h-full">
         <div
@@ -183,7 +185,8 @@ export default React.memo(
               )}
             </div>
 
-            <div className="mt-3 flex flex-grow flex-col items-start gap-3">
+            <div className="mt-3 flex flex-grow flex-col items-start gap-1">
+              <p className="text-sm text-start">{productCard.brand}</p>
               {params.quantity && (
                 <p className="text-sm text-start">
                   Количество: {productCard.quantity} шт.

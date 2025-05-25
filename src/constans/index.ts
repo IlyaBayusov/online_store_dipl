@@ -60,7 +60,7 @@ export const paramsFavoritsProducts = {
   markTitle: false,
   status: false,
   quantity: false,
-  price: false,
+  price: true,
 } as IProductsCardParams;
 
 export const paramsOrdersProducts = {

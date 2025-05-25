@@ -41,6 +41,8 @@ export default function Home() {
     fetchData();
   }, []);
 
+  console.log(newArrivals);
+
   return (
     <div className="w-full">
       {/* слайдер */}

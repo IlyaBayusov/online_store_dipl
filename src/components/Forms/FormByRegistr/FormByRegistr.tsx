@@ -83,12 +83,15 @@ export default function FormByRegistr({ setSubmit }: Props) {
     setError("");
 
     setFormDataRegistr(data);
-    setSubmit(); //callback для перенаправления на подтв. кода
 
     try {
-      await axios.get(
+      const response = await axios.get(
         `http://localhost:8080/api/v1/verification?email=${email}`
       );
+
+      if (response) {
+        setSubmit(); //callback для перенаправления на подтв. кода
+      }
     } catch (error) {
       console.log("Ошибка отправки запроса на подтверждение кода", error);
       return;
@@ -115,7 +118,7 @@ export default function FormByRegistr({ setSubmit }: Props) {
             type="text"
             placeholder="Имя"
             {...register("firstName", {
-              required: "Поле обязательно для заполнения",
+              required: "Поле обязательное",
               minLength: {
                 value: 2,
                 message: "Минимум 2 символа",
@@ -139,7 +142,7 @@ export default function FormByRegistr({ setSubmit }: Props) {
             type="text"
             placeholder="Фамилия"
             {...register("lastName", {
-              required: "Поле обязательно для заполнения",
+              required: "Поле обязательное",
               minLength: {
                 value: 2,
                 message: "Минимум 2 символа",
@@ -163,7 +166,7 @@ export default function FormByRegistr({ setSubmit }: Props) {
             type="text"
             placeholder="Логин"
             {...register("username", {
-              required: "Поле обязательно для заполнения",
+              required: "Поле обязательное",
               minLength: {
                 value: 3,
                 message: "Минимум 3 символа",
@@ -192,7 +195,7 @@ export default function FormByRegistr({ setSubmit }: Props) {
             type="email"
             placeholder="Email"
             {...register("email", {
-              required: "Поле обязательно для заполнения",
+              required: "Поле обязательное",
               minLength: {
                 value: 4,
                 message: "Минимум 4 символа",
@@ -225,7 +228,7 @@ export default function FormByRegistr({ setSubmit }: Props) {
             type="password"
             placeholder="Пароль"
             {...register("password", {
-              required: "Поле обязательно для заполнения",
+              required: "Поле обязательное",
               minLength: {
                 value: 6,
                 message: "Минимум 6 символов",
@@ -249,7 +252,7 @@ export default function FormByRegistr({ setSubmit }: Props) {
             type="password"
             placeholder="Повторить пароль"
             {...register("secondPassword", {
-              required: "Поле обязательно для заполнения",
+              required: "Поле обязательное",
               minLength: {
                 value: 6,
                 message: "Минимум 6 символов",
