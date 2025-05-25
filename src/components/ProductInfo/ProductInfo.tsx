@@ -43,9 +43,21 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
   const [nowCartItem, setNowCartItem] = useState<IProductInCart>();
   const [nowFavItem, setNowFavItem] = useState<IGetFav>();
 
+  const [showedFav, setShowedFav] = useState<boolean>(true);
+
   const { updatedDataInCart, deleteProductInCart } = useCartStore();
 
   const params = useParams();
+
+  useEffect(() => {
+    const decoded = decodeToken();
+
+    if (!decoded?.id) {
+      setShowedFav(false);
+    } else {
+      setShowedFav(true);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchPostViewed = async () => {
@@ -201,19 +213,21 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
           <div className="flex flex-col justify-start w-full">
             <h1 className="text-base font-bold">{nowProduct.name}</h1>
 
-            <div className="flex justify-end w-full">
-              <button
-                className="flex justify-center items-center gap-1 py-1"
-                onClick={handleClickFav}
-              >
-                {isActiveFav ? (
-                  <MdFavorite className="h-5 w-5 " />
-                ) : (
-                  <MdFavoriteBorder className="h-5 w-5" />
-                )}
-                <p className="text-sm">Избранные</p>
-              </button>
-            </div>
+            {showedFav && (
+              <div className="flex justify-end w-full">
+                <button
+                  className="flex justify-center items-center gap-1 py-1"
+                  onClick={handleClickFav}
+                >
+                  {isActiveFav ? (
+                    <MdFavorite className="h-5 w-5 " />
+                  ) : (
+                    <MdFavoriteBorder className="h-5 w-5" />
+                  )}
+                  <p className="text-sm">Избранные</p>
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="relative w-full aspect-square flex justify-center items-center rounded-md">

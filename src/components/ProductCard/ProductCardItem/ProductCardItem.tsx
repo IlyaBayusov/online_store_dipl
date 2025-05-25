@@ -22,6 +22,8 @@ export default React.memo(
     const [isActiveFav, setIsActiveFav] = useState(false);
     const [isActiveCart, setIsActiveCart] = useState(false);
 
+    const [showedFav, setShowedFav] = useState<boolean>(true);
+
     const { deleteProductInCart, updatedDataInCart } = useCartStore();
 
     useEffect(() => {
@@ -29,6 +31,16 @@ export default React.memo(
       setActiveBtnCart();
 
       getProducts();
+    }, []);
+
+    useEffect(() => {
+      const decoded = decodeToken();
+
+      if (!decoded?.id) {
+        setShowedFav(false);
+      } else {
+        setShowedFav(true);
+      }
     }, []);
 
     const getProducts = async () => {
@@ -129,8 +141,6 @@ export default React.memo(
       }
     };
 
-    console.log(productCard);
-
     return (
       <div className="flex flex-col h-full">
         <div
@@ -145,7 +155,7 @@ export default React.memo(
             </div>
           )}
 
-          {params.btnFav && (
+          {showedFav && params.btnFav && (
             <button
               className="flex justify-center items-center gap-1 py-1"
               onClick={handleClickFav}

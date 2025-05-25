@@ -20,8 +20,8 @@ export default function Favorites() {
         const products = data.data; //const products = data.map(mapToUnifiedProduct);
 
         setFavs(products);
-        setIsLoading(false);
       }
+      setIsLoading(false);
     };
 
     getFavsList();

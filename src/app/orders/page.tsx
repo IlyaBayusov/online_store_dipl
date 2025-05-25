@@ -22,8 +22,9 @@ export default function Orders() {
           totalItems: data.totalItems,
           totalPages: data.totalPages,
         });
-        setIsLoading(false);
       }
+
+      setIsLoading(false);
     };
 
     getOrdersList();

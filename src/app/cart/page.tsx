@@ -43,12 +43,12 @@ export default React.memo(function Cart() {
 
       setProducts(products);
       setPagination(pagination);
-      setIsLoading(false);
 
       updatedDataInCart(products, pagination);
 
       getCount(products.length);
     }
+    setIsLoading(false);
   };
 
   console.log(products);
