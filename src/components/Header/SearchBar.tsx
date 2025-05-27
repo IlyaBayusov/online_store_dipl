@@ -11,6 +11,7 @@ import Loader from "../../components/Loader/Loader";
 export default function SearchBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
   const debouncedSearch = useDebounce(searchTerm, 300);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const prevSearch = useRef(debouncedSearch);
@@ -40,6 +41,11 @@ export default function SearchBar() {
     }
   }, [debouncedSearch, updateFilters, fetchProducts]);
 
+  // Отслеживаем состояние загрузки
+  useEffect(() => {
+    setIsSearching(isLoading);
+  }, [isLoading]);
+
   // Обработчик прокрутки для бесконечной загрузки
   const handleScroll = useCallback(
     (e: React.UIEvent<HTMLDivElement>) => {
@@ -57,12 +63,16 @@ export default function SearchBar() {
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
+    const value = e.target.value;
+    setSearchTerm(value);
     setIsOpen(true);
+    if (value) {
+      setIsSearching(true);
+    }
   };
 
   const renderContent = () => {
-    if (isLoading) {
+    if (isSearching) {
       return (
         <div className="py-6">
           <Loader />
@@ -130,7 +140,7 @@ export default function SearchBar() {
         onFocus={() => setIsOpen(true)}
       />
 
-      {isOpen && (searchTerm || isLoading) && (
+      {isOpen && (searchTerm || isSearching) && (
         <div
           className="absolute top-full left-0 right-0 mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-96 overflow-y-auto z-50"
           onScroll={handleScroll}
