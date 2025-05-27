@@ -1,10 +1,10 @@
 import { useCallback, useState } from "react";
 import { IProductCategory, IPagination } from "@/interfaces";
 import axios from "axios";
+import { sizePage } from "@/constans";
 
 interface UseSearchWithFiltersProps {
   initialPage?: number;
-  pageSize?: number;
 }
 
 interface SortOption {
@@ -37,7 +37,6 @@ interface SearchResponse {
 
 export const useSearchWithFilters = ({
   initialPage = 0,
-  pageSize = 10,
 }: UseSearchWithFiltersProps = {}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,19 +45,19 @@ export const useSearchWithFilters = ({
     currentPage: initialPage,
     totalPages: 0,
     totalItems: 0,
-    pageSize,
   });
   const [filters, setFilters] = useState<Filters>({
     sort: "id,desc",
   });
 
   const createSearchParams = useCallback(
-    (page: number, currentFilters: Filters) => {
+    (page: number, currentFilters: Filters, isLoadMore: boolean = false) => {
       const params = new URLSearchParams({
         page: page.toString(),
-        size: pageSize.toString(),
+        size: sizePage.toString(),
         ...(currentFilters.search && { search: currentFilters.search }),
-        ...(currentFilters.sort && { sort: currentFilters.sort }),
+        ...(!isLoadMore &&
+          currentFilters.sort && { sort: currentFilters.sort }),
         ...(currentFilters.minPrice && {
           minPrice: currentFilters.minPrice.toString(),
         }),
@@ -72,11 +71,15 @@ export const useSearchWithFilters = ({
 
       return params;
     },
-    [pageSize]
+    []
   );
 
   const fetchProducts = useCallback(
-    async (page: number = pagination.currentPage, newFilters?: Filters) => {
+    async (
+      page: number = pagination.currentPage,
+      newFilters?: Filters,
+      isLoadMore: boolean = false
+    ) => {
       setIsLoading(true);
       setError(null);
       if (page === 0) {
@@ -85,7 +88,7 @@ export const useSearchWithFilters = ({
 
       try {
         const currentFilters = newFilters || filters;
-        const params = createSearchParams(page, currentFilters);
+        const params = createSearchParams(page, currentFilters, isLoadMore);
 
         const response = await axios.get<SearchResponse>(
           `http://localhost:8080/api/v1/products/search?${params.toString()}`
@@ -101,7 +104,6 @@ export const useSearchWithFilters = ({
           currentPage: response.data.currentPage,
           totalPages: response.data.totalPages,
           totalItems: response.data.totalItems,
-          pageSize,
         });
       } catch (err) {
         setError(
@@ -113,7 +115,7 @@ export const useSearchWithFilters = ({
         setIsLoading(false);
       }
     },
-    [pageSize, filters, createSearchParams]
+    [filters, createSearchParams]
   );
 
   const updateFilters = useCallback((newFilters: Partial<Filters>) => {
@@ -122,7 +124,7 @@ export const useSearchWithFilters = ({
 
   const loadMore = useCallback(() => {
     if (pagination.currentPage < pagination.totalPages - 1) {
-      fetchProducts(pagination.currentPage + 1);
+      fetchProducts(pagination.currentPage + 1, undefined, true);
     }
   }, [pagination.currentPage, pagination.totalPages, fetchProducts]);
 

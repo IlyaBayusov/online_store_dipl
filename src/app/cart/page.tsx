@@ -36,7 +36,6 @@ export default React.memo(function Cart() {
       const products = data.data;
       const pagination = {
         currentPage: data.currentPage,
-        pageSize: data.pageSize,
         totalItems: data.totalItems,
         totalPages: data.totalPages,
       };

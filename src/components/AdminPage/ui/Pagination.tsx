@@ -1,4 +1,5 @@
 import { IPagination } from "@/interfaces";
+import { sizePage } from "@/constans";
 import React from "react";
 import {
   MdOutlineKeyboardArrowLeft,
@@ -21,8 +22,8 @@ export default function Pagination({ pagination }: Props) {
 
       <p className="text-greenT text-sm">
         {pagination
-          ? `${pagination.pageSize * pagination.currentPage + 1}-${
-              pagination.pageSize * pagination.currentPage + pagination.pageSize
+          ? `${sizePage * pagination.currentPage + 1}-${
+              sizePage * pagination.currentPage + sizePage
             } из ${pagination.totalItems}`
           : "Загрузка..."}
       </p>

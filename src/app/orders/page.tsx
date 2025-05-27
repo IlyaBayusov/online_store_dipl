@@ -18,7 +18,6 @@ export default function Orders() {
         setOrders(data.data);
         setPagination({
           currentPage: data.currentPage,
-          pageSize: data.pageSize,
           totalItems: data.totalItems,
           totalPages: data.totalPages,
         });

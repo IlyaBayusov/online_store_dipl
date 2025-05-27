@@ -24,7 +24,7 @@ export default function SearchBar() {
     updateFilters,
     loadMore,
     fetchProducts,
-  } = useSearchWithFilters({ pageSize: 5 });
+  } = useSearchWithFilters();
 
   // Закрываем выпадающий список при клике вне компонента
   useClickOutside(dropdownRef, () => setIsOpen(false));
@@ -37,14 +37,21 @@ export default function SearchBar() {
         const newFilters = { search: debouncedSearch };
         updateFilters(newFilters);
         fetchProducts(0, newFilters);
+      } else {
+        // Очищаем результаты при пустом поиске
+        updateFilters({});
       }
     }
   }, [debouncedSearch, updateFilters, fetchProducts]);
 
   // Отслеживаем состояние загрузки
   useEffect(() => {
-    setIsSearching(isLoading);
-  }, [isLoading]);
+    if (!searchTerm) {
+      setIsSearching(false);
+    } else {
+      setIsSearching(isLoading || debouncedSearch !== searchTerm);
+    }
+  }, [isLoading, searchTerm, debouncedSearch]);
 
   // Обработчик прокрутки для бесконечной загрузки
   const handleScroll = useCallback(
@@ -65,10 +72,8 @@ export default function SearchBar() {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
-    setIsOpen(true);
-    if (value) {
-      setIsSearching(true);
-    }
+    setIsOpen(!!value);
+    setIsSearching(!!value);
   };
 
   const renderContent = () => {
@@ -90,7 +95,7 @@ export default function SearchBar() {
       );
     }
 
-    if (products.length > 0 && searchTerm) {
+    if (products.length > 0 && searchTerm && !isSearching) {
       return (
         <>
           {products.map((product) => (
@@ -137,7 +142,7 @@ export default function SearchBar() {
         className="h-full w-full py-1 px-4 rounded-md text-xs border border-greenT"
         value={searchTerm}
         onChange={handleSearchChange}
-        onFocus={() => setIsOpen(true)}
+        onFocus={() => setIsOpen(!!searchTerm)}
       />
 
       {isOpen && (searchTerm || isSearching) && (
