@@ -1,5 +1,5 @@
 import { api } from "@/axios";
-import { sizePaginationProductsInAdmin } from "@/constans";
+import { sizePage, sizePaginationProductsInAdmin } from "@/constans";
 import {
   IFormDataProfileUserInfo,
   IOrderPost,
@@ -8,6 +8,7 @@ import {
 } from "@/interfaces";
 import { decodeToken } from "@/utils";
 import axios from "axios";
+import qs from "qs";
 
 export const getProductsCart = async () => {
   try {
@@ -327,5 +328,57 @@ export const postViewed = async (productId: number) => {
     return response;
   } catch (error) {
     console.error("Ошибка получения избранных: ", error);
+  }
+};
+
+export const getProductsSearchWithParams = async (
+  page: number = 0,
+  size: number = sizePage,
+  searchParam: string,
+  sortField: string = "id,asc",
+  sizes: string[] = [],
+  colors: string[] = [],
+  minPrice: number | null = null,
+  maxPrice: number | null = null,
+  brands: string[] = [],
+  categoryId: number | null = null
+) => {
+  try {
+    console.log(
+      page,
+      size,
+      sortField,
+      searchParam,
+      sizes,
+      colors,
+      minPrice,
+      maxPrice,
+      brands,
+      categoryId
+    );
+    const response = await api.get(`/v1/products/search`, {
+      params: {
+        ...(page !== undefined && { page }),
+        ...(size !== undefined && { size }),
+        ...(sortField !== undefined && { sortField }),
+        ...(searchParam !== undefined && { searchParam }),
+        ...(sizes !== undefined && { sizes }),
+        ...(colors !== undefined && { colors }),
+        ...(minPrice !== undefined && { minPrice }),
+        ...(maxPrice !== undefined && { maxPrice }),
+        ...(brands !== undefined && { brands }),
+        ...(categoryId !== undefined && { categoryId }),
+      },
+      paramsSerializer: (params) =>
+        qs.stringify(params, { arrayFormat: "repeat" }),
+    });
+
+    const data = await response.data;
+
+    console.log(data);
+
+    return data;
+  } catch (error) {
+    console.error("Ошибка получения товаров по поиску: ", error);
   }
 };

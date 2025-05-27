@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  IOrderDetails,
-  IOrderPost,
-  IPagination,
-  IProductInCart,
-} from "@/interfaces";
+import { IOrderDetails, IOrderPost, IProductInCart } from "@/interfaces";
 import React, { useEffect, useState } from "react";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { decodeToken } from "@/utils";
@@ -13,12 +8,14 @@ import { getProductsCart, postByProducts } from "@/api";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/stores/useCartStore";
 import { useForm } from "react-hook-form";
-import { authPage } from "@/constans";
+import { authPage, ordersPage } from "@/constans";
+import PaymentPage from "@/components/PaymentPage/PaymentPage";
 
 export default React.memo(function FormByCart() {
   const [products, setProducts] = useState<IProductInCart[]>([]);
-
   const [sum, setSum] = useState<number>(0);
+  const [showPayment, setShowPayment] = useState(false);
+  const [orderData, setOrderData] = useState<IOrderPost | null>(null);
 
   const {
     formState: { errors, isValid },
@@ -81,15 +78,14 @@ export default React.memo(function FormByCart() {
       orderItemRequest: cart ? cart : products,
     };
 
-    console.log(newOrder);
-
-    const response = await postByProducts(newOrder);
-
-    if (response) {
-      router.push(`/orders`);
-      updatedDataInCart([], {} as IPagination);
-    }
+    // Instead of creating order immediately, store the data and show payment page
+    setOrderData(newOrder);
+    setShowPayment(true);
   };
+
+  if (showPayment && orderData) {
+    return <PaymentPage orderData={orderData} />;
+  }
 
   return (
     <>

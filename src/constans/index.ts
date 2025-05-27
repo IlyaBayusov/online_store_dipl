@@ -27,7 +27,15 @@ export const modalSuccessOrder = "modalSuccessOrder";
 export const modalNewProductAdmin = "modalNewProductAdmin";
 export const modalDeleteEditNewProduct = "modalDeleteEditNewProduct";
 
+export const filtersKeyProductsPage = "filtersKeyProductsPage";
+export const filtersKeyModalNav = "filtersKeyModalNav";
+
+export const sizePage = 2;
+
 export const sizePaginationProductsInAdmin = 2;
+
+export const maxPagesInPagination = 9;
+export const maxButtonsUpToDotsInPagin = maxPagesInPagination - 2;
 
 export const nameTitlePopularProducts = "Новинки";
 export const nameTitleFavoritsProducts = "Избранные";
@@ -38,6 +46,29 @@ export const roleAdmin = "ADMIN";
 export const roleUser = "USER";
 
 export const amountImagesInAdmin = 5;
+
+export const filtersUpDown = [
+  {
+    id: 0,
+    name: "Новые",
+    value: "id,desc",
+  },
+  {
+    id: 1,
+    name: "Старые",
+    value: "id,asc",
+  },
+  {
+    id: 2,
+    name: "Дорогие",
+    value: "price,desc",
+  },
+  {
+    id: 3,
+    name: "Дешевые",
+    value: "price,asc",
+  },
+];
 
 export const categoryComp: Record<string, React.ElementType> = {
   mobile_phones: CMobilePhones,

@@ -250,3 +250,9 @@ export interface IGetUserInfoInProfile {
   username: string;
   email: string;
 }
+
+export interface IFiltersUpDown {
+  id: number;
+  name: string;
+  value: string;
+}
