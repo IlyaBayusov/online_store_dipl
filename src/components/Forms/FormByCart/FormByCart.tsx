@@ -16,18 +16,21 @@ export default React.memo(function FormByCart() {
   const [sum, setSum] = useState<number>(0);
   const [showPayment, setShowPayment] = useState(false);
   const [orderData, setOrderData] = useState<IOrderPost | null>(null);
+  const [errorSubmit, setErrorSubmit] = useState<string>("");
 
   const {
     formState: { errors, isValid },
     handleSubmit,
     register,
     setValue,
-  } = useForm<IOrderDetails>({ mode: "onBlur" });
+  } = useForm<IOrderDetails>({
+    mode: "onBlur",
+    defaultValues: {
+      paymentMethod: "CASH",
+    },
+  });
 
   const { cart, updatedDataInCart } = useCartStore();
-
-  const [errorSubmit, setErrorSubmit] = useState<string>("");
-
   const router = useRouter();
 
   useEffect(() => {
@@ -59,8 +62,6 @@ export default React.memo(function FormByCart() {
       return;
     }
 
-    console.log("render");
-
     setErrorSubmit("");
 
     const decoded = decodeToken();
@@ -78,9 +79,29 @@ export default React.memo(function FormByCart() {
       orderItemRequest: cart ? cart : products,
     };
 
-    // Instead of creating order immediately, store the data and show payment page
-    setOrderData(newOrder);
-    setShowPayment(true);
+    // Если оплата наличными, создаем заказ сразу
+    if (formData.paymentMethod === "CASH") {
+      try {
+        const response = await postByProducts(newOrder);
+        if (response) {
+          updatedDataInCart([], {
+            currentPage: 1,
+            totalPages: 1,
+            totalItems: 0,
+            pageSize: 10,
+          });
+          router.push(ordersPage);
+        } else {
+          setErrorSubmit("Не удалось создать заказ");
+        }
+      } catch {
+        setErrorSubmit("Произошла ошибка при создании заказа");
+      }
+    } else {
+      // Если оплата картой, переходим на страницу оплаты
+      setOrderData(newOrder);
+      setShowPayment(true);
+    }
   };
 
   if (showPayment && orderData) {
@@ -102,7 +123,7 @@ export default React.memo(function FormByCart() {
             className="px-2 py-1 w-full rounded-md text-black border border-[#B3B3B3]"
             {...register("address", {
               required: true,
-              maxLength: 80,
+              maxLength: 100,
             })}
           />
           {
@@ -148,7 +169,7 @@ export default React.memo(function FormByCart() {
               className="px-2 py-1 rounded-md text-black border border-[#B3B3B3]"
               {...register("floor", {
                 required: true,
-                max: 100,
+                max: 300,
               })}
             />
           </div>
@@ -296,7 +317,7 @@ export default React.memo(function FormByCart() {
               <RadioGroup.Indicator className="relative flex size-full items-center justify-center after:block after:size-[10px] after:rounded-full after:bg-greenT" />
             </RadioGroup.Item>
             <label className="pl-2 cursor-pointer text-sm" htmlFor="cash">
-              Наличными
+              Наличными курьеру
             </label>
           </div>
 
