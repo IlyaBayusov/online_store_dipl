@@ -23,6 +23,7 @@ import { ICatalog } from "@/interfaces";
 import { useCartStore } from "@/stores/useCartStore";
 import { getProductsCart } from "@/api";
 import { ProfileDropDownMenu } from "./DropDownMenu/ProfileDDM";
+import SearchBar from "./Header/SearchBar";
 
 export default function Header() {
   const [selectedCategoryNameSecond, setSelectedCategoryNameSecond] =
@@ -193,14 +194,7 @@ export default function Header() {
               </div> */}
 
               <div className="h-6 flex-grow flex items-center rounded-md">
-                <input
-                  type="text"
-                  placeholder="Я ищу..."
-                  className="h-full max-w-96 w-full py-1 px-4 rounded-s-md text-xs border border-greenT"
-                />
-                <button className="h-full px-1  bg-greenT rounded-e-md">
-                  <IoIosSearch className="h-4 w-4 text-white" />
-                </button>
+                <SearchBar />
               </div>
             </div>
           </header>

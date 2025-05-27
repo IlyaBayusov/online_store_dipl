@@ -12,6 +12,7 @@ export interface ICatalog {
 export interface IProductCategory {
   productId: number;
   categoryName: string;
+  brand: string;
   name: string;
   image: string;
   price: number;
