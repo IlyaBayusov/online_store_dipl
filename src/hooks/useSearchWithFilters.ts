@@ -7,18 +7,6 @@ interface UseSearchWithFiltersProps {
   initialPage?: number;
 }
 
-interface SortOption {
-  value: string;
-  label: string;
-}
-
-export const sortOptions: SortOption[] = [
-  { value: "id,desc", label: "Более новые" },
-  { value: "id,asc", label: "Более старые" },
-  { value: "price,desc", label: "По цене, убывание" },
-  { value: "price,asc", label: "По цене, возрастание" },
-];
-
 interface Filters {
   search?: string;
   colors?: string[];

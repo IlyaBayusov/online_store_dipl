@@ -45,9 +45,9 @@ export default function OrdersAccordion({ orders }: Props) {
                   </p>
 
                   {getPaymentMethod(order.paymentMethod) === "Картой" && (
-                    <button className="px-3 py-1 rounded-md bg-greenT text-white">
-                      Оплатить
-                    </button>
+                    <p className="px-2 py-px rounded-[4px] text-white text-xs bg-greenT">
+                      Оплачено
+                    </p>
                   )}
                 </div>
               </div>

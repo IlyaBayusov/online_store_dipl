@@ -54,7 +54,7 @@ export const putProductCart = async (
   }
 };
 
-export const getOrders = async () => {
+export const getOrders = async (page = 0, size = 10, sortField = "id,desc") => {
   try {
     const decodedToken = decodeToken();
 
@@ -63,12 +63,14 @@ export const getOrders = async () => {
       return;
     }
 
-    const response = await api.get(`/v1/orders/${decodedToken.id}`);
+    const response = await api.get(
+      `/v1/orders/${decodedToken.id}?page=${page}&size=${size}&sortField=${sortField}`
+    );
     const data = await response.data;
 
     return data;
   } catch (error) {
-    console.error("Ошибка получения товаров из корзины: ", error);
+    console.error("Ошибка получения заказов: ", error);
   }
 };
 

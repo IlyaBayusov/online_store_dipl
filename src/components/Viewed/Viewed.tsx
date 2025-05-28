@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { Carousel } from "../Carousels/Carousel/Carousel";
 import { EmblaOptionsType } from "embla-carousel";
 import { IProductCategory } from "@/interfaces";
@@ -16,7 +16,11 @@ type Props = {
 export default function Viewed({ viewed }: Props) {
   const groupedSlides = useMemo(() => {
     const result: JSX.Element[] = [];
-    const copyViewed = [...viewed];
+    const uniqueViewed = viewed.filter(
+      (item, index, self) =>
+        index === self.findIndex((t) => t.productId === item.productId)
+    );
+    const copyViewed = [...uniqueViewed];
 
     while (copyViewed.length) {
       const group = copyViewed.splice(0, 3);

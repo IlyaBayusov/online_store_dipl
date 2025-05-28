@@ -30,7 +30,7 @@ export const modalDeleteEditNewProduct = "modalDeleteEditNewProduct";
 export const filtersKeyProductsPage = "filtersKeyProductsPage";
 export const filtersKeyModalNav = "filtersKeyModalNav";
 
-export const sizePage = 1;
+export const sizePage = 2;
 
 export const sizePaginationProductsInAdmin = 2;
 
@@ -47,28 +47,14 @@ export const roleUser = "USER";
 
 export const amountImagesInAdmin = 5;
 
-export const filtersUpDown = [
-  {
-    id: 0,
-    name: "Новые",
-    value: "id,desc",
-  },
-  {
-    id: 1,
-    name: "Старые",
-    value: "id,asc",
-  },
-  {
-    id: 2,
-    name: "Дорогие",
-    value: "price,desc",
-  },
-  {
-    id: 3,
-    name: "Дешевые",
-    value: "price,asc",
-  },
-];
+export const SORT_OPTIONS = [
+  { value: "id,desc", label: "Более новые" },
+  { value: "id,asc", label: "Более старые" },
+  { value: "price,desc", label: "По цене, убыв." },
+  { value: "price,asc", label: "По цене, возр." },
+] as const;
+
+export const PAGE_SIZE_OPTIONS = [5, 10, 15, 20] as const;
 
 export const categoryComp: Record<string, React.ElementType> = {
   mobile_phones: CMobilePhones,

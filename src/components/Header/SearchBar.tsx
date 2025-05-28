@@ -14,6 +14,7 @@ export default function SearchBar() {
   const [isSearching, setIsSearching] = useState(false);
   const debouncedSearch = useDebounce(searchTerm, 300);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
   const prevSearch = useRef(debouncedSearch);
 
   const {
@@ -28,6 +29,28 @@ export default function SearchBar() {
 
   // Закрываем выпадающий список при клике вне компонента
   useClickOutside(dropdownRef, () => setIsOpen(false));
+
+  // Проверяем наличие скролла и при необходимости подгружаем данные
+  const checkScrollAndLoadMore = useCallback(() => {
+    if (!resultsRef.current || isLoading || !pagination || !searchTerm) return;
+
+    const { scrollHeight, clientHeight } = resultsRef.current;
+
+    // Если контент меньше высоты контейнера и есть ещё страницы
+    if (
+      scrollHeight <= clientHeight &&
+      pagination.currentPage < pagination.totalPages - 1
+    ) {
+      loadMore();
+    }
+  }, [isLoading, pagination, loadMore, searchTerm]);
+
+  // Вызываем проверку после каждой загрузки данных
+  useEffect(() => {
+    if (!isLoading && searchTerm) {
+      checkScrollAndLoadMore();
+    }
+  }, [isLoading, checkScrollAndLoadMore, searchTerm]);
 
   // Обновляем поиск только при изменении debounced значения
   useEffect(() => {
@@ -147,6 +170,7 @@ export default function SearchBar() {
 
       {isOpen && (searchTerm || isSearching) && (
         <div
+          ref={resultsRef}
           className="absolute top-full left-0 right-0 mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-96 overflow-y-auto z-50"
           onScroll={handleScroll}
         >
