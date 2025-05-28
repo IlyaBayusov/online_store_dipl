@@ -14,6 +14,7 @@ import { api } from "@/axios";
 import Link from "next/link";
 import CartBtn from "@/components/Buttons/CartBtn/CartBtn";
 import { useCartStore } from "@/stores/useCartStore";
+import { useFavStore } from "@/stores/useFavStore";
 
 type Props = { productCard: IProductsCardBody; params: IProductsCardParams };
 
@@ -25,6 +26,7 @@ export default React.memo(
     const [showedFav, setShowedFav] = useState<boolean>(true);
 
     const { deleteProductInCart, updatedDataInCart } = useCartStore();
+    const { removeFavProduct } = useFavStore();
 
     useEffect(() => {
       setActiveBtnFav();
@@ -76,15 +78,14 @@ export default React.memo(
 
     const handleClickFav = async () => {
       const favoriteId = await setActiveBtnFav();
-
-      const decodedToken: IDecodedToken = decodeToken();
+      const decodedToken = decodeToken();
+      if (!decodedToken) return;
 
       if (isActiveFav && favoriteId) {
         setIsActiveFav(false);
         //удаление из избранных
         await api.delete(`/v1/favorites/${favoriteId}`);
-
-        window.location.reload();
+        removeFavProduct(productCard.productId);
       } else {
         setIsActiveFav(true);
         //добавление в избранные
@@ -196,7 +197,9 @@ export default React.memo(
             </div>
 
             <div className="mt-3 flex flex-grow flex-col items-start gap-1">
-              <p className="text-sm text-start">{productCard.brand}</p>
+              {productCard?.brand && (
+                <p className="text-sm text-start">{productCard.brand}</p>
+              )}
               {params.quantity && (
                 <p className="text-sm text-start">
                   Количество: {productCard.quantity} шт.

@@ -84,7 +84,7 @@ export const postFav = async (fav: IPostFav) => {
   }
 };
 
-export const getFav = async () => {
+export const getFav = async (page = 0, size = sizePage, sort = "id,desc") => {
   try {
     const decodedToken = decodeToken();
 
@@ -93,12 +93,15 @@ export const getFav = async () => {
       return;
     }
 
-    const response = await api.get(`/v1/favorites/${decodedToken.id}`);
+    const response = await api.get(
+      `/v1/favorites/${decodedToken.id}?page=${page}&size=${size}&sort=${sort}`
+    );
     const data = await response.data;
 
     return data;
   } catch (error) {
     console.error("Ошибка получения избранных: ", error);
+    throw error;
   }
 };
 
