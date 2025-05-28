@@ -54,7 +54,7 @@ export const SORT_OPTIONS = [
   { value: "price,asc", label: "По цене, возр." },
 ] as const;
 
-export const PAGE_SIZE_OPTIONS = [5, 10, 15, 20] as const;
+export const PAGE_SIZE_OPTIONS = [5, 10, 20, 50] as const;
 
 export const categoryComp: Record<string, React.ElementType> = {
   mobile_phones: CMobilePhones,
