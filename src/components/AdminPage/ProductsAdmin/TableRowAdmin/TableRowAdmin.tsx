@@ -7,6 +7,8 @@ import { useModalStore } from "@/stores/useModalStore";
 import Image from "next/image";
 import React, { useState } from "react";
 import { CiSettings } from "react-icons/ci";
+import { IoCheckmark } from "react-icons/io5";
+import { IoClose } from "react-icons/io5";
 
 type Props = {
   product: IProductInfo;
@@ -17,10 +19,15 @@ export default function TableRowAdmin({ product }: Props) {
   const { openModal, addModalProps } = useModalStore();
 
   const handleClickIsActive = async (productId: number) => {
-    const response = await postEnableProductAdmin(productId, !isActive);
+    try {
+      const newStatus = !isActive;
+      const response = await postEnableProductAdmin(productId, newStatus);
 
-    if (response) {
-      setIsActive((prev) => !prev);
+      if (response?.status === 200) {
+        setIsActive(newStatus);
+      }
+    } catch (error) {
+      console.error("Error updating product status:", error);
     }
   };
 
@@ -54,20 +61,29 @@ export default function TableRowAdmin({ product }: Props) {
       <td>{product.price}</td>
       <td>{product.quantities}</td>
       <td>
-        <div className="flex items-center gap-2">
-          <button
-            className={`px-2 py-1 rounded-md text-white ${
-              isActive ? "bg-greenT" : "bg-red-500"
-            }`}
-            onClick={() => handleClickIsActive(product.id)}
-          >
-            {isActive ? "Активен" : "Не активен"}
-          </button>
-
-          <button className="py-1 px-2" onClick={handleEdit}>
-            <CiSettings className="h-6 w-6 p-px" />
-          </button>
+        <div className="flex justify-center items-center gap-2">
+          {isActive ? (
+            <button
+              className="px-2 py-1 rounded-md text-white bg-greenT"
+              onClick={() => handleClickIsActive(product.id)}
+            >
+              <IoCheckmark className="h-5 w-5" />
+            </button>
+          ) : (
+            <button
+              className="px-2 py-1 rounded-md text-white bg-red-500"
+              onClick={() => handleClickIsActive(product.id)}
+            >
+              <IoClose className="h-5 w-5" />
+            </button>
+          )}
         </div>
+      </td>
+
+      <td>
+        <button className="py-1 px-2" onClick={handleEdit}>
+          <CiSettings className="h-6 w-6 p-px" />
+        </button>
       </td>
     </tr>
   );

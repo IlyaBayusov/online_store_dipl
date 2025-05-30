@@ -162,7 +162,7 @@ export const postEnableProductAdmin = async (
     const response = await api.post(`/v1/products/enable/${productId}`, {
       enable: String(enable).toUpperCase(),
     });
-    return response.data;
+    return response;
   } catch (error) {
     console.error("ERROR ENABLE PRODUCT", error);
   }
