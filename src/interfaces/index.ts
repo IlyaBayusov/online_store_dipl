@@ -19,17 +19,18 @@ export interface IProductCategory {
 }
 
 export interface IProductInfo {
-  categoryName: string;
-  groupId: number;
   id: number;
+  groupId: number;
   name: string;
+  brand: string;
+  categoryName: string;
   color: string;
-  isActive: boolean;
   description: string;
   price: number;
+  characteristics: string;
   quantities: number;
   images: string[];
-  characteristics: string;
+  isActive: boolean;
 }
 
 export interface IDecodedToken {
@@ -148,9 +149,15 @@ export interface IPostNewProduct {
 }
 
 export interface IPagination {
+  currentItems: number;
   currentPage: number;
   totalItems: number;
   totalPages: number;
+}
+
+export interface ISizeAndQuantity {
+  size: string;
+  quantity: number;
 }
 
 export interface IProductsCardParams {

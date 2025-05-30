@@ -2,6 +2,14 @@ import { getProductAdmin } from "@/api";
 import { IPagination, IProductInfo } from "@/interfaces";
 import { create } from "zustand";
 
+interface IProductsResponse {
+  products: IProductInfo[];
+  currentItems: number;
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+}
+
 interface IPaginationState {
   products: IProductInfo[];
   pagination: IPagination;
@@ -9,36 +17,52 @@ interface IPaginationState {
   setIsLoading: (isLoading: boolean) => void;
   setProducts: (products: IProductInfo[]) => void;
   setPagination: (pagination: IPagination) => void;
-  getProducts: (page?: number) => Promise<void>;
+  getProducts: (page?: number) => Promise<IProductsResponse | null>;
 }
 
 export const usePaginationAdmin = create<IPaginationState>((set) => ({
   products: [],
   pagination: {
-    pageSize: 0,
+    currentItems: 0,
     currentPage: 0,
     totalPages: 0,
     totalItems: 0,
   },
-  isLoading: true,
+  isLoading: false,
   setIsLoading: (isLoading: boolean) => set({ isLoading }),
   setProducts: (products: IProductInfo[]) => set({ products }),
   setPagination: (pagination: IPagination) => set({ pagination }),
   getProducts: async (page = 0) => {
-    set({ isLoading: true });
-    const data = await getProductAdmin(page);
-    if (data) {
-      console.log(data);
-      set({ isLoading: false });
-      set({ products: data.products });
+    try {
+      const response = await getProductAdmin(page);
+
+      if (!response) {
+        return null;
+      }
+
       set({
+        products: response.products || [],
         pagination: {
-          pageSize: data.pageSize,
-          currentPage: data.currentPage,
-          totalPages: data.totalPages,
-          totalItems: data.totalItems,
+          currentItems: response.currentItems || 0,
+          currentPage: response.currentPage || 0,
+          totalPages: response.totalPages || 0,
+          totalItems: response.totalItems || 0,
         },
       });
+
+      return response;
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      set({
+        products: [],
+        pagination: {
+          currentItems: 0,
+          currentPage: 0,
+          totalPages: 0,
+          totalItems: 0,
+        },
+      });
+      return null;
     }
   },
 }));

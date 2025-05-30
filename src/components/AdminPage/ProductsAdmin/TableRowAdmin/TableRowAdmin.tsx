@@ -1,7 +1,9 @@
 "use client";
 
-import { postEnableProductAdmin } from "@/api";
+import { getProductById, postEnableProductAdmin } from "@/api";
+import { modalEditProductAdmin } from "@/constans";
 import { IProductInfo } from "@/interfaces";
+import { useModalStore } from "@/stores/useModalStore";
 import Image from "next/image";
 import React, { useState } from "react";
 import { CiSettings } from "react-icons/ci";
@@ -10,12 +12,28 @@ type Props = { product: IProductInfo };
 
 export default function TableRowAdmin({ product }: Props) {
   const [isActive, setIsActive] = useState<boolean>(product.isActive);
+  const { openModal, addModalProps } = useModalStore();
 
   const handleClickIsActive = async (productId: number) => {
-    const data = await postEnableProductAdmin(productId, !isActive);
+    const response = await postEnableProductAdmin(productId, !isActive);
 
-    if (data) {
+    if (response) {
       setIsActive((prev) => !prev);
+    }
+  };
+
+  const handleEdit = async () => {
+    try {
+      const productData = await getProductById(product.id);
+      if (productData) {
+        const productToEdit = Array.isArray(productData)
+          ? productData[0]
+          : productData;
+        addModalProps(modalEditProductAdmin, productToEdit);
+        openModal(modalEditProductAdmin);
+      }
+    } catch (error) {
+      console.error("Error fetching product details:", error);
     }
   };
 
@@ -44,17 +62,21 @@ export default function TableRowAdmin({ product }: Props) {
       <td>{product.price}</td>
       <td>{product.quantities}</td>
       <td>
-        <button onClick={() => handleClickIsActive(product.id)}>
-          {isActive ? "Вкл." : "Выкл."}
-        </button>
-      </td>
-      {/* <td className="h-full">
-        <div className="flex justify-center items-center ">
-          <button className="py-1 px-2">
+        <div className="flex items-center gap-2">
+          <button
+            className={`px-2 py-1 rounded-md text-white ${
+              isActive ? "bg-greenT" : "bg-red-500"
+            }`}
+            onClick={() => handleClickIsActive(product.id)}
+          >
+            {isActive ? "Активен" : "Не активен"}
+          </button>
+
+          <button className="py-1 px-2" onClick={handleEdit}>
             <CiSettings className="h-6 w-6 p-px" />
           </button>
         </div>
-      </td> */}
+      </td>
     </tr>
   );
 }

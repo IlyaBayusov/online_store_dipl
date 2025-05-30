@@ -9,6 +9,7 @@ import ModalCartDeleteProduct from "@/components/Modals/ModalCartDeleteProduct";
 import ModalSuccessOrder from "@/components/Modals/ModalSuccessOrder";
 import ModalNewProductAdmin from "@/components/Modals/ModalNewProductAdmin";
 import ModalDeleteEditNewProduct from "@/components/Modals/ModalDeleteEditNewProduct";
+import ModalEditProductAdmin from "@/components/Modals/ModalEditProductAdmin";
 
 const roboto = Roboto({
   weight: ["400", "500", "700"],
@@ -43,6 +44,7 @@ export default function RootLayout({
           <ModalSuccessOrder />
           <ModalNewProductAdmin />
           <ModalDeleteEditNewProduct />
+          <ModalEditProductAdmin />
 
           <Footer />
         </div>

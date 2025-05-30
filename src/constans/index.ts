@@ -26,6 +26,7 @@ export const modalCartDeleteProduct = "modalCartDeleteProduct";
 export const modalSuccessOrder = "modalSuccessOrder";
 export const modalNewProductAdmin = "modalNewProductAdmin";
 export const modalDeleteEditNewProduct = "modalDeleteEditNewProduct";
+export const modalEditProductAdmin = "modalEditProductAdmin";
 
 export const filtersKeyProductsPage = "filtersKeyProductsPage";
 export const filtersKeyModalNav = "filtersKeyModalNav";
