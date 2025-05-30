@@ -10,6 +10,7 @@ import {
   MdOutlineKeyboardDoubleArrowRight,
 } from "react-icons/md";
 import { FaPlus } from "react-icons/fa6";
+import { IoRefresh } from "react-icons/io5";
 import { useModalStore } from "@/stores/useModalStore";
 import { modalNewProductAdmin } from "@/constans";
 import { getProductAdmin, getSearchAdmin } from "@/api";
@@ -109,7 +110,16 @@ export default function AdminMenu() {
         </div>
       </div>
 
-      <div className="py-1 flex justify-center items-center gap-1 bg-white border-b">
+      <div className="relative py-1 flex justify-center items-center gap-1 bg-white border-b">
+        <div className="absolute top-1/2 left-3 z-10 -translate-y-1/2">
+          <button
+            onClick={() => loadProducts(pagination.currentPage)}
+            className="px-2 py-1 rounded-md bg-greenT hover:bg-opacity-90"
+          >
+            <IoRefresh className="h-5 w-5 text-white" />
+          </button>
+        </div>
+
         <button
           className="flex justify-center items-center h-8 w-8 bg-greenT rounded-full hover:bg-opacity-90"
           onClick={() => openModal(modalNewProductAdmin)}

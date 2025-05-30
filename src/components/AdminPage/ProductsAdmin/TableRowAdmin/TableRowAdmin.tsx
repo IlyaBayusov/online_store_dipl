@@ -1,6 +1,6 @@
 "use client";
 
-import { getProductById, postEnableProductAdmin } from "@/api";
+import { postEnableProductAdmin } from "@/api";
 import { modalEditProductAdmin } from "@/constans";
 import { IProductInfo } from "@/interfaces";
 import { useModalStore } from "@/stores/useModalStore";
@@ -8,7 +8,9 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { CiSettings } from "react-icons/ci";
 
-type Props = { product: IProductInfo };
+type Props = {
+  product: IProductInfo;
+};
 
 export default function TableRowAdmin({ product }: Props) {
   const [isActive, setIsActive] = useState<boolean>(product.isActive);
@@ -22,19 +24,9 @@ export default function TableRowAdmin({ product }: Props) {
     }
   };
 
-  const handleEdit = async () => {
-    try {
-      const productData = await getProductById(product.id);
-      if (productData) {
-        const productToEdit = Array.isArray(productData)
-          ? productData[0]
-          : productData;
-        addModalProps(modalEditProductAdmin, productToEdit);
-        openModal(modalEditProductAdmin);
-      }
-    } catch (error) {
-      console.error("Error fetching product details:", error);
-    }
+  const handleEdit = () => {
+    addModalProps(modalEditProductAdmin, product);
+    openModal(modalEditProductAdmin);
   };
 
   return (

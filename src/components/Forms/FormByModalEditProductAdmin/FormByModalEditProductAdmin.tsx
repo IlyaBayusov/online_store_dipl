@@ -11,6 +11,7 @@ import { useCharacteristicsStore } from "@/stores/useCharacteristicsStore";
 import { C_mobilePhones } from "@/interfaces/characteristics";
 import { api } from "@/axios";
 import { AxiosError } from "axios";
+import Loader from "@/components/Loader/Loader";
 
 interface IEditProductFormData {
   product: {
@@ -123,6 +124,7 @@ export default function FormByModalEditProductAdmin() {
     }
 
     setErrorSubmit("");
+    setIsLoading(true);
 
     const requestBody = {
       groupId: product.groupId,
@@ -150,8 +152,14 @@ export default function FormByModalEditProductAdmin() {
       setErrorSubmit(
         axiosError.response?.data?.message || "Ошибка при обновлении товара"
       );
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="mt-3">
