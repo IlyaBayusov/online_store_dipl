@@ -4,19 +4,25 @@ import { IOrderDetails, IOrderPost, IProductInCart } from "@/interfaces";
 import React, { useEffect, useState } from "react";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { decodeToken } from "@/utils";
-import { getProductsCart, postByProducts } from "@/api";
+import { getProductsCart, postByProducts, postCount } from "@/api";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/stores/useCartStore";
 import { useForm } from "react-hook-form";
 import { authPage, ordersPage } from "@/constans";
 import PaymentPage from "@/components/PaymentPage/PaymentPage";
+import { saveUnavailableProducts } from "@/utils/localStorage";
 
 export default React.memo(function FormByCart() {
-  const [products, setProducts] = useState<IProductInCart[]>([]);
   const [sum, setSum] = useState<number>(0);
   const [showPayment, setShowPayment] = useState(false);
   const [orderData, setOrderData] = useState<IOrderPost | null>(null);
   const [errorSubmit, setErrorSubmit] = useState<string>("");
+  const [availableProducts, setAvailableProducts] = useState<IProductInCart[]>(
+    []
+  );
+  const [unavailableProducts, setUnavailableProducts] = useState<
+    IProductInCart[]
+  >([]);
 
   const {
     formState: { errors, isValid },
@@ -38,7 +44,7 @@ export default React.memo(function FormByCart() {
       if (cart) {
         const data = await getProductsCart();
         if (data) {
-          setProducts(data);
+          checkProductsAvailability(data.data);
         }
       }
     };
@@ -46,19 +52,41 @@ export default React.memo(function FormByCart() {
     getProductsInCart();
   }, []);
 
+  const checkProductsAvailability = async (products: IProductInCart[]) => {
+    const available: IProductInCart[] = [];
+    const unavailable: IProductInCart[] = [];
+
+    for (const product of products) {
+      const count = await postCount(product.productId);
+      if (count && count.productCount > 0) {
+        available.push(product);
+      } else {
+        unavailable.push(product);
+      }
+    }
+
+    setAvailableProducts(available);
+    setUnavailableProducts(unavailable);
+  };
+
   useEffect(() => {
-    const totalSum = cart.reduce(
+    const totalSum = availableProducts.reduce(
       (acc, product) => acc + product.price * product.quantity,
       0
     );
     setSum(totalSum);
-  }, [cart]);
+  }, [availableProducts]);
 
   console.log(isValid, errors);
 
   const onSubmit = async (formData: IOrderDetails) => {
     if (!isValid) {
       setErrorSubmit("Не все поля заполнены, либо заполнены неверно");
+      return;
+    }
+
+    if (availableProducts.length === 0) {
+      setErrorSubmit("В корзине нет доступных для заказа товаров");
       return;
     }
 
@@ -71,12 +99,17 @@ export default React.memo(function FormByCart() {
       return;
     }
 
+    // Сохраняем недоступные товары в localStorage
+    if (unavailableProducts.length > 0) {
+      saveUnavailableProducts(unavailableProducts);
+    }
+
     const newOrder: IOrderPost = {
       orderDetailsRequest: {
         ...formData,
         userId: decoded.id,
       },
-      orderItemRequest: cart ? cart : products,
+      orderItemRequest: availableProducts,
     };
 
     // Если оплата наличными, создаем заказ сразу
@@ -84,11 +117,11 @@ export default React.memo(function FormByCart() {
       try {
         const response = await postByProducts(newOrder);
         if (response) {
-          updatedDataInCart([], {
+          updatedDataInCart(unavailableProducts, {
             currentPage: 1,
             totalPages: 1,
-            totalItems: 0,
-            pageSize: 10,
+            totalItems: unavailableProducts.length,
+            currentItems: unavailableProducts.length,
           });
           router.push(ordersPage);
         } else {
@@ -110,6 +143,21 @@ export default React.memo(function FormByCart() {
 
   return (
     <>
+      {unavailableProducts.length > 0 && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4 mb-4">
+          <p className="text-yellow-700 text-sm">
+            Некоторые товары недоступны для заказа и будут сохранены в корзине:
+          </p>
+          <ul className="list-disc list-inside mt-2">
+            {unavailableProducts.map((product) => (
+              <li key={product.productId} className="text-sm text-gray-600">
+                {product.productName}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <h1 className="text-lg font-semibold mt-3 mb-3">Адрес доставки</h1>
 
       <form
