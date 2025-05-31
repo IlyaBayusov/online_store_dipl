@@ -59,13 +59,12 @@ export default function AdminMenu() {
 
   useEffect(() => {
     const timer = setTimeout(async () => {
-      if (inputValue.trim()) {
+      if (inputValue || inputValue === "") {
         setIsLoading(true);
         try {
           const response = await getSearchAdmin(inputValue);
-          console.log("Search response:", response);
-          if (response && Array.isArray(response.products)) {
-            setProducts(response.products);
+          if (response && Array.isArray(response.data)) {
+            setProducts(response.data);
             setPagination({
               currentItems: response.currentItems,
               currentPage: response.currentPage,
@@ -113,7 +112,10 @@ export default function AdminMenu() {
       <div className="relative py-1 flex justify-center items-center gap-1 bg-white border-b">
         <div className="absolute top-1/2 left-3 z-10 -translate-y-1/2">
           <button
-            onClick={() => loadProducts(pagination.currentPage)}
+            onClick={() => {
+              setInputValue("");
+              loadProducts(pagination.currentPage);
+            }}
             className="px-2 py-1 rounded-md bg-greenT hover:bg-opacity-90"
           >
             <IoRefresh className="h-5 w-5 text-white" />

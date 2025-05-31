@@ -8,7 +8,6 @@ import {
 } from "@/interfaces";
 import { decodeToken } from "@/utils";
 import axios from "axios";
-import qs from "qs";
 
 export const getProductsCart = async () => {
   try {
@@ -168,14 +167,26 @@ export const postEnableProductAdmin = async (
   }
 };
 
-export const getUsersAdmin = async () => {
+export const getUsersAdmin = async (params?: {
+  page?: number;
+  size?: number;
+  search?: string;
+  sort?: string;
+}) => {
   try {
-    const response = await api.get(`/v1/users`);
+    const response = await api.get(`/v1/users`, {
+      params: {
+        page: params?.page ?? 0,
+        size: params?.size ?? sizePage,
+        search: params?.search ?? "",
+        sort: params?.sort ?? "id,asc",
+      },
+    });
     const data = await response.data;
 
     return data;
   } catch (error) {
-    console.error("Ошибка получения пользователей в админке: ", error);
+    console.error("Ошибка получения пользователей в админке: ", error);
   }
 };
 
@@ -306,105 +317,9 @@ export const getViewed = async () => {
 
     const response = await api.get(`/v1/viewed/${decodedToken.id}`);
     const data = await response.data;
-    console.log(data);
 
     return data;
   } catch (error) {
-    console.error("Ошибка получения избранных: ", error);
-  }
-};
-
-export const postViewed = async (productId: number) => {
-  try {
-    const decodedToken = decodeToken();
-
-    if (!decodedToken?.id) {
-      console.log("Токен не найден или недействителен");
-      return;
-    }
-
-    const response = await api.post(`/v1/viewed`, {
-      userId: decodedToken.id,
-      productId: productId,
-    });
-
-    return response;
-  } catch (error) {
-    console.error("Ошибка получения избранных: ", error);
-  }
-};
-
-export const getProductsSearchWithParams = async (
-  page: number = 0,
-  size: number = sizePage,
-  searchParam: string,
-  sortField: string = "id,asc",
-  sizes: string[] = [],
-  colors: string[] = [],
-  minPrice: number | null = null,
-  maxPrice: number | null = null,
-  brands: string[] = [],
-  categoryId: number | null = null
-) => {
-  try {
-    console.log(
-      page,
-      size,
-      sortField,
-      searchParam,
-      sizes,
-      colors,
-      minPrice,
-      maxPrice,
-      brands,
-      categoryId
-    );
-    const response = await api.get(`/v1/products/search`, {
-      params: {
-        ...(page !== undefined && { page }),
-        ...(size !== undefined && { size }),
-        ...(sortField !== undefined && { sortField }),
-        ...(searchParam !== undefined && { searchParam }),
-        ...(sizes !== undefined && { sizes }),
-        ...(colors !== undefined && { colors }),
-        ...(minPrice !== undefined && { minPrice }),
-        ...(maxPrice !== undefined && { maxPrice }),
-        ...(brands !== undefined && { brands }),
-        ...(categoryId !== undefined && { categoryId }),
-      },
-      paramsSerializer: (params) =>
-        qs.stringify(params, { arrayFormat: "repeat" }),
-    });
-
-    const data = await response.data;
-
-    console.log(data);
-
-    return data;
-  } catch (error) {
-    console.error("Ошибка получения товаров по поиску: ", error);
-  }
-};
-
-export const putProductAdmin = async (
-  productId: number,
-  formData: FormData
-) => {
-  try {
-    const response = await api.put(`/v1/products/${productId}`, formData);
-    return response.data;
-  } catch (error) {
-    console.error("ERROR UPDATE PRODUCT", error);
-    throw error;
-  }
-};
-
-export const getProductById = async (productId: number) => {
-  try {
-    const response = await api.get(`/v1/products/${productId}`);
-    return response.data;
-  } catch (error) {
-    console.error("ERROR GET PRODUCT", error);
-    throw error;
+    console.error("Ошибка получения просмотренных товаров: ", error);
   }
 };
