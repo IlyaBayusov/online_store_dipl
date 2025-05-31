@@ -58,8 +58,8 @@ export const SORT_OPTIONS = [
 export const SORT_OPTIONS_ADMIN = [
   { value: "id,desc", label: "Более новые" },
   { value: "id,asc", label: "Более старые" },
-  // { value: "price,desc", label: "По цене, убыв." },
-  // { value: "price,asc", label: "По цене, возр." },
+  { value: "totalPrice,desc", label: "По цене, убыв." },
+  { value: "totalPrice,asc", label: "По цене, возр." },
 ] as const;
 
 export const PAGE_SIZE_OPTIONS = [5, 10, 20, 50] as const;

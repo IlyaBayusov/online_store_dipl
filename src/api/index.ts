@@ -333,3 +333,15 @@ export const getViewed = async () => {
     console.error("Ошибка получения просмотренных товаров: ", error);
   }
 };
+
+export const putOrderStatus = async (orderId: number, status: string) => {
+  try {
+    const response = await api.put(`/v1/orders/status/${orderId}`, {
+      status: status.toUpperCase(),
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Ошибка изменения статуса заказа:", error);
+    throw error;
+  }
+};

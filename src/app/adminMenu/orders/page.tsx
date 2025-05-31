@@ -1,10 +1,10 @@
 "use client";
 
-import { getOrdersAdmin } from "@/api";
+import { getOrdersAdmin, putOrderStatus } from "@/api";
 import Loader from "@/components/Loader/Loader";
 import { SORT_OPTIONS_ADMIN, sizePage } from "@/constans";
 import { IOrderItems } from "@/interfaces";
-import { getPaymentMethod } from "@/utils";
+import { getPaymentMethod, getStatusRu } from "@/utils";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import {
@@ -26,7 +26,15 @@ interface IOrdersResponse {
 interface OrderDetailsModalProps {
   order: IOrderItems;
   onClose: () => void;
+  onStatusChange: () => void;
 }
+
+const AVAILABLE_STATUSES = [
+  { value: "created", label: "Создан" },
+  { value: "en_route", label: "В пути" },
+  { value: "completed", label: "Доставлен" },
+  { value: "canceled", label: "Отменён" },
+];
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -39,7 +47,30 @@ const formatDate = (dateString: string) => {
   });
 };
 
-function OrderDetailsModal({ order, onClose }: OrderDetailsModalProps) {
+function OrderDetailsModal({
+  order,
+  onClose,
+  onStatusChange,
+}: OrderDetailsModalProps) {
+  const [isUpdating, setIsUpdating] = useState(false);
+  const statusInfo = getStatusRu(order.status);
+
+  const handleStatusChange = async (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const newStatus = e.target.value;
+    setIsUpdating(true);
+
+    try {
+      await putOrderStatus(order.orders[0].orderId, newStatus);
+      await onStatusChange();
+    } catch (error) {
+      console.error("Error updating status:", error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto relative">
@@ -58,7 +89,28 @@ function OrderDetailsModal({ order, onClose }: OrderDetailsModalProps) {
           <div className="grid grid-cols-2 gap-4 text-sm mb-4">
             <div>
               <p className="text-gray-500">Статус заказа</p>
-              <p>{order.status}</p>
+              <div className="flex items-center gap-2 mt-1">
+                {isUpdating ? (
+                  <div className="w-4 h-4 border-2 border-greenT border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <div
+                    className="w-2 h-2 rounded-full"
+                    style={{ backgroundColor: statusInfo.color }}
+                  ></div>
+                )}
+                <select
+                  value={order.status.toLowerCase()}
+                  onChange={handleStatusChange}
+                  disabled={isUpdating}
+                  className="border border-gray-300 rounded px-2 py-1 text-sm"
+                >
+                  {AVAILABLE_STATUSES.map((status) => (
+                    <option key={status.value} value={status.value}>
+                      {status.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
             <div>
               <p className="text-gray-500">Способ оплаты</p>
@@ -124,30 +176,42 @@ export default function OrdersAdmin() {
   );
   const [selectedOrder, setSelectedOrder] = useState<IOrderItems | null>(null);
 
-  useEffect(() => {
-    const getOrders = async () => {
-      setIsLoading(true);
-      try {
-        const response = await getOrdersAdmin({
-          page: currentPage,
-          size: sizePage,
-          sort: sortOption,
-        });
+  const loadOrders = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getOrdersAdmin({
+        page: currentPage,
+        size: sizePage,
+        sort: sortOption,
+      });
 
-        if (response) {
-          const ordersData: IOrdersResponse = response;
-          setOrders(ordersData.data);
-          setTotalPages(ordersData.totalPages);
-          setTotalItems(ordersData.totalItems);
+      if (response) {
+        const ordersData: IOrdersResponse = response;
+        setOrders(ordersData.data);
+        setTotalPages(ordersData.totalPages);
+        setTotalItems(ordersData.totalItems);
+
+        // Обновляем выбранный заказ, если он существует
+        if (selectedOrder) {
+          const updatedOrder = ordersData.data.find(
+            (order) =>
+              order.orders[0].orderId === selectedOrder.orders[0].orderId
+          );
+          if (updatedOrder) {
+            setSelectedOrder(updatedOrder);
+          }
         }
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-        setOrders([]);
-      } finally {
-        setIsLoading(false);
       }
-    };
-    getOrders();
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      setOrders([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadOrders();
   }, [currentPage, sortOption]);
 
   const handlePageChange = (newPage: number) => {
@@ -188,7 +252,14 @@ export default function OrdersAdmin() {
               >
                 <td className="py-2">{order.orders[0].orderId}</td>
                 <td className="py-2">{order.totalPrice} р</td>
-                <td className="py-2">{order.status}</td>
+                <td className="py-2">
+                  <span
+                    className="py-1 px-2 rounded-md text-white"
+                    style={{ backgroundColor: getStatusRu(order.status).color }}
+                  >
+                    {getStatusRu(order.status).value}
+                  </span>
+                </td>
                 <td className="py-2">
                   {getPaymentMethod(order.paymentMethod)}
                 </td>
@@ -292,6 +363,7 @@ export default function OrdersAdmin() {
         <OrderDetailsModal
           order={selectedOrder}
           onClose={() => setSelectedOrder(null)}
+          onStatusChange={loadOrders}
         />
       )}
     </div>
