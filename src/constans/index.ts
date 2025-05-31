@@ -31,7 +31,7 @@ export const modalEditProductAdmin = "modalEditProductAdmin";
 export const filtersKeyProductsPage = "filtersKeyProductsPage";
 export const filtersKeyModalNav = "filtersKeyModalNav";
 
-export const sizePage = 2;
+export const sizePage = 1;
 
 export const sizePaginationProductsInAdmin = 2;
 
@@ -53,6 +53,13 @@ export const SORT_OPTIONS = [
   { value: "id,asc", label: "Более старые" },
   { value: "price,desc", label: "По цене, убыв." },
   { value: "price,asc", label: "По цене, возр." },
+] as const;
+
+export const SORT_OPTIONS_ADMIN = [
+  { value: "id,desc", label: "Более новые" },
+  { value: "id,asc", label: "Более старые" },
+  // { value: "price,desc", label: "По цене, убыв." },
+  // { value: "price,asc", label: "По цене, возр." },
 ] as const;
 
 export const PAGE_SIZE_OPTIONS = [5, 10, 20, 50] as const;

@@ -12,7 +12,6 @@ import {
   MdOutlineKeyboardDoubleArrowLeft,
   MdOutlineKeyboardDoubleArrowRight,
 } from "react-icons/md";
-import { IoSearch } from "react-icons/io5";
 
 interface IUsersResponse {
   currentItems: number;
@@ -30,6 +29,14 @@ export default function ProfilesAdmin() {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [totalItems, setTotalItems] = useState<number>(0);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const decoded = decodeToken();
+    if (decoded?.id) {
+      setCurrentUserId(decoded.id);
+    }
+  }, []);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -44,17 +51,7 @@ export default function ProfilesAdmin() {
 
         if (response) {
           const usersData: IUsersResponse = response;
-          const decoded = decodeToken();
-
-          if (decoded?.id) {
-            const filteredUsers = usersData.data.filter(
-              (user) => user.id !== decoded.id
-            );
-            setUsers(filteredUsers);
-          } else {
-            setUsers([]);
-          }
-
+          setUsers(usersData.data);
           setTotalPages(usersData.totalPages);
           setTotalItems(usersData.totalItems);
         }
@@ -69,6 +66,10 @@ export default function ProfilesAdmin() {
   }, [currentPage, search, role]);
 
   const handleClickIsRole = async (userId: number, userRole: string) => {
+    if (userId === currentUserId) {
+      return;
+    }
+
     const newRole = userRole === roleAdmin ? roleUser : roleAdmin;
 
     try {
@@ -99,9 +100,9 @@ export default function ProfilesAdmin() {
 
     if (users.length) {
       return (
-        <table className="w-[150vw] text-black uppercase text-xs text-center -mx-3 mt-3">
+        <table className="w-[150vw] text-black text-xs text-center mt-3">
           <thead>
-            <tr className="text-greenT text-[10px]">
+            <tr className="text-greenT text-[10px] uppercase">
               <th>ID</th>
               <th>Имя Фамилия</th>
               <th>Логин</th>
@@ -112,7 +113,12 @@ export default function ProfilesAdmin() {
 
           <tbody>
             {users.map((user) => (
-              <tr className="border-b border-slate-300 text-sm" key={user.id}>
+              <tr
+                className={`border-b border-slate-300 text-sm ${
+                  user.id === currentUserId ? "bg-gray-50" : ""
+                }`}
+                key={user.id}
+              >
                 <td className="py-1">{user.id}</td>
                 <td className="py-1">{`${user.firstName} ${user.lastName}`}</td>
                 <td className="py-1">{user.username}</td>
@@ -124,7 +130,17 @@ export default function ProfilesAdmin() {
                       user.role === roleAdmin
                         ? "bg-greenT text-white"
                         : "bg-gray-200"
+                    } ${
+                      user.id === currentUserId
+                        ? "opacity-50 cursor-not-allowed"
+                        : "hover:opacity-90"
                     }`}
+                    disabled={user.id === currentUserId}
+                    title={
+                      user.id === currentUserId
+                        ? "Нельзя изменить свою роль"
+                        : ""
+                    }
                   >
                     {user.role}
                   </button>
@@ -159,21 +175,29 @@ export default function ProfilesAdmin() {
 
       <div className="flex justify-center items-center gap-1 mb-4 py-1 px-3">
         <button
-          className="px-2 py-1 border rounded-md disabled:opacity-50"
+          className="px-2 py-1 border rounded-md"
           onClick={() => handlePageChange(0)}
           disabled={currentPage === 0}
         >
-          <MdOutlineKeyboardDoubleArrowLeft className="h-5 w-5 p-px text-gray-400" />
+          <MdOutlineKeyboardDoubleArrowLeft
+            className={
+              "h-5 w-5 p-px" + (currentPage ? " text-greenT" : " text-gray-400")
+            }
+          />
         </button>
         <button
-          className="px-2 py-1 border rounded-md disabled:opacity-50"
+          className="px-2 py-1 border rounded-md"
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 0}
         >
-          <MdOutlineKeyboardArrowLeft className="h-5 w-5 p-px text-gray-400" />
+          <MdOutlineKeyboardArrowLeft
+            className={
+              "h-5 w-5 p-px" + (currentPage ? " text-greenT" : " text-gray-400")
+            }
+          />
         </button>
 
-        <p className="text-black text-sm">
+        <p className="text-greenT text-sm">
           {`${currentPage * sizePage + 1}-${Math.min(
             (currentPage + 1) * sizePage,
             totalItems
@@ -181,18 +205,32 @@ export default function ProfilesAdmin() {
         </p>
 
         <button
-          className="px-2 py-1 border rounded-md disabled:opacity-50"
+          className="px-2 py-1 border rounded-md"
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage >= totalPages - 1}
         >
-          <MdOutlineKeyboardArrowRight className="h-5 w-5 p-px text-gray-400" />
+          <MdOutlineKeyboardArrowRight
+            className={
+              "h-5 w-5 p-px" +
+              (currentPage >= totalPages - 1
+                ? " text-gray-400"
+                : " text-greenT")
+            }
+          />
         </button>
         <button
-          className="px-2 py-1 border rounded-md disabled:opacity-50"
+          className="px-2 py-1 border rounded-md"
           onClick={() => handlePageChange(totalPages - 1)}
           disabled={currentPage >= totalPages - 1}
         >
-          <MdOutlineKeyboardDoubleArrowRight className="h-5 w-5 p-px text-gray-400" />
+          <MdOutlineKeyboardDoubleArrowRight
+            className={
+              "h-5 w-5 p-px" +
+              (currentPage >= totalPages - 1
+                ? " text-gray-400"
+                : " text-greenT")
+            }
+          />
         </button>
       </div>
 

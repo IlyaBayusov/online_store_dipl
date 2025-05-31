@@ -12,7 +12,7 @@ import {
 import { FaPlus } from "react-icons/fa6";
 import { IoRefresh } from "react-icons/io5";
 import { useModalStore } from "@/stores/useModalStore";
-import { modalNewProductAdmin } from "@/constans";
+import { modalNewProductAdmin, sizePage } from "@/constans";
 import { getProductAdmin, getSearchAdmin } from "@/api";
 import { IProductInfo } from "@/interfaces";
 
@@ -57,42 +57,45 @@ export default function AdminMenu() {
     loadProducts(0);
   }, []);
 
-  useEffect(() => {
-    const timer = setTimeout(async () => {
-      if (inputValue || inputValue === "") {
-        setIsLoading(true);
-        try {
-          const response = await getSearchAdmin(inputValue);
-          if (response && Array.isArray(response.data)) {
-            setProducts(response.data);
-            setPagination({
-              currentItems: response.currentItems,
-              currentPage: response.currentPage,
-              totalPages: response.totalPages,
-              totalItems: response.totalItems,
-            });
-          } else {
-            setProducts([]);
-          }
-        } catch (err) {
-          console.error("Search error:", err);
-          setProducts([]);
-        } finally {
-          setIsLoading(false);
-        }
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [inputValue]);
-
   const handleDoubleLeftClick = () => loadProducts(0);
   const handleLeftClick = () => loadProducts(pagination.currentPage - 1);
   const handleDoubleRightClick = () => loadProducts(pagination.totalPages - 1);
   const handleRightClick = () => loadProducts(pagination.currentPage + 1);
 
-  const handleInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+  let searchTimer: NodeJS.Timeout;
+
+  const handleInputValue = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setInputValue(value);
+
+    // Clear previous timer if exists
+    if (searchTimer) {
+      clearTimeout(searchTimer);
+    }
+
+    // Set new timer
+    searchTimer = setTimeout(async () => {
+      setIsLoading(true);
+      try {
+        const response = await getSearchAdmin(value);
+        if (response && Array.isArray(response.data)) {
+          setProducts(response.data);
+          setPagination({
+            currentItems: response.currentItems,
+            currentPage: response.currentPage,
+            totalPages: response.totalPages,
+            totalItems: response.totalItems,
+          });
+        } else {
+          setProducts([]);
+        }
+      } catch (err) {
+        console.error("Search error:", err);
+        setProducts([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }, 500);
   };
 
   return (
@@ -160,9 +163,12 @@ export default function AdminMenu() {
               />
             </button>
 
-            <p className="text-greenT text-sm">{`${
-              products[products.length - 1]?.id || 0
-            } из ${pagination.totalItems}`}</p>
+            <p className="text-greenT text-sm">
+              {`${pagination.currentPage * sizePage + 1}-${Math.min(
+                (pagination.currentPage + 1) * sizePage,
+                pagination.totalItems
+              )} из ${pagination.totalItems}`}
+            </p>
 
             <button
               className="px-2 py-1 border rounded-md"

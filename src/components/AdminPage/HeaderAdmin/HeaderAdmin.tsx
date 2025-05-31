@@ -25,12 +25,12 @@ export default function HeaderAdmin() {
               <FaUsers className="h-5 w-5 text-white" />
             </Link>
 
-            {/* <Link
+            <Link
               href={adminOrdersPage}
               className="text-sm text-white leading-none py-2"
             >
               Заказы
-            </Link> */}
+            </Link>
             <Link
               href={adminMenuPage}
               className="text-sm text-white leading-none py-2"

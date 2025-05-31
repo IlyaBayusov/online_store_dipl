@@ -132,7 +132,7 @@ export const postProductAdmin = async (product: FormData) => {
 export const getProductAdmin = async (page: number) => {
   try {
     const response = await api.get(
-      `/v1/products/admin?size=${sizePaginationProductsInAdmin}&page=${page}`
+      `/v1/products/admin?size=${sizePage}&page=${page}`
     );
     return response.data;
   } catch (error) {
@@ -203,14 +203,24 @@ export const putUserRoleAdmin = async (userId: number, role: string) => {
   }
 };
 
-export const getOrdersAdmin = async () => {
+export const getOrdersAdmin = async (params?: {
+  page?: number;
+  size?: number;
+  sort?: string;
+}) => {
   try {
-    const response = await api.get(`/v1/orders?size=10`);
+    const response = await api.get(`/v1/orders`, {
+      params: {
+        page: params?.page ?? 0,
+        size: params?.size ?? sizePage,
+        sort: params?.sort ?? "id,desc",
+      },
+    });
     const data = await response.data;
 
     return data;
   } catch (error) {
-    console.error("Ошибка получения товаров из корзины: ", error);
+    console.error("Ошибка получения заказов в админке: ", error);
   }
 };
 
@@ -228,7 +238,7 @@ export const getCategories = async () => {
 export const getSearchAdmin = async (search: string) => {
   try {
     const response = await api.get(
-      `/v1/products/admin?search=${search}&size=${sizePaginationProductsInAdmin}`
+      `/v1/products/admin?search=${search}&size=${sizePage}`
     );
     const data = await response.data;
 
