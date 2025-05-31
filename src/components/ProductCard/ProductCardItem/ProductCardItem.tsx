@@ -55,6 +55,7 @@ export default React.memo(
           pageSize: data.pageSize,
           totalItems: data.totalItems,
           totalPages: data.totalPages,
+          currentItems: products.length,
         };
 
         updatedDataInCart(products, pagination);
@@ -62,37 +63,76 @@ export default React.memo(
     };
 
     async function setActiveBtnFav() {
-      const data = await getFav();
+      try {
+        let allFavorites: { productId: number; favoriteId: number }[] = [];
+        let page = 0;
+        let hasMore = true;
 
-      if (!data) return;
+        // Получаем все избранные товары со всех страниц
+        while (hasMore) {
+          const data = await getFav(page, 100); // Используем большой размер страницы
+          if (!data) break;
 
-      for (const item of data.data) {
-        if (item.productId === productCard.productId) {
-          setIsActiveFav(true);
-          return item.favoriteId;
+          allFavorites = [...allFavorites, ...data.data];
+
+          // Проверяем, есть ли еще страницы
+          hasMore = page < data.totalPages - 1;
+          page++;
         }
-      }
 
-      return;
+        // Проверяем, есть ли текущий товар в избранном
+        const favoriteItem = allFavorites.find(
+          (item) => item.productId === productCard.productId
+        );
+
+        if (favoriteItem) {
+          setIsActiveFav(true);
+          return favoriteItem.favoriteId;
+        }
+
+        setIsActiveFav(false);
+        return undefined;
+      } catch (error) {
+        console.error("Ошибка при проверке избранных товаров:", error);
+        return undefined;
+      }
     }
 
     const handleClickFav = async () => {
       const favoriteId = await setActiveBtnFav();
       const decodedToken = decodeToken();
-      if (!decodedToken) return;
+      if (!decodedToken?.id) return;
 
-      if (isActiveFav && favoriteId) {
-        setIsActiveFav(false);
-        //удаление из избранных
-        await api.delete(`/v1/favorites/${favoriteId}`);
-        removeFavProduct(productCard.productId);
-      } else {
-        setIsActiveFav(true);
-        //добавление в избранные
-        await postFav({
-          userId: decodedToken.id,
-          productId: productCard.productId,
-        });
+      try {
+        if (isActiveFav && favoriteId) {
+          setIsActiveFav(false);
+          //удаление из избранных
+          await api.delete(`/v1/favorites/${favoriteId}`);
+          removeFavProduct(productCard.productId);
+        } else {
+          setIsActiveFav(true);
+          //добавление в избранные
+          const response = await postFav({
+            userId: decodedToken.id,
+            productId: productCard.productId,
+          });
+          if (response) {
+            // Получаем обновленные данные с сервера
+            const updatedData = await getFav();
+            if (updatedData) {
+              // Обновляем store с актуальными данными
+              useFavStore.getState().updateFavData(updatedData.data, {
+                currentPage: updatedData.currentPage,
+                totalItems: updatedData.totalItems,
+                totalPages: updatedData.totalPages,
+                currentItems: updatedData.data.length,
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Ошибка при работе с избранным:", error);
+        setIsActiveFav(!isActiveFav); // Возвращаем состояние обратно в случае ошибки
       }
     };
 

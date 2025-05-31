@@ -5,6 +5,7 @@ interface IFavStore {
   favProducts: IProductsCardBody[];
   pagination: IPagination | undefined;
   removeFavProduct: (productId: number) => void;
+  addFavProduct: (product: IProductsCardBody) => void;
   updateFavData: (
     products: IProductsCardBody[],
     pagination: IPagination
@@ -24,6 +25,17 @@ export const useFavStore = create<IFavStore>((set) => ({
         ? {
             ...state.pagination,
             totalItems: state.pagination.totalItems - 1,
+          }
+        : undefined,
+    })),
+
+  addFavProduct: (product: IProductsCardBody) =>
+    set((state) => ({
+      favProducts: [...state.favProducts, product],
+      pagination: state.pagination
+        ? {
+            ...state.pagination,
+            totalItems: state.pagination.totalItems + 1,
           }
         : undefined,
     })),
