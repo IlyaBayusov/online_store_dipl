@@ -1,9 +1,12 @@
+import Loader from "@/components/Loader/Loader";
 import ProductInfo from "@/components/ProductInfo/ProductInfo";
 import { categoriesList } from "@/constans";
 import { IProductInfo } from "@/interfaces/index";
 import axios from "axios";
 import { notFound } from "next/navigation";
 import React from "react";
+
+export const dynamic = "force-dynamic";
 
 const fetchProducts = async (productId: string) => {
   try {
@@ -65,5 +68,5 @@ export default async function Product({
       />
     );
 
-  return <h1>Loading</h1>;
+  return <Loader />;
 }

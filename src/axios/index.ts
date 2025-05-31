@@ -161,3 +161,23 @@ export const getProductsMainPage = async () => {
     console.log("Ошибка отправки запроса получения продуктов, главная", error);
   }
 };
+
+export const postViewed = async (productId: number) => {
+  try {
+    const decodedToken = decodeToken();
+
+    if (!decodedToken?.id) {
+      console.log("Токен не найден или недействителен");
+      return;
+    }
+
+    const response = await axios.post(`http://localhost:8080/api/v1/viewed`, {
+      userId: decodedToken.id,
+      productId: productId,
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Ошибка изменения статуса заказа:", error);
+  }
+};

@@ -31,6 +31,9 @@ export default function FormByModalEditProductAdmin() {
   const [errorSubmit, setErrorSubmit] = useState<string>("");
   const [categories, setCategories] = useState<ICategories[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [parsedCharacteristics, setParsedCharacteristics] = useState<
+    C_mobilePhones | undefined
+  >();
 
   const product = modalsProps[modalEditProductAdmin] as IProductInfo;
 
@@ -66,17 +69,15 @@ export default function FormByModalEditProductAdmin() {
           setCategories(categoriesData.data);
         }
 
-        // Установка характеристик
+        // Парсим характеристики из JSON
         if (product.characteristics) {
           try {
-            const parsedCharacteristics = JSON.parse(product.characteristics);
-            updateData(parsedCharacteristics);
+            const parsed = JSON.parse(product.characteristics);
+            setParsedCharacteristics(parsed);
           } catch (e) {
             console.error("Error parsing characteristics:", e);
-            updateData({} as C_mobilePhones);
+            setParsedCharacteristics(undefined);
           }
-        } else {
-          updateData({} as C_mobilePhones);
         }
 
         // ВАЖНО: обновляем значения формы
@@ -112,12 +113,7 @@ export default function FormByModalEditProductAdmin() {
       return;
     }
 
-    // Проверяем характеристики только если они были изменены
-    if (
-      data.product.categoryName &&
-      !isValidChar &&
-      Object.keys(characteristics).length > 0
-    ) {
+    if (!isValidChar && categoryName) {
       setIsSubmitChar(true);
       setErrorSubmit("Заполните характеристики товара");
       return;
@@ -125,6 +121,24 @@ export default function FormByModalEditProductAdmin() {
 
     setErrorSubmit("");
     setIsLoading(true);
+
+    // Преобразуем характеристики в правильный формат JSON
+    const characteristicsJson =
+      Object.keys(characteristics).length > 0
+        ? JSON.stringify({
+            pushButtonPhone: characteristics.pushButtonPhone || false,
+            producer: characteristics.producer || "",
+            OS: characteristics.OS || "",
+            diagonal: characteristics.diagonal || "",
+            memory: characteristics.memory || "",
+            ram: characteristics.ram || "",
+            twoSimCards: characteristics.twoSimCards || false,
+            nfc: characteristics.nfc || false,
+            fingerprintScanner: characteristics.fingerprintScanner || false,
+            memoryСard: characteristics.memoryСard || false,
+            wirelessСharging: characteristics.wirelessСharging || false,
+          })
+        : "";
 
     const requestBody = {
       groupId: product.groupId,
@@ -134,12 +148,14 @@ export default function FormByModalEditProductAdmin() {
       color: product.color,
       description: data.product.description,
       price: data.product.price,
-      characteristics: JSON.stringify(characteristics),
+      characteristics: characteristicsJson,
       quantities: data.product.quantities,
       images: product.images,
     };
 
     try {
+      console.log(requestBody);
+
       const response = await api.put(`/v1/products/${product.id}`, requestBody);
 
       if (response.data) {
@@ -304,7 +320,12 @@ export default function FormByModalEditProductAdmin() {
           </div>
         </div>
 
-        {categoryName && <GetCompCategory category={categoryName} />}
+        {categoryName && (
+          <GetCompCategory
+            category={categoryName}
+            initialValues={parsedCharacteristics}
+          />
+        )}
 
         <div className="relative flex justify-center items-center w-full">
           <span className="absolute -top-[7px] left-0 z-10 text-red-600 text-xs">

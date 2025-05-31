@@ -1,38 +1,53 @@
 "use client";
 
-import {
-  IDecodedToken,
-  IGetFav,
-  IProductInCart,
-  IProductInfo,
-} from "@/interfaces/index";
+import { IProductInfo, IPagination } from "@/interfaces/index";
+import { C_mobilePhones } from "@/interfaces/characteristics";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { decodeToken, getCategoryRu, getCodeColor } from "@/utils";
-import ProductTabs from "../Tabs/ProductTabs";
+import { decodeToken, getCategoryRu } from "@/utils";
 import { RiShoppingBasketLine, RiShoppingBasketFill } from "react-icons/ri";
 import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
-import { api } from "@/axios";
-import { getFav, getProductsCart, postFav, postViewed } from "@/api";
+import { api, postViewed } from "@/axios";
+import { getFav, getProductsCart, postFav } from "@/api";
 import * as Tabs from "@radix-ui/react-tabs";
 import { useCartStore } from "@/stores/useCartStore";
-import Loader from "../Loader/Loader";
 
 type Props = {
   arrProduct: IProductInfo[];
   productIdInArray: number;
 };
 
-export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
-  const [arrProducts, setArrProducts] = useState<IProductInfo[]>(arrProduct);
-  const [nowProduct, setNowProduct] = useState<IProductInfo>(
-    arrProduct[productIdInArray]
-  );
-  // const [isLoading, setIsLoading] = useState<boolean>(true);
+// Функция для форматирования характеристик
+const formatCharacteristicValue = (key: string, value: unknown): string => {
+  if (typeof value === "boolean") {
+    return value ? "Да" : "Нет";
+  }
+  return String(value);
+};
 
-  const [selectedColor, setSelectedColor] = useState<string>(nowProduct.color);
+// Функция для получения русского названия характеристики
+const getCharacteristicLabel = (key: string): string => {
+  const labels: Record<string, string> = {
+    pushButtonPhone: "Кнопочный телефон",
+    producer: "Производитель",
+    OS: "Операционная система",
+    diagonal: "Диагональ экрана",
+    memory: "Память",
+    ram: "Оперативная память",
+    twoSimCards: "Две SIM-карты",
+    nfc: "NFC",
+    fingerprintScanner: "Сканер отпечатков",
+    memoryСard: "Карта памяти",
+    wirelessСharging: "Беспроводная зарядка",
+  };
+  return labels[key] || key;
+};
+
+export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
+  const [nowProduct] = useState<IProductInfo>(arrProduct[productIdInArray]);
+
   const [selectedImage, setSelectedImage] = useState<string>(
     nowProduct.images[0]
   );
@@ -40,14 +55,15 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
   const [isActiveCart, setIsActiveCart] = useState(false);
   const [isActiveFav, setIsActiveFav] = useState(false);
 
-  const [nowCartItem, setNowCartItem] = useState<IProductInCart>();
-  const [nowFavItem, setNowFavItem] = useState<IGetFav>();
-
   const [showedFav, setShowedFav] = useState<boolean>(true);
 
   const { updatedDataInCart, deleteProductInCart } = useCartStore();
 
   const params = useParams();
+
+  // Парсинг характеристик
+  const [parsedCharacteristics, setParsedCharacteristics] =
+    useState<C_mobilePhones | null>(null);
 
   useEffect(() => {
     const decoded = decodeToken();
@@ -61,11 +77,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
 
   useEffect(() => {
     const fetchPostViewed = async () => {
-      const response = await postViewed(nowProduct.id);
-
-      if (!response) {
-        return;
-      }
+      await postViewed(nowProduct.id);
     };
 
     fetchPostViewed();
@@ -73,6 +85,17 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
     setActiveBtnCart();
     setActiveBtnFav();
   }, []);
+
+  useEffect(() => {
+    if (nowProduct.characteristics) {
+      try {
+        const parsed = JSON.parse(nowProduct.characteristics);
+        setParsedCharacteristics(parsed);
+      } catch (e) {
+        console.error("Error parsing characteristics:", e);
+      }
+    }
+  }, [nowProduct.characteristics]);
 
   async function setActiveBtnCart() {
     try {
@@ -83,7 +106,6 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
       for (const item of data.data) {
         if (item.productId === nowProduct.id) {
           setIsActiveCart(true);
-          setNowCartItem(item);
           return item.cartItemId;
         }
       }
@@ -98,8 +120,9 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
   const handleClickCart = async () => {
     try {
       const cartItemId = await setActiveBtnCart();
+      const decodedToken = decodeToken();
 
-      const decodedToken: IDecodedToken = decodeToken();
+      if (!decodedToken?.id) return;
 
       if (isActiveCart) {
         setIsActiveCart(false);
@@ -109,13 +132,6 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
       } else {
         setIsActiveCart(true);
         //добавление в корзину
-
-        console.log({
-          userId: decodedToken.id,
-          productId: nowProduct.id,
-          quantity: 1,
-        });
-
         await api.post("/v1/cart", {
           userId: decodedToken.id,
           productId: nowProduct.id,
@@ -137,7 +153,6 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
       for (const item of data.data) {
         if (item.productId === nowProduct.id) {
           setIsActiveFav(true);
-          setNowFavItem(item);
           return item.favoriteId;
         }
       }
@@ -152,8 +167,9 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
   const handleClickFav = async () => {
     try {
       const favoriteId = await setActiveBtnFav();
+      const decodedToken = decodeToken();
 
-      const decodedToken: IDecodedToken = decodeToken();
+      if (!decodedToken?.id) return;
 
       if (isActiveFav && favoriteId) {
         setIsActiveFav(false);
@@ -177,9 +193,9 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
 
     if (data) {
       const products = data.data;
-      const pagination = {
+      const pagination: IPagination = {
         currentPage: data.currentPage,
-        pageSize: data.pageSize,
+        currentItems: data.data.length,
         totalItems: data.totalItems,
         totalPages: data.totalPages,
       };
@@ -268,36 +284,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
                   <span className="text-[#B9B9B9]">Артикул:</span>{" "}
                   {nowProduct.id}
                 </p>
-
-                {/* <p className="text-greenT mt-1">Все характеристики</p> */}
               </div>
-
-              {/* <div className="flex flex-col mt-3">
-                <p className="font-bold">Цвет: </p>
-                <p className="text-[#B9B9B9] mt-1">{selectedColor}</p>
-              </div>
-              <div className="flex items-center gap-3 mt-1">
-                {arrProducts.map((item) => (
-                  <Link
-                    key={item.id}
-                    href={`/${params.products}/${item.id}`}
-                    className=""
-                  >
-                    <div
-                      style={{
-                        background: getCodeColor(item.color.toLowerCase()),
-                      }}
-                      className={
-                        "w-9 h-12 rounded-md " +
-                        (item.color == selectedColor
-                          ? "border border-greenT"
-                          : "")
-                      }
-                      onClick={() => setSelectedColor(nowProduct.color)}
-                    ></div>
-                  </Link>
-                ))}
-              </div> */}
             </div>
 
             <div className="flex justify-between items-center w-full bg-white px-3 py-6 gap-3 mt-3 shadow-md drop-shadow-md rounded-md">
@@ -331,82 +318,64 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
         {/* 3 блок */}
         <div className="w-full">
           <p className="font-semibold text-base">Описание</p>
-
           <p className="mt-1">{nowProduct.description}</p>
         </div>
 
-        {/* <Tabs.Root
-          className="flex flex-col w-full mt-3"
-          defaultValue="characteristics"
-        >
-          <Tabs.List className="flex justify-between items-center gap-3 py-2 px-4 rounded-md bg-white shadow-sm drop-shadow-md">
-            <Tabs.Trigger
-              className="data-[state=active]:text-greenT rounded-md"
+        {/* Характеристики */}
+        <div className="w-full mt-3">
+          <Tabs.Root
+            className="flex flex-col w-full"
+            defaultValue="characteristics"
+          >
+            <Tabs.List className="flex justify-between items-center gap-3 py-2 px-4 rounded-md bg-white shadow-sm drop-shadow-md">
+              <Tabs.Trigger
+                className="data-[state=active]:text-greenT rounded-md"
+                value="characteristics"
+              >
+                Характеристики
+              </Tabs.Trigger>
+            </Tabs.List>
+
+            <Tabs.Content
+              className="mt-3 w-full outline outline-1 outline-[#B3B3B3] rounded-md p-2"
               value="characteristics"
             >
-              Характеристики
-            </Tabs.Trigger>
-            <Tabs.Trigger
-              className="data-[state=active]:text-greenT rounded-md"
-              value="graphPrice"
-            >
-              График цен
-            </Tabs.Trigger> 
-          </Tabs.List>
-
-          <Tabs.Content
-            className="mt-3 w-full outline outline-1 outline-[#B3B3B3] rounded-md p-2"
-            value="characteristics"
-          >
-            {nowProduct ? (
-              <table className="text-black text-xs text-start w-full">
-                <thead>
-                  <tr>
-                    <th className="text-start" colSpan={2}>
-                      Данные о товаре
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-slate-300 border-none">
-                    <td className="text-[#B9B9B9]">Артикул производителя</td>
-                    <td className="">{nowProduct.id}</td>
-                  </tr>
-                  <tr className="border-b border-slate-300 border-none">
-                    <td className="text-[#B9B9B9]">Код производителя</td>
-                    <td className="">12415</td>
-                  </tr>
-                </tbody>
-                <thead>
-                  <tr>
-                    <th className="text-start pt-3" colSpan={2}>
-                      Данные о товаре
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-slate-300 border-none">
-                    <td className="text-[#B9B9B9]">Артикул производителя</td>
-                    <td className="">{nowProduct.id}</td>
-                  </tr>
-                  <tr className="border-b border-slate-300 border-none">
-                    <td className="text-[#B9B9B9]">Код производителя</td>
-                    <td className="">12415</td>
-                  </tr>
-                </tbody>
-              </table>
-            ) : (
-              <Loader />
-            )}
-          </Tabs.Content>
-
-          <Tabs.Content
-            className="mt-3 w-full outline outline-1 outline-[#E5E5E5] rounded-md p-2"
-            value="graphPrice"
-          >
-            график цен
-          </Tabs.Content>
-        </Tabs.Root> */}
+              {parsedCharacteristics ? (
+                <table className="text-black text-xs text-start w-full">
+                  <thead>
+                    <tr>
+                      <th className="text-start" colSpan={2}>
+                        Характеристики товара
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(parsedCharacteristics).map(
+                      ([key, value]) =>
+                        value && (
+                          <tr
+                            key={key}
+                            className="border-b border-slate-300 border-none"
+                          >
+                            <td className="text-[#B9B9B9] py-1">
+                              {getCharacteristicLabel(key)}
+                            </td>
+                            <td className="py-1">
+                              {formatCharacteristicValue(key, value)}
+                            </td>
+                          </tr>
+                        )
+                    )}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="text-center text-gray-500">
+                  Характеристики не указаны
+                </div>
+              )}
+            </Tabs.Content>
+          </Tabs.Root>
+        </div>
       </div>
     </div>
   );

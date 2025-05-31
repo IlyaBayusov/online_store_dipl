@@ -61,17 +61,39 @@ export default function FormByModalNewProductAdmin() {
       return;
     }
 
+    if (!isValidChar && categoryName) {
+      setIsSubmitChar(true);
+      setErrorSubmit("Заполните характеристики товара");
+      return;
+    }
+
     setErrorSubmit("");
 
     const fData = new FormData();
 
+    // Преобразуем характеристики в правильный формат JSON
+    const characteristicsJson =
+      Object.keys(characteristics).length > 0
+        ? JSON.stringify({
+            pushButtonPhone: characteristics.pushButtonPhone || false,
+            producer: characteristics.producer || "",
+            OS: characteristics.OS || "",
+            diagonal: characteristics.diagonal || "",
+            memory: characteristics.memory || "",
+            ram: characteristics.ram || "",
+            twoSimCards: characteristics.twoSimCards || false,
+            nfc: characteristics.nfc || false,
+            fingerprintScanner: characteristics.fingerprintScanner || false,
+            memoryСard: characteristics.memoryСard || false,
+            wirelessСharging: characteristics.wirelessСharging || false,
+          })
+        : "";
+
     const newFormData = {
       ...data.product,
       quantities: Number(data.product.quantities),
-      characteristics: JSON.stringify(characteristics),
+      characteristics: characteristicsJson,
     };
-
-    console.log(newFormData);
 
     fData.append("product", JSON.stringify(newFormData));
 
@@ -79,18 +101,24 @@ export default function FormByModalNewProductAdmin() {
       fData.append("files", file.file);
     });
 
-    const response = await postProductAdmin(fData);
+    try {
+      console.log(fData);
 
-    if (response) {
-      setErrorSubmit(response.message);
-    }
+      const response = await postProductAdmin(fData);
 
-    if (!response.message) {
+      if ("message" in response) {
+        setErrorSubmit(response.message);
+        return;
+      }
+
       getProducts();
       reset();
       setSelectedFiles([]);
       updateData({} as C_mobilePhones);
       closeModal(modalNewProductAdmin);
+    } catch (error) {
+      console.error("Ошибка при создании товара:", error);
+      setErrorSubmit("Произошла ошибка при создании товара");
     }
   };
 

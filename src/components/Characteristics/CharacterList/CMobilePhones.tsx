@@ -13,18 +13,33 @@ import * as Switch from "@radix-ui/react-switch";
 import { C_mobilePhones } from "@/interfaces/characteristics";
 import { useCharacteristicsStore } from "@/stores/useCharacteristicsStore";
 
-export default function CMobilePhones() {
+type Props = {
+  initialValues?: C_mobilePhones;
+};
+
+export default function CMobilePhones({ initialValues }: Props) {
   const {
     control,
     formState: { errors, isValid },
     register,
     watch,
     trigger,
-  } = useForm<C_mobilePhones>({ mode: "onBlur" });
+  } = useForm<C_mobilePhones>({
+    mode: "onBlur",
+    defaultValues: initialValues || ({} as C_mobilePhones),
+  });
 
   const { isSubmitChar, updateData, setIsValidChar, setIsSubmitChar } =
     useCharacteristicsStore();
   const prevValues = useRef<C_mobilePhones>({} as C_mobilePhones);
+
+  // При монтировании компонента, если есть начальные значения, обновляем store
+  useEffect(() => {
+    if (initialValues) {
+      updateData(initialValues);
+      setIsValidChar(true);
+    }
+  }, [initialValues, updateData, setIsValidChar]);
 
   const currentValues = watch();
   useEffect(() => {
@@ -38,7 +53,6 @@ export default function CMobilePhones() {
   useEffect(() => {
     if (isSubmitChar) {
       console.log("submit");
-
       trigger("producer");
       setIsSubmitChar(false);
     }
