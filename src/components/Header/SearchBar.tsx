@@ -100,6 +100,13 @@ export default function SearchBar() {
   };
 
   const renderContent = () => {
+    console.log("Render state:", {
+      isSearching,
+      products,
+      searchTerm,
+      isLoading,
+    });
+
     if (isSearching) {
       return (
         <div className="py-6">
@@ -112,13 +119,13 @@ export default function SearchBar() {
       return <div className="p-4 text-center text-red-500">{error}</div>;
     }
 
-    if (!products.length && searchTerm) {
+    if (!products?.length && searchTerm) {
       return (
         <div className="p-4 text-center text-gray-500">Ничего не найдено</div>
       );
     }
 
-    if (products.length > 0 && searchTerm && !isSearching) {
+    if (products?.length > 0 && searchTerm && !isSearching) {
       return (
         <>
           {products.map((product) => (

@@ -17,10 +17,11 @@ interface Filters {
 }
 
 interface SearchResponse {
-  products: IProductCategory[];
+  data: IProductCategory[];
+  currentItems: number;
+  currentPage: number;
   totalItems: number;
   totalPages: number;
-  currentPage: number;
 }
 
 export const useSearchWithFilters = ({
@@ -33,6 +34,7 @@ export const useSearchWithFilters = ({
     currentPage: initialPage,
     totalPages: 0,
     totalItems: 0,
+    currentItems: 0,
   });
   const [filters, setFilters] = useState<Filters>({
     sort: "id,desc",
@@ -82,16 +84,21 @@ export const useSearchWithFilters = ({
           `http://localhost:8080/api/v1/products/search?${params.toString()}`
         );
 
+        console.log("Search response:", response.data);
+
         if (page === 0) {
-          setProducts(response.data.products);
+          setProducts(response.data.data);
         } else {
-          setProducts((prev) => [...prev, ...response.data.products]);
+          setProducts((prev) =>
+            prev ? [...prev, ...response.data.data] : response.data.data
+          );
         }
 
         setPagination({
           currentPage: response.data.currentPage,
           totalPages: response.data.totalPages,
           totalItems: response.data.totalItems,
+          currentItems: response.data.currentItems,
         });
       } catch (err) {
         setError(
