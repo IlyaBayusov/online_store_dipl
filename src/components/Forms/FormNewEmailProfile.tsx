@@ -151,7 +151,7 @@ export default function FormNewEmailProfile({ profileData }: Props) {
           )}
         </div>
 
-        <div className="w-full flex justify-between items-center">
+        <div className="w-full flex justify-between items-center gap-5">
           <div className="w-full flex justify-between items-center max-w-60">
             <InputInForm
               disabled={!isActiveEmail}

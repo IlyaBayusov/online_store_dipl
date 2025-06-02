@@ -28,7 +28,7 @@ export default function HeaderInfo({ data }: Props) {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full flex justify-center">
       <div className="flex flex-nowrap items-start gap-3">
         <div className="relative w-16 h-16 overflow-hidden">
           {/* <Image src="" alt="" className="w-16 h-16 rounded-full" /> */}

@@ -392,7 +392,7 @@ export default React.memo(function FormByCart() {
           <span className="text-red-600 text-base">{errorSubmit}</span>
         )}
 
-        <div className="p-3 outline outline-1 outline-[#B3B3B3] rounded-md">
+        <div className="p-3 border border-[#B3B3B3] rounded-md">
           <h1 className="text-lg font-semibold mb-1">Ваш заказ</h1>
 
           <div className="flex justify-between items-center">

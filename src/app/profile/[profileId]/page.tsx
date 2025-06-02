@@ -48,11 +48,9 @@ export default async function ProfileId({
           <FormDetailedInfoProfile profileData={data} />
         </div>
 
-        <div className="w-full mt-2">
-          <div className="w-full text-base">
-            <FormNewEmailProfile profileData={data} />
-            <FormNewPassProfile profileData={data} />
-          </div>
+        <div className="w-full mt-2 flex flex-col justify-center items-center text-base">
+          <FormNewEmailProfile profileData={data} />
+          <FormNewPassProfile profileData={data} />
         </div>
 
         <LogOutBtn />

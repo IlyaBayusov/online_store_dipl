@@ -27,7 +27,6 @@ export default React.memo(function Cart() {
       getProducts();
     }
   }, [modalsProps]);
-  console.log(products);
 
   const getProducts = async () => {
     const data = await getProductsCart();
@@ -50,8 +49,6 @@ export default React.memo(function Cart() {
     setIsLoading(false);
   };
 
-  console.log(products);
-
   const showElems = () => {
     if (isLoading) {
       return <Loader />;
@@ -59,11 +56,14 @@ export default React.memo(function Cart() {
 
     if (products.length !== 0 && products !== undefined) {
       return (
-        <>
-          <CartList products={products} />
-
-          <FormByCart />
-        </>
+        <div className="lg:grid lg:grid-cols-[1fr,400px] lg:gap-8">
+          <div className="lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto">
+            <CartList products={products} />
+          </div>
+          <div className="mt-6 lg:mt-0 lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto">
+            <FormByCart />
+          </div>
+        </div>
       );
     }
 
@@ -76,9 +76,11 @@ export default React.memo(function Cart() {
 
   return (
     <div className="flex flex-col justify-start">
-      <h2 className="text-lg font-semibold text-start mt-3 mb-5">Корзина</h2>
+      <h2 className="text-lg md:text-xl lg:text-2xl font-semibold text-start mt-3 mb-5">
+        Корзина
+      </h2>
 
-      <div className="">{showElems()}</div>
+      {showElems()}
     </div>
   );
 });

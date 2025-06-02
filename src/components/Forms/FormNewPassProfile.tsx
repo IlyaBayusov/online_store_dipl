@@ -32,8 +32,7 @@ export default function FormNewPassProfile({ profileData }: Props) {
   const [errorMessSecondNewPass, setErrorMessSecondNewPass] =
     useState<string>("");
 
-  const [errorMessageForm, setErrorMessageForm] =
-    useState<string>("35135136136136");
+  const [errorMessageForm, setErrorMessageForm] = useState<string>("");
 
   const [messChangePass, setMessChangePass] = useState<string>("");
 
@@ -122,7 +121,7 @@ export default function FormNewPassProfile({ profileData }: Props) {
           )}
         </div>
 
-        <div className="w-full flex justify-between items-center">
+        <div className="w-full flex justify-between items-center gap-5">
           <div className="w-full flex justify-between items-center max-w-60">
             <InputInForm
               disabled={!isActivePass}

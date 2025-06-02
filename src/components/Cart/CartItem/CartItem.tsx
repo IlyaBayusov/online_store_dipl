@@ -113,7 +113,7 @@ export default React.memo(
     return (
       <div
         key={product.productId}
-        className="flex flex-col justify-center items-center w-full p-3 mb-3 rounded-md outline outline-1 outline-[#B3B3B3]"
+        className="flex flex-col justify-center items-center w-full max-w-[500px] p-3 mb-3 rounded-md border border-[#B3B3B3]"
       >
         <div className="flex justify-between w-full mb-2">
           <div className="flex justify-start gap-3 w-full">
