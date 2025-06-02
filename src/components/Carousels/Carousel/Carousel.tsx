@@ -19,7 +19,14 @@ type PropType = {
 
 export const Carousel: React.FC<PropType> = (props) => {
   const { children, options } = props;
-  const [emblaRef, emblaApi] = useEmblaCarousel(options, [Autoplay()]);
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      ...options,
+      align: "start",
+      containScroll: "trimSnaps",
+    },
+    [Autoplay()]
+  );
 
   const onNavButtonClick = useCallback((emblaApi: EmblaCarouselType) => {
     const autoplay = emblaApi?.plugins()?.autoplay;
@@ -46,13 +53,13 @@ export const Carousel: React.FC<PropType> = (props) => {
   } = usePrevNextButtons(emblaApi, onNavButtonClick);
 
   return (
-    <section className="embla">
-      <div className="mb-2 flex justify-end items-center gap-3 w-full">
+    <div className="embla w-full">
+      <div className="mb-2 flex justify-end items-center gap-2">
         <PrevButton onClick={onPrevButtonClick} disabled={prevBtnDisabled} />
         <NextButton onClick={onNextButtonClick} disabled={nextBtnDisabled} />
       </div>
 
-      <div className="embla__viewport relative" ref={emblaRef}>
+      <div className="embla__viewport" ref={emblaRef}>
         <div className="embla__container">{children}</div>
       </div>
 
@@ -67,6 +74,6 @@ export const Carousel: React.FC<PropType> = (props) => {
           />
         ))}
       </div>
-    </section>
+    </div>
   );
 };

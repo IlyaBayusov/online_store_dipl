@@ -1,16 +1,17 @@
 "use client";
 
-import CategoryList from "@/components/Category/CategoryList/CategoryList";
 import { useEffect, useState } from "react";
 import { getProductsMainPage } from "@/axios";
 import ProductCardList from "@/components/ProductCard/ProductCardList/ProductCardList";
-import { paramsPopularProducts } from "@/constans";
+import { paramsPopularProducts, categoriesPages } from "@/constans";
 import Brands from "@/components/Brands/Brands";
 import Viewed from "@/components/Viewed/Viewed";
 import Loader from "@/components/Loader/Loader";
 import { mapToUnifiedProduct } from "@/utils";
 import { getViewed } from "@/api";
 import { IProductCategory } from "@/interfaces";
+import CategoryItem from "@/components/Category/CategoryItem/CategoryItem";
+import Link from "next/link";
 
 export default function Home() {
   const [newArrivals, setNewArrivals] = useState([]);
@@ -44,14 +45,36 @@ export default function Home() {
   console.log(newArrivals);
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-screen-2xl mx-auto px-2.5 sm:px-4 md:px-6 lg:px-8">
       {/* слайдер */}
 
-      <CategoryList />
+      {/* <CategoryList /> */}
 
-      <>
-        <div className="flex justify-start mt-3 mb-5">
-          <h2 className="text-lg font-semibold">Новинки</h2>
+      <div className="mt-8">
+        <div className="flex justify-start mb-5">
+          <h2 className="text-lg md:text-xl lg:text-2xl font-semibold">
+            Категории
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4 lg:gap-5">
+          {categoriesPages.map((category) => (
+            <Link
+              key={category.id}
+              href={`/${category.urlName}`}
+              className="block h-full"
+            >
+              <CategoryItem name={category.name} img={category.img} />
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-8 md:mt-12 lg:mt-16">
+        <div className="flex justify-start mb-5">
+          <h2 className="text-lg md:text-xl lg:text-2xl font-semibold">
+            Новинки
+          </h2>
         </div>
 
         {isLoading ? (
@@ -62,11 +85,17 @@ export default function Home() {
             params={paramsPopularProducts}
           />
         )}
-      </>
+      </div>
 
-      <Brands />
+      <div className="mt-8 md:mt-12 lg:mt-16">
+        <Brands />
+      </div>
 
-      {viewed.length !== 0 && <Viewed viewed={viewed} />}
+      {viewed.length !== 0 && (
+        <div className="mt-8 md:mt-12 lg:mt-16">
+          <Viewed viewed={viewed} />
+        </div>
+      )}
     </div>
   );
 }

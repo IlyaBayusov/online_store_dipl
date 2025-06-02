@@ -123,7 +123,7 @@ export const categoriesPages = [
     id: 1,
     name: "Мобильные телефоны",
     urlName: "mobile_phones",
-    img: img_shoes,
+    img: img_categoryBig,
     path: "/mobile_phones",
   },
 ];

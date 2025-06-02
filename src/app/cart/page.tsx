@@ -78,7 +78,7 @@ export default React.memo(function Cart() {
     <div className="flex flex-col justify-start">
       <h2 className="text-lg font-semibold text-start mt-3 mb-5">Корзина</h2>
 
-      {showElems()}
+      <div className="">{showElems()}</div>
     </div>
   );
 });

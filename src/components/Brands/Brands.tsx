@@ -21,34 +21,79 @@ import { EmblaOptionsType } from "embla-carousel";
 
 const OPTIONS: EmblaOptionsType = {};
 
+const BRANDS = [
+  { img: img_apple, alt: "Apple" },
+  { img: img_coffesso, alt: "Coffesso" },
+  { img: img_dekraft, alt: "Dekraft" },
+  { img: img_dyson, alt: "Dyson" },
+  { img: img_hi, alt: "Hi" },
+  { img: img_lego, alt: "Lego" },
+  { img: img_makita, alt: "Makita" },
+  { img: img_nutrilak, alt: "Nutrilak" },
+  { img: img_ornelio, alt: "Ornelio" },
+  { img: img_richard, alt: "Richard" },
+  { img: img_salut, alt: "Salut" },
+  { img: img_samsung, alt: "Samsung" },
+  { img: img_sber, alt: "Sber" },
+  { img: img_whiskas, alt: "Whiskas" },
+  { img: img_xiaomi, alt: "Xiaomi" },
+];
+
 export default function Brands() {
+  const brandsInGroups = (count: number) => {
+    const result = [];
+    const brandsCopy = [...BRANDS];
+    while (brandsCopy.length) {
+      result.push(brandsCopy.splice(0, count));
+    }
+    return result;
+  };
+
   return (
     <div className="flex flex-col justify-start">
-      <h2 className="text-lg font-semibold mt-3 mb-5">Бренды</h2>
+      <h2 className="text-lg md:text-xl lg:text-2xl font-semibold mb-5">
+        Бренды
+      </h2>
 
-      <Carousel options={OPTIONS}>
-        <div className="embla__slide w-full h-full grid grid-cols-3 grid-rows-2 gap-2">
-          <Image src={img_apple} alt="apple" className="w-full h-full" />
-          <Image src={img_coffesso} alt="apple" className="w-full h-full" />
-          <Image src={img_dekraft} alt="apple" className="w-full h-full" />
-          <Image src={img_hi} alt="apple" className="w-full h-full" />
-          <Image src={img_dyson} alt="apple" className="w-full h-full" />
-          <Image src={img_lego} alt="apple" className="w-full h-full" />
-        </div>
-        <div className="embla__slide w-full h-full grid grid-cols-3 grid-rows-2 gap-2">
-          <Image src={img_makita} alt="apple" className="w-full h-full" />
-          <Image src={img_nutrilak} alt="apple" className="w-full h-full" />
-          <Image src={img_ornelio} alt="apple" className="w-full h-full" />
-          <Image src={img_richard} alt="apple" className="w-full h-full" />
-          <Image src={img_salut} alt="apple" className="w-full h-full" />
-          <Image src={img_samsung} alt="apple" className="w-full h-full" />
-        </div>
-        <div className="embla__slide w-full h-full grid grid-cols-3 grid-rows-2 gap-2">
-          <Image src={img_sber} alt="apple" className="w-full h-full" />
-          <Image src={img_whiskas} alt="apple" className="w-full h-full" />
-          <Image src={img_xiaomi} alt="apple" className="w-full h-full" />
-        </div>
-      </Carousel>
+      {/* Мобильный слайдер */}
+      <div className="md:hidden">
+        <Carousel options={OPTIONS}>
+          {brandsInGroups(6).map((group, groupIndex) => (
+            <div
+              key={groupIndex}
+              className="embla__slide w-full h-full grid grid-cols-3 grid-rows-2 gap-2"
+            >
+              {group.map((brand, index) => (
+                <div key={index} className="relative aspect-[4/3]">
+                  <Image
+                    src={brand.img}
+                    alt={brand.alt}
+                    fill
+                    className="object-contain p-2 hover:scale-105 transition-transform"
+                  />
+                </div>
+              ))}
+            </div>
+          ))}
+        </Carousel>
+      </div>
+
+      {/* Десктопная сетка */}
+      <div className="hidden md:grid grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 lg:gap-6">
+        {BRANDS.map((brand, index) => (
+          <div
+            key={index}
+            className="relative aspect-[4/3] bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
+          >
+            <Image
+              src={brand.img}
+              alt={brand.alt}
+              fill
+              className="object-contain p-3 hover:scale-105 transition-transform"
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -206,7 +206,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
 
   return (
     <div className="flex flex-col items-center w-full">
-      <div className="flex flex-col items-center gap-3 w-full">
+      <div className="flex flex-col items-center gap-3 w-full md:max-w-[70%]">
         {/* 1 блок */}
         <div className="flex flex-col items-center gap-3 mt-3 text-base w-full">
           <div className="flex items-center justify-start gap-x-1 w-full flex-wrap">
@@ -246,32 +246,34 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
             )}
           </div>
 
-          <div className="relative w-full aspect-square flex justify-center items-center rounded-md">
-            <Image
-              src={selectedImage}
-              alt={nowProduct.name}
-              fill
-              style={{
-                objectFit: "contain",
-                objectPosition: "center",
-                mixBlendMode: "multiply",
-              }}
-              className="rounded-md"
-            />
-          </div>
-
-          <div className="w-full flex justify-between items-center">
-            {nowProduct.images.map((item, index) => (
+          <div className="w-full flex flex-col justify-center items-center">
+            <div className="relative w-full md:max-w-[500px] aspect-square flex justify-center items-center rounded-md">
               <Image
-                key={index}
-                src={item}
-                width={351}
-                height={494}
+                src={selectedImage}
                 alt={nowProduct.name}
-                className="max-w-16 rounded-md"
-                onClick={() => setSelectedImage(item)}
+                fill
+                style={{
+                  objectFit: "contain",
+                  objectPosition: "center",
+                  mixBlendMode: "multiply",
+                }}
+                className="rounded-md"
               />
-            ))}
+            </div>
+
+            <div className="w-full md:max-w-[650px] flex justify-between items-center">
+              {nowProduct.images.map((item, index) => (
+                <Image
+                  key={index}
+                  src={item}
+                  width={351}
+                  height={494}
+                  alt={nowProduct.name}
+                  className="max-w-16 rounded-md"
+                  onClick={() => setSelectedImage(item)}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
@@ -287,7 +289,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
               </div>
             </div>
 
-            <div className="flex justify-between items-center w-full bg-white px-3 py-6 gap-3 mt-3 shadow-md drop-shadow-md rounded-md">
+            <div className="flex justify-between md:justify-start items-center w-full max-w-[420px] bg-white px-3 py-6 gap-3 mt-3 shadow-md drop-shadow-md rounded-md">
               <p className="font-bold text-nowrap">{nowProduct.price} руб.</p>
 
               <button

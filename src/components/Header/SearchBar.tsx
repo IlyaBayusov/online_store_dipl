@@ -165,10 +165,10 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="relative flex-1 max-w-96" ref={dropdownRef}>
+    <div className="relative flex-1 md:max-w-96" ref={dropdownRef}>
       <input
         type="text"
-        placeholder="Я ищу..."
+        placeholder="Найти"
         className="h-full w-full py-1 px-4 rounded-md text-xs border border-greenT"
         value={searchTerm}
         onChange={handleSearchChange}
@@ -178,7 +178,7 @@ export default function SearchBar() {
       {isOpen && (searchTerm || isSearching) && (
         <div
           ref={resultsRef}
-          className="absolute top-full left-0 right-0 mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-96 overflow-y-auto z-50"
+          className="absolute top-full left-1/2 -translate-x-1/2 right-0 mt-1 bg-white rounded-md shadow-lg border border-gray-200 min-w-full max-h-96 overflow-y-auto z-50"
           onScroll={handleScroll}
         >
           {renderContent()}
