@@ -139,7 +139,7 @@ export default function AdminMenu() {
         <Loader />
       ) : products.length > 0 ? (
         <>
-          <div className="flex justify-center items-center gap-1 py-1">
+          <div className="flex justify-center items-center gap-1 py-1 bg-white">
             <button
               className="px-2 py-1 border rounded-md"
               disabled={!pagination.currentPage}

@@ -96,7 +96,7 @@ export default function FormByAuth({ setSubmit }: Props) {
                 message: "Максимум 50 символов",
               },
             })}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-gray-300"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-64 bg-transparent outline outline-1 outline-gray-300"
           />
           {
             <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-10 text-nowrap text-red-600 text-xs mt-1">
@@ -120,7 +120,7 @@ export default function FormByAuth({ setSubmit }: Props) {
                 message: "Максимум 50 символов",
               },
             })}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-gray-300"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-64 bg-transparent outline outline-1 outline-gray-300"
           />
           {
             <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-10 text-nowrap text-red-600 text-xs mt-1">

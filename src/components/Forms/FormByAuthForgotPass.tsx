@@ -4,6 +4,7 @@ import { IFormByAuthForgotPass } from "@/interfaces";
 import axios from "axios";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useResetPasswordStore } from "@/stores/useResetPasswordStore";
 
 type Props = { setSubmit: () => void; setIsSubmitActiveEmail: () => void };
 
@@ -13,6 +14,7 @@ export default function FormByAuthForgotPass({
 }: Props) {
   const [errorForm, setErrorForm] = useState("");
   const [isActiveEmail, setIsActiveEmail] = useState<boolean>(false);
+  const setEmail = useResetPasswordStore((state) => state.setEmail);
 
   const {
     formState: { errors, isValid },
@@ -55,15 +57,18 @@ export default function FormByAuthForgotPass({
 
       switch (data.message) {
         case "SUCCESS":
+          setEmail(formData.email);
           setIsSubmitActiveEmail();
           clearErrors();
           reset();
           break;
         case "EXPIRED":
           setErrorForm("Код истек.");
+          handlePrev();
           break;
         case "INVALID":
           setErrorForm("Код не валидный.");
+          handlePrev();
           return;
       }
     } catch (error) {
@@ -152,7 +157,7 @@ export default function FormByAuthForgotPass({
                   message: "Некорректный email",
                 },
               })}
-              className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-gray-300"
+              className="py-2 px-6 rounded-md mt-1 w-full max-w-64 bg-transparent outline outline-1 outline-gray-300"
             />
             <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-10 text-nowrap text-red-600 text-xs mt-1">
               {errors?.email ? errors?.email?.message || "Ошибка!" : " "}
@@ -176,7 +181,7 @@ export default function FormByAuthForgotPass({
                   message: "Введите 6-значный код",
                 },
               })}
-              className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-gray-300"
+              className="py-2 px-6 rounded-md mt-1 w-full max-w-64 bg-transparent outline outline-1 outline-gray-300"
             />
             <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-10 text-nowrap text-red-600 text-xs mt-1">
               {errors?.code ? errors?.code?.message || "Ошибка!" : " "}

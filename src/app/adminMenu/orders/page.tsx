@@ -232,7 +232,7 @@ export default function OrdersAdmin() {
 
     if (orders.length) {
       return (
-        <table className="w-full text-black text-xs text-center mt-3">
+        <table className="w-full text-black text-xs text-center">
           <thead>
             <tr className="text-greenT text-[10px] uppercase">
               <th>ID</th>
@@ -279,9 +279,9 @@ export default function OrdersAdmin() {
   };
 
   return (
-    <div className="flex flex-col w-full bg-white">
-      <div className="w-full flex gap-3 items-center py-1 bg-white border-b px-3">
-        <div className="flex-1 flex items-center gap-2">
+    <div className="flex flex-col w-full">
+      <div className="w-full flex gap-3 justify-center items-center py-1 bg-white border-b px-3">
+        <div className="md:container md:mx-auto md:max-w-[500px] flex-1 flex items-center gap-2">
           <select
             value={sortOption}
             onChange={handleSortChange}
@@ -296,68 +296,74 @@ export default function OrdersAdmin() {
         </div>
       </div>
 
-      <div className="flex justify-center items-center gap-1 mb-4 py-1 px-3">
-        <button
-          className="px-2 py-1 border rounded-md"
-          onClick={() => handlePageChange(0)}
-          disabled={currentPage === 0}
-        >
-          <MdOutlineKeyboardDoubleArrowLeft
-            className={
-              "h-5 w-5 p-px" + (currentPage ? " text-greenT" : " text-gray-400")
-            }
-          />
-        </button>
-        <button
-          className="px-2 py-1 border rounded-md"
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 0}
-        >
-          <MdOutlineKeyboardArrowLeft
-            className={
-              "h-5 w-5 p-px" + (currentPage ? " text-greenT" : " text-gray-400")
-            }
-          />
-        </button>
+      <div className="w-full bg-white flex justify-center">
+        <div className="md:container md:mx-auto md:max-w-[500px] flex justify-center items-center gap-1 py-1 px-3 bg-white">
+          <button
+            className="px-2 py-1 border rounded-md"
+            onClick={() => handlePageChange(0)}
+            disabled={currentPage === 0}
+          >
+            <MdOutlineKeyboardDoubleArrowLeft
+              className={
+                "h-5 w-5 p-px" +
+                (currentPage ? " text-greenT" : " text-gray-400")
+              }
+            />
+          </button>
+          <button
+            className="px-2 py-1 border rounded-md"
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 0}
+          >
+            <MdOutlineKeyboardArrowLeft
+              className={
+                "h-5 w-5 p-px" +
+                (currentPage ? " text-greenT" : " text-gray-400")
+              }
+            />
+          </button>
 
-        <p className="text-greenT text-sm">
-          {`${currentPage * sizePage + 1}-${Math.min(
-            (currentPage + 1) * sizePage,
-            totalItems
-          )} из ${totalItems}`}
-        </p>
+          <p className="text-greenT text-sm">
+            {`${currentPage * sizePage + 1}-${Math.min(
+              (currentPage + 1) * sizePage,
+              totalItems
+            )} из ${totalItems}`}
+          </p>
 
-        <button
-          className="px-2 py-1 border rounded-md"
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage >= totalPages - 1}
-        >
-          <MdOutlineKeyboardArrowRight
-            className={
-              "h-5 w-5 p-px" +
-              (currentPage >= totalPages - 1
-                ? " text-gray-400"
-                : " text-greenT")
-            }
-          />
-        </button>
-        <button
-          className="px-2 py-1 border rounded-md"
-          onClick={() => handlePageChange(totalPages - 1)}
-          disabled={currentPage >= totalPages - 1}
-        >
-          <MdOutlineKeyboardDoubleArrowRight
-            className={
-              "h-5 w-5 p-px" +
-              (currentPage >= totalPages - 1
-                ? " text-gray-400"
-                : " text-greenT")
-            }
-          />
-        </button>
+          <button
+            className="px-2 py-1 border rounded-md"
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage >= totalPages - 1}
+          >
+            <MdOutlineKeyboardArrowRight
+              className={
+                "h-5 w-5 p-px" +
+                (currentPage >= totalPages - 1
+                  ? " text-gray-400"
+                  : " text-greenT")
+              }
+            />
+          </button>
+          <button
+            className="px-2 py-1 border rounded-md"
+            onClick={() => handlePageChange(totalPages - 1)}
+            disabled={currentPage >= totalPages - 1}
+          >
+            <MdOutlineKeyboardDoubleArrowRight
+              className={
+                "h-5 w-5 p-px" +
+                (currentPage >= totalPages - 1
+                  ? " text-gray-400"
+                  : " text-greenT")
+              }
+            />
+          </button>
+        </div>
       </div>
 
-      <div className="">{showElems()}</div>
+      <div className="md:container md:mx-auto md:mt-3 bg-white md:rounded-md">
+        {showElems()}
+      </div>
 
       {selectedOrder && (
         <OrderDetailsModal

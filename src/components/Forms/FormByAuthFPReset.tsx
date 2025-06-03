@@ -2,9 +2,9 @@
 
 import { IFormByAuthFPReset } from "@/interfaces";
 import axios from "axios";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useForm } from "react-hook-form";
+import { useResetPasswordStore } from "@/stores/useResetPasswordStore";
 
 type Props = { setSubmit: () => void; setIsSubmitActiveEmail: () => void };
 
@@ -13,8 +13,8 @@ export default function FormByAuthFPReset({
   setIsSubmitActiveEmail,
 }: Props) {
   const [error, setError] = useState("");
-
-  const router = useRouter();
+  const [success, setSuccess] = useState("");
+  const { email, clearEmail } = useResetPasswordStore();
 
   const {
     formState: { errors, isValid },
@@ -22,19 +22,16 @@ export default function FormByAuthFPReset({
     register,
     reset,
     clearErrors,
-    watch,
+    getValues,
   } = useForm<IFormByAuthFPReset>({ mode: "onBlur" });
 
-  const newPassword = watch("newPassword");
-  const secondPassword = watch("secondPassword");
-
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     reset();
     clearErrors();
-
+    clearEmail();
     setSubmit();
     setIsSubmitActiveEmail();
-  };
+  }, [clearEmail, clearErrors, reset, setSubmit, setIsSubmitActiveEmail]);
 
   const onSubmit = async (formData: IFormByAuthFPReset) => {
     if (!isValid) {
@@ -42,17 +39,50 @@ export default function FormByAuthFPReset({
       return;
     }
 
+    if (!email) {
+      setError(
+        "Email не найден. Пожалуйста, начните процесс сброса пароля заново."
+      );
+      return;
+    }
+
+    const { newPassword, secondPassword } = getValues();
+    if (newPassword !== secondPassword) {
+      setError("Пароли не совпадают.");
+      return;
+    }
+
     setError("");
 
-    // try {
-    //   const response = await axios.post(
-    //     "http://localhost:8080/api/v1/verification",
-    //     { email: formData.email, code }
-    //   );
-    //   const data = await response.data;
-    // } catch (error) {
-    //   console.log("Ошибка отправки запроса с кодом", error);
-    // }
+    try {
+      const response = await axios.put(
+        "http://localhost:8080/api/v1/users/change/password",
+        {
+          email: email,
+          newPassword: formData.newPassword,
+        }
+      );
+
+      if (response.status === 204) {
+        clearEmail();
+        reset();
+        clearErrors();
+        setSuccess("Пароль успешно изменен.");
+
+        const timer = setTimeout(() => {
+          handlePrev();
+          setSuccess("");
+        }, 2000);
+
+        return () => clearTimeout(timer);
+      }
+    } catch (error) {
+      console.log("Ошибка при смене пароля", error);
+      handlePrev();
+      setError(
+        "Произошла ошибка при смене пароля. Пожалуйста, попробуйте позже."
+      );
+    }
   };
 
   return (
@@ -61,12 +91,13 @@ export default function FormByAuthFPReset({
         Новый пароль
       </h1>
       {error && <p className="text-red-600 text-xs">{error}</p>}
+      {success && <p className="text-green-600 text-xs">{success}</p>}
 
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full flex flex-col gap-5 items-center text-black"
       >
-        <div className="ralative flex flex-col justify-center text-base items-center w-full">
+        <div className="relative flex flex-col justify-center text-base items-center w-full">
           <input
             type="password"
             placeholder="Новый пароль"
@@ -81,7 +112,7 @@ export default function FormByAuthFPReset({
                 message: "Максимум 50 символов",
               },
             })}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-gray-300"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-64 bg-transparent outline outline-1 outline-gray-300"
           />
           <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-10 text-nowrap text-red-600 text-xs mt-1">
             {errors?.newPassword
@@ -90,7 +121,7 @@ export default function FormByAuthFPReset({
           </span>
         </div>
 
-        <div className="ralative flex flex-col justify-center text-base items-center w-full">
+        <div className="relative flex flex-col justify-center text-base items-center w-full">
           <input
             type="password"
             placeholder="Повторите пароль"
@@ -104,10 +135,12 @@ export default function FormByAuthFPReset({
                 value: 50,
                 message: "Максимум 50 символов",
               },
-              validate: (value) =>
-                value === newPassword || "Пароли не совпадают",
+              validate: (value) => {
+                const { newPassword } = getValues();
+                return value === newPassword || "Пароли не совпадают";
+              },
             })}
-            className="py-2 px-6 rounded-md mt-1 w-full max-w-72 bg-transparent border border-gray-300"
+            className="py-2 px-6 rounded-md mt-1 w-full max-w-64 bg-transparent outline outline-1 outline-gray-300"
           />
           <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-10 text-nowrap text-red-600 text-xs mt-1">
             {errors?.secondPassword

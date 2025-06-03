@@ -11,10 +11,10 @@ type Props = {
 
 const ProductsAdmin = React.memo(function ProductsAdmin({ products }: Props) {
   return (
-    <div className="md:container md:mx-auto flex flex-col w-full bg-white rounded-md">
+    <div className="md:container md:mx-auto md:mt-3 flex flex-col w-full bg-white rounded-md">
       {products ? (
         <div className="overflow-x-auto w-full">
-          <table className="w-[170vw] md:w-full table-fixed text-black text-xs text-center mt-3">
+          <table className="w-[170vw] md:w-full table-fixed text-black text-xs text-center">
             <thead>
               <tr className="text-greenT text-[10px] uppercase">
                 <th className="w-2/5">Название</th>
