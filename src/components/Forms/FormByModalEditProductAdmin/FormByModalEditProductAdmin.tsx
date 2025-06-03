@@ -20,6 +20,7 @@ interface IEditProductFormData {
     description: string;
     price: number;
     quantities: number;
+    brand: string;
   };
 }
 
@@ -52,6 +53,7 @@ export default function FormByModalEditProductAdmin() {
         description: product?.description || "",
         price: product?.price || 0,
         quantities: product?.quantities || 0,
+        brand: product?.brand || "",
       },
     },
   });
@@ -74,6 +76,8 @@ export default function FormByModalEditProductAdmin() {
           try {
             const parsed = JSON.parse(product.characteristics);
             setParsedCharacteristics(parsed);
+            // Обновляем характеристики в сторе
+            updateData(parsed);
           } catch (e) {
             console.error("Error parsing characteristics:", e);
             setParsedCharacteristics(undefined);
@@ -88,6 +92,7 @@ export default function FormByModalEditProductAdmin() {
             description: product.description || "",
             price: product.price || 0,
             quantities: product.quantities || 0,
+            brand: product.brand || "", // Используем бренд из основных данных продукта
           },
         });
       } catch (error) {
@@ -138,12 +143,12 @@ export default function FormByModalEditProductAdmin() {
             memoryСard: characteristics.memoryСard || false,
             wirelessСharging: characteristics.wirelessСharging || false,
           })
-        : "";
+        : product.characteristics || ""; // Используем существующие характеристики, если новых нет
 
     const requestBody = {
       groupId: product.groupId,
       name: data.product.name,
-      brand: product.brand,
+      brand: data.product.brand, // Используем бренд из формы
       categoryName: data.product.categoryName,
       color: product.color,
       description: data.product.description,
@@ -198,18 +203,35 @@ export default function FormByModalEditProductAdmin() {
           <input
             type="text"
             placeholder="Название"
-            className="px-2 py-1 rounded-md text-black border border-greenT leading-none"
+            className="px-2 py-1 w-full rounded-md text-black border border-[#B3B3B3]"
             {...register("product.name", {
-              required: "Название обязательно",
-              minLength: { value: 6, message: "Минимум 6 символов" },
-              maxLength: { value: 80, message: "Максимум 80 символов" },
+              required: true,
+              maxLength: 100,
             })}
           />
-          {errors?.product?.name && (
-            <span className="text-red-600 text-xs">
-              {errors.product.name.message}
-            </span>
-          )}
+        </div>
+
+        <div className="flex flex-col">
+          <div className="flex items-start gap-1">
+            <label htmlFor="brand" className="relative">
+              Бренд
+              {errors?.product?.brand && (
+                <span className="absolute top-0.5 -right-2 z-10 leading-none text-red-600 text-xs">
+                  *
+                </span>
+              )}
+            </label>
+          </div>
+
+          <input
+            type="text"
+            placeholder="Бренд"
+            className="px-2 py-1 w-full rounded-md text-black border border-[#B3B3B3]"
+            {...register("product.brand", {
+              required: true,
+              maxLength: 50,
+            })}
+          />
         </div>
 
         <div className="w-full columns-2">

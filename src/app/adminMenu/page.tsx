@@ -100,8 +100,8 @@ export default function AdminMenu() {
 
   return (
     <div className="w-full">
-      <div className="w-full flex gap-3 items-center px-3 py-1 bg-white border-b">
-        <div className="flex-1 flex items-center gap-1">
+      <div className="w-full flex gap-3 justify-center items-center px-3 py-1 bg-white border-b rounded-t-md">
+        <div className="max-w-[500px] flex-1 flex items-center gap-1">
           <input
             value={inputValue}
             onChange={handleInputValue}
@@ -112,25 +112,27 @@ export default function AdminMenu() {
         </div>
       </div>
 
-      <div className="relative py-1 flex justify-center items-center gap-1 bg-white border-b">
-        <div className="absolute top-1/2 left-3 z-10 -translate-y-1/2">
+      <div className="w-full py-1 flex justify-center items-center gap-1 bg-white border-b rounded-b-md">
+        <div className="relative w-full flex justify-center max-w-[500px]">
+          <div className="absolute top-1/2 left-0 z-10 -translate-y-1/2">
+            <button
+              onClick={() => {
+                setInputValue("");
+                loadProducts(pagination.currentPage);
+              }}
+              className="px-2 py-1 rounded-md bg-greenT hover:bg-opacity-90"
+            >
+              <IoRefresh className="h-5 w-5 text-white" />
+            </button>
+          </div>
+
           <button
-            onClick={() => {
-              setInputValue("");
-              loadProducts(pagination.currentPage);
-            }}
-            className="px-2 py-1 rounded-md bg-greenT hover:bg-opacity-90"
+            className="flex justify-center items-center h-8 w-8 bg-greenT rounded-full hover:bg-opacity-90"
+            onClick={() => openModal(modalNewProductAdmin)}
           >
-            <IoRefresh className="h-5 w-5 text-white" />
+            <FaPlus className="h-5 w-5 p-px text-white" />
           </button>
         </div>
-
-        <button
-          className="flex justify-center items-center h-8 w-8 bg-greenT rounded-full hover:bg-opacity-90"
-          onClick={() => openModal(modalNewProductAdmin)}
-        >
-          <FaPlus className="h-5 w-5 p-px text-white" />
-        </button>
       </div>
 
       {isLoading ? (

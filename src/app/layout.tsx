@@ -10,6 +10,7 @@ import ModalSuccessOrder from "@/components/Modals/ModalSuccessOrder";
 import ModalNewProductAdmin from "@/components/Modals/ModalNewProductAdmin";
 import ModalDeleteEditNewProduct from "@/components/Modals/ModalDeleteEditNewProduct";
 import ModalEditProductAdmin from "@/components/Modals/ModalEditProductAdmin";
+import { usePathname } from "next/navigation";
 
 const roboto = Roboto({
   weight: ["400", "500", "700"],
@@ -35,7 +36,8 @@ export default function RootLayout({
           {/* <Nav /> */}
 
           <main className="flex-grow">
-            <div className="container px-2.5 relative">{children}</div>
+            {/* Оборачиваем в контейнер только не-админ страницы */}
+            {children}
           </main>
 
           <ModalNav />

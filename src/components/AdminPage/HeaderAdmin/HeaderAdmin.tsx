@@ -13,37 +13,49 @@ import {
 
 export default function HeaderAdmin() {
   return (
-    <div className="w-full">
-      <div className="flex flex-col items-center w-full">
-        <div className="flex justify-between items-center px-3 bg-greenT py-1 w-full">
-          <div className="flex items-center gap-3">
-            <Link href={mainPage}>
-              <FaHouse className="mr-3 h-4 w-4 text-white" />
+    <header className="w-full bg-greenT shadow-md">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14">
+          <nav className="flex items-center gap-4 sm:gap-6">
+            <Link
+              href={mainPage}
+              className="text-white hover:text-gray-200 transition-colors"
+            >
+              <FaHouse className="h-4 w-4" />
             </Link>
 
-            <Link href={adminProfilesPage} className="py-2">
-              <FaUsers className="h-5 w-5 text-white" />
+            <Link
+              href={adminProfilesPage}
+              className="text-white hover:text-gray-200 transition-colors"
+            >
+              <FaUsers className="h-5 w-5" />
             </Link>
 
             <Link
               href={adminOrdersPage}
-              className="text-sm text-white leading-none py-2"
+              className="text-sm text-white hover:text-gray-200 transition-colors font-medium"
             >
               Заказы
             </Link>
+
             <Link
               href={adminMenuPage}
-              className="text-sm text-white leading-none py-2"
+              className="text-sm text-white hover:text-gray-200 transition-colors font-medium"
             >
               Товары
             </Link>
-          </div>
+          </nav>
 
-          {/* <div>
-            <IoIosNotifications className="h-5 w-5 text-white" />
+          {/* <div className="flex items-center">
+            <button 
+              type="button" 
+              className="text-white hover:text-gray-200 transition-colors"
+            >
+              <IoIosNotifications className="h-5 w-5" />
+            </button>
           </div> */}
         </div>
       </div>
-    </div>
+    </header>
   );
 }

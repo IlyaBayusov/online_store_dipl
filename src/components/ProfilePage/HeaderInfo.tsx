@@ -4,7 +4,7 @@ import { IGetUserInfoInProfile } from "@/interfaces";
 import { useProfileInfoStore } from "@/stores/useProfileInfoStore";
 
 import React, { useEffect, useState } from "react";
-import { HiOutlinePencilSquare } from "react-icons/hi2";
+import { FaUser } from "react-icons/fa";
 
 type Props = { data: IGetUserInfoInProfile };
 
@@ -32,7 +32,9 @@ export default function HeaderInfo({ data }: Props) {
       <div className="flex flex-nowrap items-start gap-3">
         <div className="relative w-16 h-16 overflow-hidden">
           {/* <Image src="" alt="" className="w-16 h-16 rounded-full" /> */}
-          <div className="w-16 h-16 rounded-full bg-red-500"></div>
+          <div className="w-16 h-16 rounded-full bg-gray-300">
+            <FaUser className="w-1/2 h-1/2 relative top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white" />
+          </div>
 
           {/* <div className="absolute top-0 left-0 z-10 w-full h-full rounded-full bg-black bg-opacity-60">
             <div className="relative w-full h-full">

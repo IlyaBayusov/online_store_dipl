@@ -7,10 +7,10 @@ export default function AdminMenuLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="absolute top-0 left-0 z-[100] w-full h-full">
+    <div className="w-full min-h-screen bg-gray-50">
       <HeaderAdmin />
 
-      <div className="container hide-scrollbar-y">{children}</div>
+      <div className="w-full mx-auto">{children}</div>
     </div>
   );
 }

@@ -12,21 +12,21 @@ export default function ModalEditProductAdmin() {
   return (
     <div
       className={
-        `top-0 -0 z-[1000] w-full h-full bg-white bg-opacity-40 transition-all overflow-y-hidden ` +
+        `top-0 -0 z-[1000] w-full h-full bg-black bg-opacity-40 transition-all overflow-y-hidden ` +
         (modals[modalEditProductAdmin] ? "fixed" : "hidden")
       }
       onClick={() => closeModal(modalEditProductAdmin)}
     >
       <div
-        className="absolute top-0 left-0 z-10 w-full h-full flex flex-col bg-white p-3 overflow-auto hide-scrollbar-y"
+        className="absolute top-0 left-0 z-10 md:top-1/2 md:-translate-y-1/2 md:left-1/2 md:-translate-x-1/2 md:max-w-[600px] md:container md:mx-auto md:rounded-md md:h-auto md:max-h-full h-full flex flex-col bg-white p-3 md:p-5 overflow-auto hide-scrollbar-y"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center font-bold">
           <h1 className="text-greenT uppercase">Редактирование товара</h1>
 
-          <div onClick={() => closeModal(modalEditProductAdmin)}>
+          <button onClick={() => closeModal(modalEditProductAdmin)}>
             <IoClose className="text-greenT w-5 h-5" viewBox="75 75 350 350" />
-          </div>
+          </button>
         </div>
 
         <FormByModalEditProductAdmin />
