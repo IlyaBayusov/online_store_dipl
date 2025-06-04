@@ -15,6 +15,8 @@ import Link from "next/link";
 import CartBtn from "@/components/Buttons/CartBtn/CartBtn";
 import { useCartStore } from "@/stores/useCartStore";
 import { useFavStore } from "@/stores/useFavStore";
+import { useRouter } from "next/navigation";
+import { authPage } from "@/constans";
 
 type Props = { productCard: IProductsCardBody; params: IProductsCardParams };
 
@@ -24,6 +26,8 @@ export default React.memo(
     const [isActiveCart, setIsActiveCart] = useState(false);
 
     const [showedFav, setShowedFav] = useState<boolean>(true);
+
+    const router = useRouter();
 
     const { deleteProductInCart, updatedDataInCart } = useCartStore();
     const { removeFavProduct } = useFavStore();
@@ -100,8 +104,12 @@ export default React.memo(
 
     const handleClickFav = async () => {
       const favoriteId = await setActiveBtnFav();
-      const decodedToken = decodeToken();
-      if (!decodedToken?.id) return;
+      const decodedToken: IDecodedToken = decodeToken();
+
+      if (!decodedToken) {
+        router.push(authPage);
+        return;
+      }
 
       try {
         if (isActiveFav && favoriteId) {
@@ -155,6 +163,11 @@ export default React.memo(
       const cartItemId = await setActiveBtnCart();
 
       const decodedToken: IDecodedToken = decodeToken();
+
+      if (!decodedToken) {
+        router.push(authPage);
+        return;
+      }
 
       if (isActiveCart) {
         setIsActiveCart(false);

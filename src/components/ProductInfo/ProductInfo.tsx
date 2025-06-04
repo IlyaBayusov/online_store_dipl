@@ -1,11 +1,11 @@
 "use client";
 
-import { IProductInfo, IPagination } from "@/interfaces/index";
+import { IProductInfo, IPagination, IDecodedToken } from "@/interfaces/index";
 import { C_mobilePhones } from "@/interfaces/characteristics";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { decodeToken, getCategoryRu } from "@/utils";
 import { RiShoppingBasketLine, RiShoppingBasketFill } from "react-icons/ri";
 import { MdFavoriteBorder, MdFavorite } from "react-icons/md";
@@ -13,6 +13,7 @@ import { api, postViewed } from "@/axios";
 import { getFav, getProductsCart, postFav } from "@/api";
 import * as Tabs from "@radix-ui/react-tabs";
 import { useCartStore } from "@/stores/useCartStore";
+import { authPage } from "@/constans";
 
 type Props = {
   arrProduct: IProductInfo[];
@@ -58,6 +59,8 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
   const [showedFav, setShowedFav] = useState<boolean>(true);
 
   const { updatedDataInCart, deleteProductInCart } = useCartStore();
+
+  const router = useRouter();
 
   const params = useParams();
 
@@ -120,9 +123,12 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
   const handleClickCart = async () => {
     try {
       const cartItemId = await setActiveBtnCart();
-      const decodedToken = decodeToken();
+      const decodedToken: IDecodedToken = decodeToken();
 
-      if (!decodedToken?.id) return;
+      if (!decodedToken) {
+        router.push(authPage);
+        return;
+      }
 
       if (isActiveCart) {
         setIsActiveCart(false);
@@ -167,9 +173,13 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
   const handleClickFav = async () => {
     try {
       const favoriteId = await setActiveBtnFav();
-      const decodedToken = decodeToken();
 
-      if (!decodedToken?.id) return;
+      const decodedToken: IDecodedToken = decodeToken();
+
+      if (!decodedToken) {
+        router.push(authPage);
+        return;
+      }
 
       if (isActiveFav && favoriteId) {
         setIsActiveFav(false);

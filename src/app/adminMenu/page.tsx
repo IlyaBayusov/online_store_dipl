@@ -114,7 +114,7 @@ export default function AdminMenu() {
 
       <div className="w-full py-1 flex justify-center items-center gap-1 bg-white border-b rounded-b-md">
         <div className="relative w-full flex justify-center max-w-[500px]">
-          <div className="absolute top-1/2 left-0 z-10 -translate-y-1/2">
+          <div className="absolute top-1/2 left-0 z-10 -translate-y-1/2 ml-3 sm:ml-0">
             <button
               onClick={() => {
                 setInputValue("");

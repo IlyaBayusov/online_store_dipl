@@ -43,8 +43,8 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="flex-1">
-      <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex-1">
+      <div className="w-full max-w-[1920px] mx-auto sm:px-6 lg:px-8">
         {/* Категории */}
         <section className="py-6 sm:py-8 lg:py-12">
           <div className="mb-6 sm:mb-8">
@@ -98,6 +98,6 @@ export default function Home() {
           </section>
         )}
       </div>
-    </main>
+    </div>
   );
 }
