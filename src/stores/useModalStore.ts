@@ -6,6 +6,7 @@ import {
   modalNewProductAdmin,
   modalDeleteEditNewProduct,
   modalEditProductAdmin,
+  modalDeleteProductAdmin,
 } from "@/constans";
 import { IProductInfo, ISizeAndQuantity } from "@/interfaces";
 import { StaticImageData } from "next/image";
@@ -42,6 +43,11 @@ export const defaultDeleteEditNewProductProps =
     isDeleted: false,
   });
 
+export interface IDeleteProductProps {
+  product: IProductInfo;
+  onSuccess: () => void;
+}
+
 type ModalPropsMap = {
   [modalNav]: null;
   [modalNavCategory]: INextCategoryProps[];
@@ -50,6 +56,7 @@ type ModalPropsMap = {
   [modalNewProductAdmin]: null;
   [modalDeleteEditNewProduct]: IDeleteEditNewProductProps;
   [modalEditProductAdmin]: IProductInfo;
+  [modalDeleteProductAdmin]: IDeleteProductProps;
 };
 
 export interface IModalStore {

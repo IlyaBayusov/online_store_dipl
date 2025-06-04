@@ -1,7 +1,7 @@
 "use client";
 
 import { postEnableProductAdmin } from "@/api";
-import { modalEditProductAdmin } from "@/constans";
+import { modalDeleteProductAdmin, modalEditProductAdmin } from "@/constans";
 import { IProductInfo } from "@/interfaces";
 import { useModalStore } from "@/stores/useModalStore";
 import Image from "next/image";
@@ -9,12 +9,14 @@ import React, { useState } from "react";
 import { CiSettings } from "react-icons/ci";
 import { IoCheckmark } from "react-icons/io5";
 import { IoClose } from "react-icons/io5";
+import { FaTrash } from "react-icons/fa";
 
 type Props = {
   product: IProductInfo;
+  onDelete: () => void;
 };
 
-export default function TableRowAdmin({ product }: Props) {
+export default function TableRowAdmin({ product, onDelete }: Props) {
   const [isActive, setIsActive] = useState<boolean>(product.isActive);
   const { openModal, addModalProps } = useModalStore();
 
@@ -34,6 +36,11 @@ export default function TableRowAdmin({ product }: Props) {
   const handleEdit = () => {
     addModalProps(modalEditProductAdmin, product);
     openModal(modalEditProductAdmin);
+  };
+
+  const handleDelete = () => {
+    addModalProps(modalDeleteProductAdmin, { product, onSuccess: onDelete });
+    openModal(modalDeleteProductAdmin);
   };
 
   return (
@@ -79,10 +86,17 @@ export default function TableRowAdmin({ product }: Props) {
           )}
         </div>
       </td>
-
       <td>
         <button className="py-1 px-2" onClick={handleEdit}>
           <CiSettings className="h-6 w-6 p-px" />
+        </button>
+      </td>
+      <td>
+        <button
+          className="py-1 px-2 text-red-600 hover:text-red-700"
+          onClick={handleDelete}
+        >
+          <FaTrash className="h-5 w-5" />
         </button>
       </td>
     </tr>

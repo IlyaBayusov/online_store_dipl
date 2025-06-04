@@ -345,3 +345,13 @@ export const putOrderStatus = async (orderId: number, status: string) => {
     throw error;
   }
 };
+
+export const deleteProduct = async (productId: number) => {
+  try {
+    const response = await api.delete(`/v1/products/${productId}`);
+    return response;
+  } catch (error) {
+    console.error("Ошибка удаления товара:", error);
+    throw error;
+  }
+};

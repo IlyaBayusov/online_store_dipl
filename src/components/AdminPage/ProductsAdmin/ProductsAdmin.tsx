@@ -7,9 +7,13 @@ import TableRowAdmin from "./TableRowAdmin/TableRowAdmin";
 
 type Props = {
   products: IProductInfo[];
+  onProductDelete: () => void;
 };
 
-const ProductsAdmin = React.memo(function ProductsAdmin({ products }: Props) {
+const ProductsAdmin = React.memo(function ProductsAdmin({
+  products,
+  onProductDelete,
+}: Props) {
   return (
     <div className="md:container md:mx-auto md:mt-3 flex flex-col w-full bg-white rounded-md">
       {products ? (
@@ -23,12 +27,17 @@ const ProductsAdmin = React.memo(function ProductsAdmin({ products }: Props) {
                 <th className="">Кол-во</th>
                 <th className="">Статус</th>
                 <th className="">Изменить</th>
+                <th className="">Удалить</th>
               </tr>
             </thead>
 
             <tbody>
               {products.map((product) => (
-                <TableRowAdmin key={product.id} product={product} />
+                <TableRowAdmin
+                  key={product.id}
+                  product={product}
+                  onDelete={onProductDelete}
+                />
               ))}
             </tbody>
           </table>
