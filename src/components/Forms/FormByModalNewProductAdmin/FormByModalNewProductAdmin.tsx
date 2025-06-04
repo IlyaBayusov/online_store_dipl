@@ -226,7 +226,7 @@ export default function FormByModalNewProductAdmin() {
             {...register("product.name", {
               required: true,
               minLength: 6,
-              maxLength: 80,
+              maxLength: 120,
             })}
           />
         </div>
@@ -263,12 +263,12 @@ export default function FormByModalNewProductAdmin() {
                 />
 
                 {index != 0 ? (
-                  <div
+                  <button
                     className="absolute top-1 left-1 z-10 p-1 rounded-full bg-black bg-opacity-30"
                     onClick={() => handleSetMainImage({ file, preview }, index)}
                   >
                     <BsPinAngleFill className="text-white w-[14px] h-[14px]" />
-                  </div>
+                  </button>
                 ) : (
                   <div className="absolute top-1 left-1 z-10 flex items-center gap-1 bg-greenT px-1 py-px rounded-md">
                     <BsPinAngleFill className="text-white w-2 h-2" />
@@ -276,7 +276,7 @@ export default function FormByModalNewProductAdmin() {
                   </div>
                 )}
 
-                <div
+                <button
                   className="absolute top-1 right-1 z-10 p-1 rounded-full bg-black bg-opacity-30"
                   onClick={() => handleDeleteImage(index)}
                 >
@@ -284,7 +284,7 @@ export default function FormByModalNewProductAdmin() {
                     className="text-white w-[14px] h-[14px]"
                     viewBox="75 75 350 350"
                   />
-                </div>
+                </button>
               </div>
             ))}
 
@@ -398,7 +398,7 @@ export default function FormByModalNewProductAdmin() {
             {...register("product.description", {
               required: true,
               minLength: 10,
-              maxLength: 1500,
+              maxLength: 2500,
             })}
           ></textarea>
         </div>

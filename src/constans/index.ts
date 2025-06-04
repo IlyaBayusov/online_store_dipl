@@ -31,7 +31,7 @@ export const modalEditProductAdmin = "modalEditProductAdmin";
 export const filtersKeyProductsPage = "filtersKeyProductsPage";
 export const filtersKeyModalNav = "filtersKeyModalNav";
 
-export const sizePage = 1;
+export const sizePage = 4;
 
 export const sizePaginationProductsInAdmin = 2;
 

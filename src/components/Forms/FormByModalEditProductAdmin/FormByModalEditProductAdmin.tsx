@@ -206,12 +206,13 @@ export default function FormByModalEditProductAdmin() {
             className="px-2 py-1 w-full rounded-md text-black border border-[#B3B3B3]"
             {...register("product.name", {
               required: true,
-              maxLength: 100,
+              minLength: 6,
+              maxLength: 120,
             })}
           />
         </div>
 
-        <div className="flex flex-col">
+        {/* <div className="flex flex-col">
           <div className="flex items-start gap-1">
             <label htmlFor="brand" className="relative">
               Бренд
@@ -232,7 +233,7 @@ export default function FormByModalEditProductAdmin() {
               maxLength: 50,
             })}
           />
-        </div>
+        </div> */}
 
         <div className="w-full columns-2">
           <div className="flex flex-col">
@@ -307,7 +308,7 @@ export default function FormByModalEditProductAdmin() {
             {...register("product.description", {
               required: true,
               minLength: 10,
-              maxLength: 1500,
+              maxLength: 2500,
             })}
           ></textarea>
         </div>
