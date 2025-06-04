@@ -100,13 +100,6 @@ export default function SearchBar() {
   };
 
   const renderContent = () => {
-    console.log("Render state:", {
-      isSearching,
-      products,
-      searchTerm,
-      isLoading,
-    });
-
     if (isSearching) {
       return (
         <div className="py-6">

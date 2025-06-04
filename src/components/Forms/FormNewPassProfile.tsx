@@ -7,6 +7,8 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import InputInForm from "../ProfilePage/InputInForm";
 import EditBtnInForm from "../ProfilePage/EditBtnInForm";
+import { decodeToken } from "@/utils";
+import { useProfileInfoStore } from "@/stores/useProfileInfoStore";
 
 type Props = { profileData: IGetUserInfoInProfile };
 
@@ -19,6 +21,10 @@ export default function FormNewPassProfile({ profileData }: Props) {
     reset,
     formState: { errors, isValid },
   } = useForm<IFormNewPassInProfile>({ mode: "onSubmit" });
+
+  const newProfileData = useProfileInfoStore((state) => state.newProfileData);
+
+  console.log(profileData, decodeToken());
 
   const newPassword = watch("newPassword");
   const secondNewPassword = watch("secondNewPassword");
@@ -49,7 +55,8 @@ export default function FormNewPassProfile({ profileData }: Props) {
   const onGetCode = async () => {
     setIsActiveCodeBlock(true);
 
-    const responseSendCode = await getSendCodeOnEmail(profileData.email);
+    const currentEmail = newProfileData.email || profileData.email;
+    const responseSendCode = await getSendCodeOnEmail(currentEmail);
 
     if (responseSendCode?.status === 200) {
       setMessSendCode("Код отправлен");
@@ -154,11 +161,12 @@ export default function FormNewPassProfile({ profileData }: Props) {
         <>
           <label htmlFor="secondNewPassword" className="relative w-full">
             <div className="w-full flex justify-start items-center gap-3">
-              <p>Подтвердите пароль</p>
-
-              <span className="-mb-0.5 text-nowrap text-red-600 text-xs">
-                {errors.secondNewPassword?.message || errorMessSecondNewPass}
-              </span>
+              <div className="relative">
+                Подтвердите пароль
+                <span className="absolute bottom-0.5 left-[108%] z-10 text-nowrap text-red-600 text-xs">
+                  {errors.secondNewPassword?.message || errorMessSecondNewPass}
+                </span>
+              </div>
             </div>
 
             <div className="w-full flex justify-between items-center">
@@ -186,17 +194,18 @@ export default function FormNewPassProfile({ profileData }: Props) {
 
           <label htmlFor="email" className="relative w-full mb-1">
             <div className="w-full flex justify-start items-center gap-3">
-              <p>Код подтверждения</p>
-
-              {errorMessageSendCode ? (
-                <span className="-mb-0.5 text-nowrap text-red-600 text-xs">
-                  {errorMessageSendCode}
-                </span>
-              ) : (
-                <span className="-mb-0.5 text-nowrap text-green-500 text-xs">
-                  {messSendCode}
-                </span>
-              )}
+              <div className="relative">
+                Код подтверждения
+                {errorMessageSendCode ? (
+                  <span className="absolute bottom-0.5 left-[108%] z-10 text-nowrap text-red-600 text-xs">
+                    {errorMessageSendCode}
+                  </span>
+                ) : (
+                  <span className="absolute bottom-0.5 left-[108%] z-10 text-nowrap text-green-500 text-xs">
+                    {messSendCode}
+                  </span>
+                )}
+              </div>
             </div>
 
             <div className="w-full flex justify-between items-center">

@@ -372,7 +372,7 @@ export default function FormByModalNewProductAdmin() {
               className="px-2 py-1 rounded-md text-black border border-greenT leading-none"
               {...register("product.quantities", {
                 required: true,
-                min: 1,
+                min: 0,
                 max: 10000,
               })}
             />
