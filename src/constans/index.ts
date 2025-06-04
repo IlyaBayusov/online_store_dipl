@@ -308,6 +308,11 @@ export const colors = [
   { name: "Голубой", value: "#87cefa" },
   { name: "Бордовый", value: "#800020" },
   { name: "Черно-серый", value: "#555555" },
+  { name: "Розовый", value: "#ff69b4" },
+  { name: "Фиолетовый", value: "#8a2be2" },
+  { name: "Золотой", value: "#ffd700" },
+  { name: "Серебристый", value: "#c0c0c0" },
+  { name: "Красный", value: "#ff0000" },
 ];
 
 // export const selectCategoryies = [

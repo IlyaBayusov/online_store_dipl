@@ -12,6 +12,7 @@ import { C_mobilePhones } from "@/interfaces/characteristics";
 import { api } from "@/axios";
 import { AxiosError } from "axios";
 import Loader from "@/components/Loader/Loader";
+import { colors } from "@/constans";
 
 interface IEditProductFormData {
   product: {
@@ -21,6 +22,7 @@ interface IEditProductFormData {
     price: number;
     quantities: number;
     brand: string;
+    color: string;
   };
 }
 
@@ -54,6 +56,7 @@ export default function FormByModalEditProductAdmin() {
         price: product?.price || 0,
         quantities: product?.quantities || 0,
         brand: product?.brand || "",
+        color: product?.color || "",
       },
     },
   });
@@ -71,12 +74,11 @@ export default function FormByModalEditProductAdmin() {
           setCategories(categoriesData.data);
         }
 
-        // Парсим характеристики из JSON
         if (product.characteristics) {
           try {
             const parsed = JSON.parse(product.characteristics);
             setParsedCharacteristics(parsed);
-            // Обновляем характеристики в сторе
+
             updateData(parsed);
           } catch (e) {
             console.error("Error parsing characteristics:", e);
@@ -84,7 +86,6 @@ export default function FormByModalEditProductAdmin() {
           }
         }
 
-        // ВАЖНО: обновляем значения формы
         reset({
           product: {
             name: product.name || "",
@@ -92,7 +93,8 @@ export default function FormByModalEditProductAdmin() {
             description: product.description || "",
             price: product.price || 0,
             quantities: product.quantities || 0,
-            brand: product.brand || "", // Используем бренд из основных данных продукта
+            brand: product.brand || "",
+            color: product.color || "",
           },
         });
       } catch (error) {
@@ -105,7 +107,6 @@ export default function FormByModalEditProductAdmin() {
     initialize();
   }, [product, updateData, reset]);
 
-  // Если product не определен или данные загружаются, показываем загрузку
   if (!product || isLoading) {
     return (
       <div className="mt-3 text-center text-gray-500">Загрузка данных...</div>
@@ -118,7 +119,6 @@ export default function FormByModalEditProductAdmin() {
       return;
     }
 
-    // Проверяем только наличие producer для категории мобильных телефонов
     if (categoryName && !characteristics.producer) {
       setIsSubmitChar(true);
       setErrorSubmit("Заполните характеристики товара");
@@ -128,7 +128,6 @@ export default function FormByModalEditProductAdmin() {
     setErrorSubmit("");
     setIsLoading(true);
 
-    // Преобразуем характеристики в правильный формат JSON
     const characteristicsJson =
       Object.keys(characteristics).length > 0
         ? JSON.stringify({
@@ -151,7 +150,7 @@ export default function FormByModalEditProductAdmin() {
       name: data.product.name,
       brand: characteristics.producer || product.brand,
       categoryName: data.product.categoryName,
-      color: product.color,
+      color: data.product.color,
       description: data.product.description,
       price: data.product.price,
       characteristics: characteristicsJson,
@@ -289,6 +288,45 @@ export default function FormByModalEditProductAdmin() {
               maxLength: 2500,
             })}
           ></textarea>
+        </div>
+
+        <div className="flex flex-col">
+          <div className="flex items-start gap-1">
+            <label htmlFor="color" className="relative">
+              Цвет
+              {
+                <span className="absolute top-0.5 -right-2 z-10 leading-none text-red-600 text-xs">
+                  {errors?.product?.color && "*"}
+                </span>
+              }
+            </label>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <select
+              id="color"
+              className="px-2 py-1 rounded-md text-black border border-greenT leading-none max-h-10 overflow-auto"
+              {...register("product.color", {
+                required: true,
+              })}
+            >
+              <option value="">Выбрать</option>
+              {colors.map((item) => (
+                <option key={item.value} value={item.name}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+
+            <div
+              className="h-6 w-6 rounded-full border-2 border-white outline outline-1 outline-gray-300"
+              style={{
+                backgroundColor:
+                  colors.find((item) => item.name === watch("product.color"))
+                    ?.value || "#cccccc",
+              }}
+            ></div>
+          </div>
         </div>
 
         <div className="flex flex-col">

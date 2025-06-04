@@ -1,6 +1,6 @@
 "use client";
 
-import { IProductInfo, IPagination, IDecodedToken } from "@/interfaces/index";
+import { IProductInfo, IPagination } from "@/interfaces/index";
 import { C_mobilePhones } from "@/interfaces/characteristics";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
@@ -13,7 +13,7 @@ import { api, postViewed } from "@/axios";
 import { getFav, getProductsCart, postFav } from "@/api";
 import * as Tabs from "@radix-ui/react-tabs";
 import { useCartStore } from "@/stores/useCartStore";
-import { authPage } from "@/constans";
+import { authPage, colors } from "@/constans";
 
 type Props = {
   arrProduct: IProductInfo[];
@@ -123,7 +123,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
   const handleClickCart = async () => {
     try {
       const cartItemId = await setActiveBtnCart();
-      const decodedToken: IDecodedToken = decodeToken();
+      const decodedToken = decodeToken();
 
       if (!decodedToken) {
         router.push(authPage);
@@ -174,7 +174,7 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
     try {
       const favoriteId = await setActiveBtnFav();
 
-      const decodedToken: IDecodedToken = decodeToken();
+      const decodedToken = decodeToken();
 
       if (!decodedToken) {
         router.push(authPage);
@@ -295,6 +295,20 @@ export default function ProductInfo({ arrProduct, productIdInArray }: Props) {
                 <p>
                   <span className="text-[#B9B9B9]">Артикул:</span>{" "}
                   {nowProduct.id}
+                </p>
+                <p className="flex items-center gap-2">
+                  <span className="text-[#B9B9B9]">Цвет:</span>{" "}
+                  <span className="flex items-center gap-1">
+                    {nowProduct.color}
+                    <div
+                      className="h-4 w-4 rounded-full border-2 border-white outline outline-1 outline-gray-300"
+                      style={{
+                        backgroundColor:
+                          colors.find((item) => item.name === nowProduct.color)
+                            ?.value || "#cccccc",
+                      }}
+                    ></div>
+                  </span>
                 </p>
               </div>
             </div>

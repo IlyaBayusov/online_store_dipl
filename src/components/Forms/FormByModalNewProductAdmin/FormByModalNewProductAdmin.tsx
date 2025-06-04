@@ -1,7 +1,7 @@
 "use client";
 
 import { getCategories, postProductAdmin } from "@/api";
-import { amountImagesInAdmin, modalNewProductAdmin } from "@/constans";
+import { amountImagesInAdmin, modalNewProductAdmin, colors } from "@/constans";
 import { useModalStore } from "@/stores/useModalStore";
 import Image from "next/image";
 import React, { useLayoutEffect, useState } from "react";
@@ -22,7 +22,7 @@ interface ISelectedFiles {
 
 export default function FormByModalNewProductAdmin() {
   const { closeModal } = useModalStore();
-  const { characteristics, isValidChar, setIsSubmitChar, updateData } =
+  const { characteristics, setIsSubmitChar, updateData } =
     useCharacteristicsStore();
   const getProducts = usePaginationAdmin((state) => state.getProducts);
 
@@ -61,9 +61,9 @@ export default function FormByModalNewProductAdmin() {
       return;
     }
 
-    if (!isValidChar && categoryName) {
+    if (categoryName && !characteristics.producer) {
       setIsSubmitChar(true);
-      setErrorSubmit("Заполните характеристики товара");
+      setErrorSubmit("Укажите производителя в характеристиках товара");
       return;
     }
 
@@ -93,6 +93,7 @@ export default function FormByModalNewProductAdmin() {
       ...data.product,
       quantities: Number(data.product.quantities),
       characteristics: characteristicsJson,
+      brand: characteristics.producer || "",
     };
 
     fData.append("product", JSON.stringify(newFormData));
@@ -191,7 +192,7 @@ export default function FormByModalNewProductAdmin() {
   };
 
   const handleClickSubmit = () => {
-    if (!isValidChar && categoryName) {
+    if (categoryName && !characteristics.producer) {
       setIsSubmitChar(true);
       return;
     }
@@ -405,6 +406,45 @@ export default function FormByModalNewProductAdmin() {
 
         <div className="flex flex-col">
           <div className="flex items-start gap-1">
+            <label htmlFor="color" className="relative">
+              Цвет
+              {
+                <span className="absolute top-0.5 -right-2 z-10 leading-none text-red-600 text-xs">
+                  {errors?.product?.color && "*"}
+                </span>
+              }
+            </label>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <select
+              id="color"
+              className="px-2 py-1 rounded-md text-black border border-greenT leading-none max-h-10 overflow-auto"
+              {...register("product.color", {
+                required: true,
+              })}
+            >
+              <option value="">Выбрать</option>
+              {colors.map((item) => (
+                <option key={item.value} value={item.name}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+
+            <div
+              className="h-6 w-6 rounded-full border-2 border-white outline outline-1 outline-gray-300"
+              style={{
+                backgroundColor:
+                  colors.find((item) => item.name === watch("product.color"))
+                    ?.value || "#cccccc",
+              }}
+            ></div>
+          </div>
+        </div>
+
+        <div className="flex flex-col">
+          <div className="flex items-start gap-1">
             <label htmlFor="categoryName" className="relative">
               Категория
               {
@@ -435,44 +475,6 @@ export default function FormByModalNewProductAdmin() {
         </div>
 
         {categoryName && <GetCompCategory category={categoryName} />}
-
-        {/* <div className="flex flex-col">
-          <div className="flex items-start gap-1">
-            <label htmlFor="color" className="relative">
-              Цвет
-              {
-                <span className="absolute top-0.5 -right-2 z-10 leading-none text-red-600 text-xs">
-                  {errors?.product?.color && "*"}
-                </span>
-              }
-            </label>
-          </div>
-
-          <div className="flex items-center gap-1">
-            <select
-              id="color"
-              className="px-2 py-1 rounded-md text-black border border-greenT leading-none max-h-10 overflow-auto"
-              {...register("product.color", {
-                required: true,
-              })}
-            >
-              <option value="">Выбрать</option>
-
-              {colors.map((item) => (
-                <option key={item.value} value={item.name}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-
-            <div
-              className="h-6 w-6 rounded-full border-2 border-white"
-              style={{
-                backgroundColor: color.value,
-              }}
-            ></div> 
-          </div>
-        </div> */}
 
         <div className="relative flex justify-center items-center w-full">
           <span className="absolute -top-[7px] left-0 z-10 text-red-600 text-xs">
