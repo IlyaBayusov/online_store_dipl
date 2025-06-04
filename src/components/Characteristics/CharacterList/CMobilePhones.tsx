@@ -58,6 +58,8 @@ export default function CMobilePhones({ initialValues }: Props) {
     }
   }, [isSubmitChar]);
 
+  console.log(errors, isValid);
+
   return (
     <div className="flex flex-col gap-2">
       <label

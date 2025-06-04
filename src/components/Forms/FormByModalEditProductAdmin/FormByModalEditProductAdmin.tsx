@@ -26,7 +26,7 @@ interface IEditProductFormData {
 
 export default function FormByModalEditProductAdmin() {
   const { closeModal, modalsProps } = useModalStore();
-  const { characteristics, isValidChar, setIsSubmitChar, updateData } =
+  const { characteristics, setIsSubmitChar, updateData } =
     useCharacteristicsStore();
 
   const [errorSubmit, setErrorSubmit] = useState<string>("");
@@ -118,7 +118,8 @@ export default function FormByModalEditProductAdmin() {
       return;
     }
 
-    if (!isValidChar && categoryName) {
+    // Проверяем только наличие producer для категории мобильных телефонов
+    if (categoryName && !characteristics.producer) {
       setIsSubmitChar(true);
       setErrorSubmit("Заполните характеристики товара");
       return;
@@ -143,12 +144,12 @@ export default function FormByModalEditProductAdmin() {
             memoryСard: characteristics.memoryСard || false,
             wirelessСharging: characteristics.wirelessСharging || false,
           })
-        : product.characteristics || ""; // Используем существующие характеристики, если новых нет
+        : product.characteristics || "";
 
     const requestBody = {
       groupId: product.groupId,
       name: data.product.name,
-      brand: data.product.brand, // Используем бренд из формы
+      brand: characteristics.producer || product.brand,
       categoryName: data.product.categoryName,
       color: product.color,
       description: data.product.description,
@@ -211,29 +212,6 @@ export default function FormByModalEditProductAdmin() {
             })}
           />
         </div>
-
-        {/* <div className="flex flex-col">
-          <div className="flex items-start gap-1">
-            <label htmlFor="brand" className="relative">
-              Бренд
-              {errors?.product?.brand && (
-                <span className="absolute top-0.5 -right-2 z-10 leading-none text-red-600 text-xs">
-                  *
-                </span>
-              )}
-            </label>
-          </div>
-
-          <input
-            type="text"
-            placeholder="Бренд"
-            className="px-2 py-1 w-full rounded-md text-black border border-[#B3B3B3]"
-            {...register("product.brand", {
-              required: true,
-              maxLength: 50,
-            })}
-          />
-        </div> */}
 
         <div className="w-full columns-2">
           <div className="flex flex-col">
