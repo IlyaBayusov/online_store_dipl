@@ -96,6 +96,8 @@ export default function FormByModalNewProductAdmin() {
       brand: characteristics.producer || "",
     };
 
+    console.log(newFormData);
+
     fData.append("product", JSON.stringify(newFormData));
 
     selectedFiles.forEach((file) => {

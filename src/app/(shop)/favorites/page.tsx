@@ -3,18 +3,22 @@
 import { getFav } from "@/api";
 import Loader from "@/components/Loader/Loader";
 import ProductCardList from "@/components/ProductCard/ProductCardList/ProductCardList";
-import { paramsFavoritsProducts, SORT_OPTIONS, sizePage } from "@/constans";
+import {
+  paramsFavoritsProducts,
+  SORT_OPTIONS_FAVS,
+  sizePage,
+} from "@/constans";
 import { useFavStore } from "@/stores/useFavStore";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
-type SortFieldType = (typeof SORT_OPTIONS)[number]["value"];
+type SortFieldType = (typeof SORT_OPTIONS_FAVS)[number]["value"];
 
 export default function Favorites() {
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [sortField, setSortField] = useState<SortFieldType>(
-    SORT_OPTIONS[0].value
+    SORT_OPTIONS_FAVS[0].value
   );
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -166,7 +170,7 @@ export default function Favorites() {
             onChange={handleSortChange}
             className="px-2 py-1 border border-gray-300 rounded-md text-sm"
           >
-            {SORT_OPTIONS.map((option) => (
+            {SORT_OPTIONS_FAVS.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>

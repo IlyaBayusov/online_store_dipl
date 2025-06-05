@@ -56,6 +56,11 @@ export const SORT_OPTIONS = [
   { value: "price,asc", label: "По цене, возр." },
 ] as const;
 
+export const SORT_OPTIONS_FAVS = [
+  { value: "id,desc", label: "Более новые" },
+  { value: "id,asc", label: "Более старые" },
+] as const;
+
 export const SORT_OPTIONS_ADMIN = [
   { value: "id,desc", label: "Более новые" },
   { value: "id,asc", label: "Более старые" },
