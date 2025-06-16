@@ -184,7 +184,7 @@ export default function Products() {
         <Loader />
       ) : (
         <>
-          <div className="flex justify-end gap-4">
+          <div className="flex justify-center flex-wrap gap-4">
             <select
               value={selectedBrand}
               onChange={handleBrandChange}

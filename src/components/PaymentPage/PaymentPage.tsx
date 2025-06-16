@@ -1,16 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { usePaymentInputs } from "react-payment-inputs";
+import React, { useState } from "react";
 import { IOrderPost } from "@/interfaces";
-import { postByProducts } from "@/api";
-import { ordersPage } from "@/constans";
-import { useCartStore } from "@/stores/useCartStore";
-
-interface PaymentPageProps {
-  orderData: IOrderPost;
-}
+import { usePaymentInputs } from "react-payment-inputs";
 
 interface ValidationErrors {
   cardNumber?: string;
@@ -18,35 +10,29 @@ interface ValidationErrors {
   cvc?: string;
 }
 
-interface FormValues {
-  cardNumber: string;
-  expiryDate: string;
-  cvc: string;
+interface PaymentPageProps {
+  orderData: IOrderPost;
+  onSuccess: () => void;
+  onError: (error: string) => void;
 }
 
-export default function PaymentPage({ orderData }: PaymentPageProps) {
+export default function PaymentPage({
+  orderData,
+  onSuccess,
+  onError,
+}: PaymentPageProps) {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState("");
-  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
-    {}
-  );
-  const [formValues, setFormValues] = useState<FormValues>({
+  const [error, setError] = useState<string>("");
+  const [formValues, setFormValues] = useState({
     cardNumber: "",
     expiryDate: "",
     cvc: "",
   });
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
+    {}
+  );
 
-  const router = useRouter();
-  const { cart, updatedDataInCart } = useCartStore();
-
-  // Проверяем способ оплаты при монтировании компонента
-  useEffect(() => {
-    if (orderData.orderDetailsRequest.paymentMethod !== "CARD") {
-      router.push("/cart");
-    }
-  }, [orderData.orderDetailsRequest.paymentMethod, router]);
-
-  const { getCardNumberProps, getCVCProps } = usePaymentInputs();
+  const { getCardNumberProps } = usePaymentInputs();
 
   const formatCardNumber = (value: string) => {
     const digits = value.replace(/\D/g, "");
@@ -54,172 +40,104 @@ export default function PaymentPage({ orderData }: PaymentPageProps) {
     return groups.join(" ").substr(0, 19);
   };
 
-  const formatExpiryDate = (value: string) => {
-    // Убираем все нецифровые символы
-    const numbers = value.replace(/\D/g, "");
-
-    // Ограничиваем до 4 цифр
-    const month = numbers.substring(0, 2);
-    const year = numbers.substring(2, 4);
-
-    // Если есть только месяц, добавляем слэш
-    if (month && !year) {
-      return month + " / ";
-    }
-    // Если есть и месяц и год
-    if (month && year) {
-      return month + " / " + year;
-    }
-    // Если ничего нет, возвращаем как есть
-    return month;
+  const handleInputChange = (field: string, value: string) => {
+    setFormValues((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
-  const validateExpiryDate = (expiryDate: string): string | undefined => {
-    if (!expiryDate) {
-      return "Введите срок действия карты";
-    }
-
-    // Убираем все пробелы из строки
-    const cleanExpiryDate = expiryDate.replace(/\s/g, "");
-
-    // Проверяем базовый формат ММ/ГГ
-    if (!/^\d{2}\/\d{2}$/.test(cleanExpiryDate)) {
-      return "Используйте формат ММ/ГГ";
-    }
-
-    const [monthStr, yearStr] = cleanExpiryDate.split("/");
-    const month = parseInt(monthStr, 10);
-    const year = parseInt(yearStr, 10);
-
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear() % 100; // Получаем последние 2 цифры текущего года
-    const currentMonth = currentDate.getMonth() + 1; // Месяцы в JS начинаются с 0
-
-    // Проверка месяца
-    if (month < 1 || month > 12) {
-      return "Неверный месяц (от 01 до 12)";
-    }
-
-    // Проверка года
-    if (year < currentYear) {
-      return "Карта просрочена";
-    }
-
-    // Если год текущий, проверяем месяц
-    if (year === currentYear && month < currentMonth) {
-      return "Карта просрочена";
-    }
-
-    // Проверяем, что срок действия не более 10 лет
-    if (year > currentYear + 10) {
-      return "Неверный год";
-    }
-
-    return undefined;
+  const handleBlur = (field: string) => {
+    validateField(field);
   };
 
-  const validateField = (name: keyof FormValues, value: string) => {
-    const errors: ValidationErrors = { ...validationErrors };
+  const validateField = (field: string) => {
+    let error = "";
 
-    switch (name) {
+    switch (field) {
       case "cardNumber":
-        if (!value || value.replace(/\s/g, "").length !== 16) {
-          errors.cardNumber = "Введите корректный номер карты (16 цифр)";
-        } else {
-          delete errors.cardNumber;
+        if (!formValues.cardNumber) {
+          error = "Введите номер карты";
+        } else if (formValues.cardNumber.replace(/\s/g, "").length !== 16) {
+          error = "Номер карты должен содержать 16 цифр";
         }
         break;
-
       case "expiryDate":
-        const expiryError = validateExpiryDate(value);
-        if (expiryError) {
-          errors.expiryDate = expiryError;
+        if (!formValues.expiryDate) {
+          error = "Введите срок действия карты";
         } else {
-          delete errors.expiryDate;
+          const [month, year] = formValues.expiryDate.split("/");
+          const currentDate = new Date();
+          const currentYear = currentDate.getFullYear() % 100;
+          const currentMonth = currentDate.getMonth() + 1;
+
+          if (!month || !year) {
+            error = "Неверный формат даты";
+          } else {
+            const monthNum = parseInt(month);
+            const yearNum = parseInt(year);
+
+            if (
+              monthNum < 1 ||
+              monthNum > 12 ||
+              yearNum < currentYear ||
+              (yearNum === currentYear && monthNum < currentMonth)
+            ) {
+              error = "Неверная дата";
+            }
+          }
         }
         break;
-
       case "cvc":
-        if (!value || !/^\d{3}$/.test(value)) {
-          errors.cvc = "Введите корректный CVC код (3 цифры)";
-        } else {
-          delete errors.cvc;
+        if (!formValues.cvc) {
+          error = "Введите CVC код";
+        } else if (formValues.cvc.length !== 3) {
+          error = "CVC код должен содержать 3 цифры";
         }
         break;
     }
 
-    setValidationErrors(errors);
+    setValidationErrors((prev: ValidationErrors) => ({
+      ...prev,
+      [field]: error,
+    }));
+
+    return !error;
   };
 
-  const handleInputChange = (name: keyof FormValues, value: string) => {
-    setFormValues((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleExpiryChange = (e: { target: { value: string } }) => {
-    const formatted = formatExpiryDate(e.target.value);
-    handleInputChange("expiryDate", formatted);
-  };
-
-  const handleBlur = (name: keyof FormValues) => {
-    validateField(name, formValues[name]);
-  };
-
-  const validateForm = (): boolean => {
-    const errors: ValidationErrors = {};
-
-    if (
-      !formValues.cardNumber ||
-      formValues.cardNumber.replace(/\s/g, "").length !== 16
-    ) {
-      errors.cardNumber = "Введите корректный номер карты (16 цифр)";
+  const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, "");
+    if (value.length >= 2) {
+      value = value.slice(0, 2) + " / " + value.slice(2, 4);
     }
-
-    const expiryError = validateExpiryDate(formValues.expiryDate);
-    if (expiryError) {
-      errors.expiryDate = expiryError;
-    }
-
-    if (!formValues.cvc || !/^\d{3}$/.test(formValues.cvc)) {
-      errors.cvc = "Введите корректный CVC код (3 цифры)";
-    }
-
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
+    handleInputChange("expiryDate", value);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
-
     setIsProcessing(true);
     setError("");
 
     try {
-      // Обновляем данные заказа с актуальным количеством товаров из корзины
-      const updatedOrderData = {
-        ...orderData,
-        orderItemRequest: cart,
-      };
+      // Проверяем все поля перед отправкой
+      const isCardNumberValid = validateField("cardNumber");
+      const isExpiryDateValid = validateField("expiryDate");
+      const isCvcValid = validateField("cvc");
 
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      const response = await postByProducts(updatedOrderData);
-
-      if (response) {
-        router.push(ordersPage);
-        // Очищаем корзину после успешного создания заказа
-        updatedDataInCart([], {
-          currentPage: 1,
-          totalPages: 1,
-          totalItems: 0,
-        });
-      } else {
-        setError("Не удалось создать заказ");
+      if (!isCardNumberValid || !isExpiryDateValid || !isCvcValid) {
+        throw new Error("Пожалуйста, исправьте ошибки в форме");
       }
-    } catch {
-      setError("Ошибка при оплате. Пожалуйста, попробуйте снова.");
+
+      // Здесь будет логика обработки платежа
+      // В случае успеха:
+      onSuccess();
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Произошла ошибка при обработке платежа";
+      setError(errorMessage);
+      onError(errorMessage);
     } finally {
       setIsProcessing(false);
     }
@@ -292,15 +210,15 @@ export default function PaymentPage({ orderData }: PaymentPageProps) {
             </label>
             <div className="relative">
               <input
-                {...getCVCProps({
-                  onChange: (e) => handleInputChange("cvc", e.target.value),
-                  onBlur: () => handleBlur("cvc"),
-                  value: formValues.cvc,
-                })}
+                type="password"
+                maxLength={3}
+                placeholder="123"
+                value={formValues.cvc}
+                onChange={(e) => handleInputChange("cvc", e.target.value)}
+                onBlur={() => handleBlur("cvc")}
                 className={`w-full px-4 py-3 border ${
                   validationErrors.cvc ? "border-red-500" : "border-gray-300"
                 } rounded-md focus:outline-none focus:ring-2 focus:ring-greenT`}
-                placeholder="123"
               />
               {validationErrors.cvc && (
                 <p className="mt-1 text-sm text-red-500">

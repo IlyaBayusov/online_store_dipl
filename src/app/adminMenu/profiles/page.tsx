@@ -180,7 +180,7 @@ export default function ProfilesAdmin() {
         </div>
       </div>
 
-      <div className="w-full flex justify-center items-center">
+      <div className="w-full flex justify-center items-center bg-white">
         <select
           value={pageSize}
           onChange={handleSizeChange}

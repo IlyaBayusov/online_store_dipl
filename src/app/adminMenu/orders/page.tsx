@@ -286,8 +286,8 @@ export default function OrdersAdmin() {
   };
 
   return (
-    <div className="p-4">
-      <div className="w-full flex justify-center items-center">
+    <div className="bg-white">
+      <div className="w-full flex justify-center items-center bg-white pt-4">
         <div className="w-full flex justify-between items-center gap-4 max-w-[500px]">
           <select
             value={pageSize}
@@ -314,7 +314,7 @@ export default function OrdersAdmin() {
         </div>
       </div>
 
-      <div className="w-full bg-white flex justify-center">
+      <div className="w-full bg-white flex justify-center px-4">
         <div className="md:container md:mx-auto md:max-w-[500px] flex justify-center items-center gap-1 py-1 px-3 bg-white">
           <button
             className="px-2 py-1 border rounded-md"

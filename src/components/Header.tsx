@@ -56,6 +56,18 @@ export default function Header() {
     }
   };
 
+  // Добавляем слушатель события для обновления корзины
+  useEffect(() => {
+    const handleStorageChange = () => {
+      getProductsInCart();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
   return (
     <>
       {showHeader && (

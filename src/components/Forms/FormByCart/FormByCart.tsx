@@ -1,6 +1,11 @@
 "use client";
 
-import { IOrderDetails, IOrderPost, IProductInCart } from "@/interfaces";
+import {
+  IOrderDetails,
+  IOrderPost,
+  IProductInCart,
+  IPagination,
+} from "@/interfaces";
 import React, { useEffect, useState } from "react";
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { decodeToken } from "@/utils";
@@ -10,7 +15,11 @@ import { useCartStore } from "@/stores/useCartStore";
 import { useForm } from "react-hook-form";
 import { authPage, ordersPage } from "@/constans";
 import PaymentPage from "@/components/PaymentPage/PaymentPage";
-import { saveUnavailableProducts } from "@/utils/localStorage";
+import {
+  saveUnavailableProducts,
+  getUnavailableProducts,
+  clearUnavailableProducts,
+} from "@/utils/localStorage";
 
 export default React.memo(function FormByCart() {
   const [sum, setSum] = useState<number>(0);
@@ -23,6 +32,12 @@ export default React.memo(function FormByCart() {
   const [unavailableProducts, setUnavailableProducts] = useState<
     IProductInCart[]
   >([]);
+  const [pagination, setPagination] = useState<IPagination>({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0,
+    currentItems: 0,
+  });
 
   const {
     formState: { errors, isValid },
@@ -36,7 +51,7 @@ export default React.memo(function FormByCart() {
     },
   });
 
-  const { cart, updatedDataInCart } = useCartStore();
+  const { cart, updatedDataInCart, getCount } = useCartStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -45,6 +60,12 @@ export default React.memo(function FormByCart() {
         const data = await getProductsCart();
         if (data) {
           checkProductsAvailability(data.data);
+          setPagination({
+            currentPage: data.currentPage,
+            totalPages: data.totalPages,
+            totalItems: data.totalItems,
+            currentItems: data.data.length,
+          });
         }
       }
     };
@@ -117,17 +138,25 @@ export default React.memo(function FormByCart() {
       try {
         const response = await postByProducts(newOrder);
         if (response) {
-          updatedDataInCart(unavailableProducts, {
-            currentPage: 1,
-            totalPages: 1,
-            totalItems: unavailableProducts.length,
-            currentItems: unavailableProducts.length,
-          });
+          // После успешного создания заказа, возвращаем недоступные товары в корзину
+          const unavailableProducts = getUnavailableProducts();
+          if (unavailableProducts.length > 0) {
+            // Очищаем localStorage
+            clearUnavailableProducts();
+            // Обновляем состояние корзины
+            updatedDataInCart([...cart, ...unavailableProducts], pagination);
+            // Обновляем счетчик корзины
+            getCount([...cart, ...unavailableProducts].length);
+          } else {
+            // Если нет недоступных товаров, просто обновляем счетчик
+            getCount(0);
+          }
+          // Вызываем событие для обновления корзины в Header
+          window.dispatchEvent(new Event("storage"));
           router.push(ordersPage);
-        } else {
-          setErrorSubmit("Не удалось создать заказ");
         }
-      } catch {
+      } catch (error) {
+        console.error("Ошибка при создании заказа:", error);
         setErrorSubmit("Произошла ошибка при создании заказа");
       }
     } else {
@@ -137,8 +166,48 @@ export default React.memo(function FormByCart() {
     }
   };
 
+  const handlePaymentSuccess = async () => {
+    if (!orderData) return;
+
+    try {
+      const response = await postByProducts(orderData);
+      if (response) {
+        // После успешного создания заказа, возвращаем недоступные товары в корзину
+        const unavailableProducts = getUnavailableProducts();
+        if (unavailableProducts.length > 0) {
+          // Очищаем localStorage
+          clearUnavailableProducts();
+          // Обновляем состояние корзины
+          updatedDataInCart([...cart, ...unavailableProducts], pagination);
+          // Обновляем счетчик корзины
+          getCount([...cart, ...unavailableProducts].length);
+        } else {
+          // Если нет недоступных товаров, просто обновляем счетчик
+          getCount(0);
+        }
+        // Вызываем событие для обновления корзины в Header
+        window.dispatchEvent(new Event("storage"));
+        router.push(ordersPage);
+      }
+    } catch (error) {
+      console.error("Ошибка при создании заказа:", error);
+      setErrorSubmit("Произошла ошибка при создании заказа");
+    }
+  };
+
+  const handlePaymentError = (error: string) => {
+    setErrorSubmit(error);
+    setShowPayment(false);
+  };
+
   if (showPayment && orderData) {
-    return <PaymentPage orderData={orderData} />;
+    return (
+      <PaymentPage
+        orderData={orderData}
+        onSuccess={handlePaymentSuccess}
+        onError={handlePaymentError}
+      />
+    );
   }
 
   return (
