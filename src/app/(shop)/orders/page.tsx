@@ -3,11 +3,11 @@
 import { getOrders } from "@/api";
 import OrdersAccordion from "@/components/Accordions/OrdersAccordion/OrdersAccordion";
 import Loader from "@/components/Loader/Loader";
-import { SORT_OPTIONS, sizePage } from "@/constans";
+import { SORT_OPTIONS_FAVS, sizePage } from "@/constans";
 import { IOrderItems, IPagination } from "@/interfaces";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 
-type SortFieldType = (typeof SORT_OPTIONS)[number]["value"];
+type SortFieldType = (typeof SORT_OPTIONS_FAVS)[number]["value"];
 
 export default function Orders() {
   const [isLoading, setIsLoading] = useState(true);
@@ -15,7 +15,7 @@ export default function Orders() {
   const [pagination, setPagination] = useState<IPagination | undefined>();
   const [currentPage, setCurrentPage] = useState(0);
   const [sortField, setSortField] = useState<SortFieldType>(
-    SORT_OPTIONS[0].value
+    SORT_OPTIONS_FAVS[0].value
   );
   const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -164,7 +164,7 @@ export default function Orders() {
             onChange={handleSortChange}
             className="px-2 py-1 border border-gray-300 rounded-md text-sm"
           >
-            {SORT_OPTIONS.map((option) => (
+            {SORT_OPTIONS_FAVS.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>

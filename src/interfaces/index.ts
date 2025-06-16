@@ -51,6 +51,7 @@ export interface IProductInCart {
   productName: string;
   image: string;
   price: number;
+  brand: string;
   quantity: number;
   characteristics: string;
 }

@@ -148,6 +148,7 @@ export default React.memo(
 
               <div className="text-sm text-start mt-1">
                 <p>Артикул: {product.productId}</p>
+                <p>Бренд: {product.brand}</p>
               </div>
             </div>
           </div>

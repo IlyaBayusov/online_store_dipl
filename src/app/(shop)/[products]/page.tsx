@@ -28,6 +28,8 @@ const fetchProducts = async (products: string, page: number, size: number) => {
       }
     );
 
+    console.log(response);
+
     return response.data;
   } catch (error) {
     console.error("ERROR PRODUCTS", error);
