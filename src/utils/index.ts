@@ -117,6 +117,7 @@ export function mapToUnifiedProduct(
     productId: data.productId,
     brand: data.brand,
     categoryName: data.categoryName,
+    isEnabled: data.isEnabled,
     name:
       (data as IProductCategory).name ||
       (data as IFavsGet | IOrdersGet).productName,

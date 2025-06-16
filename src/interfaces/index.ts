@@ -16,6 +16,7 @@ export interface IProductCategory {
   name: string;
   image: string;
   price: number;
+  isEnabled: boolean;
 }
 
 export interface IProductInfo {

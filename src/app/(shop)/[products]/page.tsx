@@ -16,7 +16,22 @@ import { mapToUnifiedProduct } from "@/utils";
 
 type PageSizeType = (typeof PAGE_SIZE_OPTIONS)[number];
 
-const fetchProducts = async (products: string, page: number, size: number) => {
+const SORT_OPTIONS = [
+  { value: "id,desc", label: "Более новые" },
+  { value: "id,asc", label: "Более старые" },
+  { value: "price,desc", label: "По цене, убыв." },
+  { value: "price,asc", label: "По цене, возр." },
+] as const;
+
+type SortType = (typeof SORT_OPTIONS)[number]["value"];
+
+const fetchProducts = async (
+  products: string,
+  page: number,
+  size: number,
+  sort: SortType,
+  brand?: string
+) => {
   try {
     const response = await axios.get(
       `http://localhost:8080/api/v1/products/${products}/category`,
@@ -24,6 +39,8 @@ const fetchProducts = async (products: string, page: number, size: number) => {
         params: {
           page,
           size,
+          sort,
+          ...(brand && { brand }),
         },
       }
     );
@@ -36,12 +53,25 @@ const fetchProducts = async (products: string, page: number, size: number) => {
   }
 };
 
+const fetchBrands = async () => {
+  try {
+    const response = await axios.get("http://localhost:8080/api/v1/brands");
+    return response.data.brands;
+  } catch (error) {
+    console.error("ERROR BRANDS", error);
+    return [];
+  }
+};
+
 export default function Products() {
   const [isLoading, setIsLoading] = useState(true);
   const [productsList, setProductsList] = useState([]);
   const [category, setCategory] = useState<ICategory>();
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState<PageSizeType>(PAGE_SIZE_OPTIONS[0]);
+  const [sort, setSort] = useState<SortType>("id,asc");
+  const [selectedBrand, setSelectedBrand] = useState<string>("");
+  const [availableBrands, setAvailableBrands] = useState<string[]>([]);
   const [pagination, setPagination] = useState<IPagination>({
     currentPage: 0,
     totalItems: 0,
@@ -52,7 +82,13 @@ export default function Products() {
 
   const getProducts = async (page: number, size: number) => {
     setIsLoading(true);
-    const data = await fetchProducts(params.products, page, size);
+    const data = await fetchProducts(
+      params.products,
+      page,
+      size,
+      sort,
+      selectedBrand || undefined
+    );
 
     if (data) {
       const products = data.products.map(mapToUnifiedProduct);
@@ -67,12 +103,22 @@ export default function Products() {
   };
 
   useEffect(() => {
-    const categoryRu = categoriesList.find(
-      (item) => item.url_name.toLowerCase() === params.products.toLowerCase()
-    );
-    setCategory(categoryRu);
-    getProducts(currentPage, pageSize);
-  }, [params.products, currentPage, pageSize]);
+    const fetchData = async () => {
+      const categoryRu = categoriesList.find(
+        (item) => item.url_name.toLowerCase() === params.products.toLowerCase()
+      );
+      setCategory(categoryRu);
+
+      // Получаем список брендов
+      const brands = await fetchBrands();
+      setAvailableBrands(brands);
+
+      // Получаем продукты
+      await getProducts(currentPage, pageSize);
+    };
+
+    fetchData();
+  }, [params.products, currentPage, pageSize, sort, selectedBrand]);
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
@@ -82,8 +128,18 @@ export default function Products() {
     const newSize = Number(event.target.value) as PageSizeType;
     if (PAGE_SIZE_OPTIONS.includes(newSize)) {
       setPageSize(newSize);
-      setCurrentPage(0); // Сброс на первую страницу при изменении размера
+      setCurrentPage(0);
     }
+  };
+
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSort(event.target.value as SortType);
+    setCurrentPage(0);
+  };
+
+  const handleBrandChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedBrand(event.target.value);
+    setCurrentPage(0);
   };
 
   if (
@@ -128,7 +184,30 @@ export default function Products() {
         <Loader />
       ) : (
         <>
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-4">
+            <select
+              value={selectedBrand}
+              onChange={handleBrandChange}
+              className="px-2 py-1 border border-gray-300 rounded-md text-sm"
+            >
+              <option value="">Все бренды</option>
+              {availableBrands.map((brand) => (
+                <option key={brand} value={brand}>
+                  {brand}
+                </option>
+              ))}
+            </select>
+            <select
+              value={sort}
+              onChange={handleSortChange}
+              className="px-2 py-1 border border-gray-300 rounded-md text-sm"
+            >
+              {SORT_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
             <select
               value={pageSize}
               onChange={handleSizeChange}
