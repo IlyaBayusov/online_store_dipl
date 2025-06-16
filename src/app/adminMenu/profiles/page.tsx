@@ -2,7 +2,7 @@
 
 import { getUsersAdmin, putUserRoleAdmin } from "@/api";
 import Loader from "@/components/Loader/Loader";
-import { roleAdmin, roleUser, sizePage } from "@/constans";
+import { roleAdmin, roleUser, PAGE_SIZE_OPTIONS } from "@/constans";
 import { IGetUserAdmin } from "@/interfaces";
 import { decodeToken } from "@/utils";
 import React, { useEffect, useState } from "react";
@@ -30,6 +30,7 @@ export default function ProfilesAdmin() {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [totalItems, setTotalItems] = useState<number>(0);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [pageSize, setPageSize] = useState<number>(PAGE_SIZE_OPTIONS[0]);
 
   useEffect(() => {
     const decoded = decodeToken();
@@ -44,7 +45,7 @@ export default function ProfilesAdmin() {
       try {
         const response = await getUsersAdmin({
           page: currentPage,
-          size: sizePage,
+          size: pageSize,
           search: search,
           sort: "id,asc",
         });
@@ -63,7 +64,7 @@ export default function ProfilesAdmin() {
       }
     };
     getUsers();
-  }, [currentPage, search, role]);
+  }, [currentPage, search, role, pageSize]);
 
   const handleClickIsRole = async (userId: number, userRole: string) => {
     if (userId === currentUserId) {
@@ -91,6 +92,12 @@ export default function ProfilesAdmin() {
     if (newPage >= 0 && newPage < totalPages) {
       setCurrentPage(newPage);
     }
+  };
+
+  const handleSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newSize = Number(e.target.value);
+    setPageSize(newSize);
+    setCurrentPage(0);
   };
 
   const showElems = () => {
@@ -160,8 +167,8 @@ export default function ProfilesAdmin() {
   };
 
   return (
-    <div className="flex flex-col w-full ">
-      <div className="w-full flex gap-3 justify-center items-center py-1 bg-white border-b px-3">
+    <div className="flex flex-col w-full">
+      <div className="w-full flex gap-3 justify-between items-center py-1 bg-white border-b px-3">
         <div className="md:container md:mx-auto md:max-w-[500px] flex-1 flex items-center gap-1">
           <input
             value={search}
@@ -171,6 +178,20 @@ export default function ProfilesAdmin() {
             className="flex-1 border border-gray-300 text-slate-400 text-sm py-1 px-2 rounded-md"
           />
         </div>
+      </div>
+
+      <div className="w-full flex justify-center items-center">
+        <select
+          value={pageSize}
+          onChange={handleSizeChange}
+          className="px-2 py-1 border border-gray-300 rounded-md text-sm"
+        >
+          {PAGE_SIZE_OPTIONS.map((size) => (
+            <option key={size} value={size}>
+              {size} на странице
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="w-full bg-white flex justify-center">
@@ -201,8 +222,8 @@ export default function ProfilesAdmin() {
           </button>
 
           <p className="text-greenT text-sm">
-            {`${currentPage * sizePage + 1}-${Math.min(
-              (currentPage + 1) * sizePage,
+            {`${currentPage * pageSize + 1}-${Math.min(
+              (currentPage + 1) * pageSize,
               totalItems
             )} из ${totalItems}`}
           </p>

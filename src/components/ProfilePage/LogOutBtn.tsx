@@ -1,17 +1,14 @@
 "use client";
 
-import { authPage } from "@/constans";
-import { useRouter } from "next/navigation";
+import { modalLogout } from "@/constans";
+import { useModalStore } from "@/stores/useModalStore";
 import React from "react";
 
 export default function LogOutBtn() {
-  const router = useRouter();
+  const { openModal } = useModalStore();
 
   const handleClickLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-
-    router.push(authPage);
+    openModal(modalLogout);
   };
 
   return (

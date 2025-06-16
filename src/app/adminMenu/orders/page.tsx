@@ -2,7 +2,7 @@
 
 import { getOrdersAdmin, putOrderStatus } from "@/api";
 import Loader from "@/components/Loader/Loader";
-import { SORT_OPTIONS_ADMIN, sizePage } from "@/constans";
+import { SORT_OPTIONS_ADMIN, PAGE_SIZE_OPTIONS } from "@/constans";
 import { IOrderItems } from "@/interfaces";
 import { getPaymentMethod, getStatusRu } from "@/utils";
 import Image from "next/image";
@@ -175,13 +175,14 @@ export default function OrdersAdmin() {
     SORT_OPTIONS_ADMIN[0].value
   );
   const [selectedOrder, setSelectedOrder] = useState<IOrderItems | null>(null);
+  const [pageSize, setPageSize] = useState<number>(PAGE_SIZE_OPTIONS[0]);
 
   const loadOrders = async () => {
     setIsLoading(true);
     try {
       const response = await getOrdersAdmin({
         page: currentPage,
-        size: sizePage,
+        size: pageSize,
         sort: sortOption,
       });
 
@@ -212,7 +213,7 @@ export default function OrdersAdmin() {
 
   useEffect(() => {
     loadOrders();
-  }, [currentPage, sortOption]);
+  }, [currentPage, sortOption, pageSize]);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 0 && newPage < totalPages) {
@@ -222,6 +223,12 @@ export default function OrdersAdmin() {
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOption(e.target.value);
+    setCurrentPage(0);
+  };
+
+  const handleSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newSize = Number(e.target.value);
+    setPageSize(newSize);
     setCurrentPage(0);
   };
 
@@ -279,13 +286,24 @@ export default function OrdersAdmin() {
   };
 
   return (
-    <div className="flex flex-col w-full">
-      <div className="w-full flex gap-3 justify-center items-center py-1 bg-white border-b px-3">
-        <div className="md:container md:mx-auto md:max-w-[500px] flex-1 flex items-center gap-2">
+    <div className="p-4">
+      <div className="w-full flex justify-center items-center">
+        <div className="w-full flex justify-between items-center gap-4 max-w-[500px]">
+          <select
+            value={pageSize}
+            onChange={handleSizeChange}
+            className="px-2 py-1 border border-gray-300 rounded-md text-sm"
+          >
+            {PAGE_SIZE_OPTIONS.map((size) => (
+              <option key={size} value={size}>
+                {size} на странице
+              </option>
+            ))}
+          </select>
           <select
             value={sortOption}
             onChange={handleSortChange}
-            className="border border-gray-300 text-slate-400 text-sm py-1 px-2 rounded-md"
+            className="px-2 py-1 border border-gray-300 rounded-md text-sm"
           >
             {SORT_OPTIONS_ADMIN.map((option) => (
               <option key={option.value} value={option.value}>
@@ -324,8 +342,8 @@ export default function OrdersAdmin() {
           </button>
 
           <p className="text-greenT text-sm">
-            {`${currentPage * sizePage + 1}-${Math.min(
-              (currentPage + 1) * sizePage,
+            {`${currentPage * pageSize + 1}-${Math.min(
+              (currentPage + 1) * pageSize,
               totalItems
             )} из ${totalItems}`}
           </p>

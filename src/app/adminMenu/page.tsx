@@ -16,7 +16,7 @@ import { useModalStore } from "@/stores/useModalStore";
 import {
   modalDeleteProductAdmin,
   modalNewProductAdmin,
-  sizePage,
+  PAGE_SIZE_OPTIONS,
 } from "@/constans";
 import { getProductAdmin, getSearchAdmin } from "@/api";
 import { IProductInfo } from "@/interfaces";
@@ -27,6 +27,7 @@ export default function AdminMenu() {
   const [inputValue, setInputValue] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [products, setProducts] = useState<IProductInfo[]>([]);
+  const [pageSize, setPageSize] = useState<number>(PAGE_SIZE_OPTIONS[0]);
   const [pagination, setPagination] = useState({
     currentItems: 0,
     currentPage: 0,
@@ -37,7 +38,7 @@ export default function AdminMenu() {
   const loadProducts = async (page = 0) => {
     setIsLoading(true);
     try {
-      const response = await getProductAdmin(page);
+      const response = await getProductAdmin(page, pageSize);
 
       if (response && Array.isArray(response.data)) {
         setProducts(response.data);
@@ -61,7 +62,7 @@ export default function AdminMenu() {
 
   useEffect(() => {
     loadProducts(0);
-  }, []);
+  }, [pageSize]);
 
   const handleDoubleLeftClick = () => loadProducts(0);
   const handleLeftClick = () => loadProducts(pagination.currentPage - 1);
@@ -102,6 +103,12 @@ export default function AdminMenu() {
     }, 500);
   };
 
+  const handleSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newSize = Number(e.target.value);
+    setPageSize(newSize);
+    loadProducts(0);
+  };
+
   return (
     <>
       <div className="w-full">
@@ -137,6 +144,20 @@ export default function AdminMenu() {
             >
               <FaPlus className="h-5 w-5 p-px text-white" />
             </button>
+
+            <div className="absolute top-1/2 right-0 z-10 -translate-y-1/2 ml-3 sm:ml-0">
+              <select
+                value={pageSize}
+                onChange={handleSizeChange}
+                className="px-2 py-1 border border-gray-300 rounded-md text-sm"
+              >
+                {PAGE_SIZE_OPTIONS.map((size) => (
+                  <option key={size} value={size}>
+                    {size} на странице
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 
@@ -171,8 +192,8 @@ export default function AdminMenu() {
               </button>
 
               <p className="text-greenT text-sm">
-                {`${pagination.currentPage * sizePage + 1}-${Math.min(
-                  (pagination.currentPage + 1) * sizePage,
+                {`${pagination.currentPage * pageSize + 1}-${Math.min(
+                  (pagination.currentPage + 1) * pageSize,
                   pagination.totalItems
                 )} из ${pagination.totalItems}`}
               </p>

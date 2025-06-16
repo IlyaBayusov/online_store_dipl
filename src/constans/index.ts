@@ -28,6 +28,7 @@ export const modalNewProductAdmin = "modalNewProductAdmin";
 export const modalDeleteEditNewProduct = "modalDeleteEditNewProduct";
 export const modalEditProductAdmin = "modalEditProductAdmin";
 export const modalDeleteProductAdmin = "modalDeleteProductAdmin";
+export const modalLogout = "modalLogout";
 
 export const filtersKeyProductsPage = "filtersKeyProductsPage";
 export const filtersKeyModalNav = "filtersKeyModalNav";

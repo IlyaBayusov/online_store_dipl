@@ -3,6 +3,7 @@ import FormNewEmailProfile from "@/components/Forms/FormNewEmailProfile";
 import FormNewPassProfile from "@/components/Forms/FormNewPassProfile";
 import HeaderInfo from "@/components/ProfilePage/HeaderInfo";
 import LogOutBtn from "@/components/ProfilePage/LogOutBtn";
+import ModalLogout from "@/components/Modals/ModalLogout";
 import { IGetUserInfoInProfile } from "@/interfaces";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -54,6 +55,7 @@ export default async function ProfileId({
         </div>
 
         <LogOutBtn />
+        <ModalLogout />
       </div>
     </div>
   );

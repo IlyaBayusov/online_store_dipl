@@ -1,5 +1,5 @@
 import { api } from "@/axios";
-import { sizePage, sizePaginationProductsInAdmin } from "@/constans";
+import { sizePage } from "@/constans";
 import {
   IFormDataProfileUserInfo,
   IOrderPost,
@@ -129,10 +129,13 @@ export const postProductAdmin = async (product: FormData) => {
   }
 };
 
-export const getProductAdmin = async (page: number) => {
+export const getProductAdmin = async (
+  page: number,
+  size: number = sizePage
+) => {
   try {
     const response = await api.get(
-      `/v1/products/admin?size=${sizePage}&page=${page}`
+      `/v1/products/admin?size=${size}&page=${page}`
     );
     return response.data;
   } catch (error) {
