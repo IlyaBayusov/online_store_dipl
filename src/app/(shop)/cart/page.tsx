@@ -57,10 +57,10 @@ export default React.memo(function Cart() {
     if (products.length !== 0 && products !== undefined) {
       return (
         <div className="lg:grid lg:grid-cols-[1fr,400px] lg:gap-8">
-          <div className="lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto">
+          <div className="lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto hide-scrollbar-y">
             <CartList products={products} />
           </div>
-          <div className="mt-6 lg:mt-0 lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto">
+          <div className="mt-6 lg:mt-0 lg:max-h-[calc(100vh-120px)] lg:overflow-y-auto hide-scrollbar-y">
             <FormByCart />
           </div>
         </div>

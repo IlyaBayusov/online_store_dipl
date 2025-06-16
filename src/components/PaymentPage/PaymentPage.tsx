@@ -46,8 +46,7 @@ export default function PaymentPage({ orderData }: PaymentPageProps) {
     }
   }, [orderData.orderDetailsRequest.paymentMethod, router]);
 
-  const { getCardNumberProps, getExpiryDateProps, getCVCProps } =
-    usePaymentInputs();
+  const { getCardNumberProps, getCVCProps } = usePaymentInputs();
 
   const formatCardNumber = (value: string) => {
     const digits = value.replace(/\D/g, "");
@@ -215,7 +214,6 @@ export default function PaymentPage({ orderData }: PaymentPageProps) {
           currentPage: 1,
           totalPages: 1,
           totalItems: 0,
-          pageSize: 10, // Добавляем стандартный размер страницы
         });
       } else {
         setError("Не удалось создать заказ");
@@ -250,41 +248,38 @@ export default function PaymentPage({ orderData }: PaymentPageProps) {
                 validationErrors.cardNumber
                   ? "border-red-500"
                   : "border-gray-300"
-              } rounded-lg focus:ring-2 focus:ring-greenT focus:border-transparent transition-colors`}
+              } rounded-md focus:outline-none focus:ring-2 focus:ring-greenT`}
               placeholder="0000 0000 0000 0000"
-              autoComplete="cc-number"
             />
             {validationErrors.cardNumber && (
-              <p className="mt-1 text-xs text-red-500">
+              <p className="mt-1 text-sm text-red-500">
                 {validationErrors.cardNumber}
               </p>
             )}
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">
               Срок действия
             </label>
             <div className="relative">
               <input
-                {...getExpiryDateProps({
-                  onChange: handleExpiryChange,
-                  onBlur: () => handleBlur("expiryDate"),
-                  value: formValues.expiryDate,
-                })}
+                type="text"
+                maxLength={7}
+                placeholder="ММ / ГГ"
+                value={formValues.expiryDate}
+                onChange={handleExpiryChange}
+                onBlur={() => handleBlur("expiryDate")}
                 className={`w-full px-4 py-3 border ${
                   validationErrors.expiryDate
                     ? "border-red-500"
                     : "border-gray-300"
-                } rounded-lg focus:ring-2 focus:ring-greenT focus:border-transparent transition-colors`}
-                placeholder="ММ / ГГ"
-                autoComplete="cc-exp"
-                maxLength={7}
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-greenT`}
               />
               {validationErrors.expiryDate && (
-                <p className="mt-1 text-xs text-red-500">
+                <p className="mt-1 text-sm text-red-500">
                   {validationErrors.expiryDate}
                 </p>
               )}
@@ -304,13 +299,11 @@ export default function PaymentPage({ orderData }: PaymentPageProps) {
                 })}
                 className={`w-full px-4 py-3 border ${
                   validationErrors.cvc ? "border-red-500" : "border-gray-300"
-                } rounded-lg focus:ring-2 focus:ring-greenT focus:border-transparent transition-colors`}
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-greenT`}
                 placeholder="123"
-                autoComplete="cc-csc"
-                maxLength={3}
               />
               {validationErrors.cvc && (
-                <p className="mt-1 text-xs text-red-500">
+                <p className="mt-1 text-sm text-red-500">
                   {validationErrors.cvc}
                 </p>
               )}
@@ -319,41 +312,19 @@ export default function PaymentPage({ orderData }: PaymentPageProps) {
         </div>
 
         {error && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-600 text-sm">{error}</p>
-          </div>
+          <div className="text-red-500 text-sm text-center">{error}</div>
         )}
 
         <button
           type="submit"
           disabled={isProcessing}
-          className="w-full bg-greenT text-white py-3 px-4 rounded-lg hover:bg-opacity-90 
-                   disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200
-                   transform hover:scale-[1.02] active:scale-[0.98] font-medium text-base"
+          className={`w-full py-3 px-4 rounded-md text-white font-medium ${
+            isProcessing
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-greenT hover:bg-green-600"
+          } transition-colors`}
         >
-          {isProcessing ? (
-            <div className="flex items-center justify-center gap-2">
-              <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                  fill="none"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
-              <span>Обработка платежа...</span>
-            </div>
-          ) : (
-            "Оплатить"
-          )}
+          {isProcessing ? "Обработка..." : "Оплатить"}
         </button>
       </form>
     </div>
