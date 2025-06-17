@@ -16,6 +16,7 @@ export default function FormByRegistr({ setSubmit }: Props) {
   const [errorMessageEmail, setErrorMessageEmail] = useState("");
 
   const [error, setError] = useState("");
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
 
   const {
     formState: { errors, isValid },
@@ -78,6 +79,12 @@ export default function FormByRegistr({ setSubmit }: Props) {
       setError("Некоторые поля заполнены неверно.");
       return;
     }
+
+    if (!privacyAccepted) {
+      setError("Необходимо принять условия обработки персональных данных");
+      return;
+    }
+
     console.log(data);
 
     setError("");
@@ -272,6 +279,25 @@ export default function FormByRegistr({ setSubmit }: Props) {
                 (errors?.secondPassword?.message || "Ошибка!")}
             </span>
           }
+        </div>
+
+        <div className="flex items-center gap-2 mt-2">
+          <input
+            type="checkbox"
+            id="privacy"
+            checked={privacyAccepted}
+            onChange={(e) => setPrivacyAccepted(e.target.checked)}
+            className="w-4 h-4"
+          />
+          <label htmlFor="privacy" className="text-sm text-gray-700">
+            Я согласен с{" "}
+            <Link
+              href="/privacy-policy"
+              className="text-greenT hover:underline"
+            >
+              условиями обработки персональных данных
+            </Link>
+          </label>
         </div>
 
         <button
