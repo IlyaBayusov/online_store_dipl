@@ -129,14 +129,14 @@ export default function FormByModalNewProductAdmin() {
     setErrorFiles("");
 
     if (selectedFiles.length > amountImagesInAdmin) {
-      setErrorFiles("Можно загрузить до 5 изображений");
+      setErrorFiles("Можно загрузить до 4 изображений");
       return;
     }
 
     const newFiles = Array.from(e.target.files || []);
 
     if (newFiles.length > amountImagesInAdmin) {
-      setErrorFiles("Можно загрузить до 5 изображений");
+      setErrorFiles("Можно загрузить до 4 изображений");
     }
 
     const validFiles = newFiles
@@ -155,13 +155,13 @@ export default function FormByModalNewProductAdmin() {
 
     if (validFiles.length < newFiles.length) {
       setErrorFiles(
-        "Некоторые файлы были отклонены, так как они не являются изображениями и дублируются"
+        "Некоторые файлы были отклонены, так как они не являются изображениями или дублируются"
       );
     }
 
     setSelectedFiles((prevFiles) => {
       if (prevFiles.length + validFiles.length > amountImagesInAdmin) {
-        setErrorFiles("Можно загрузить до 5 изображений");
+        setErrorFiles("Можно загрузить до 4 изображений");
         const getValidFiles = validFiles.slice(
           0,
           amountImagesInAdmin - prevFiles.length

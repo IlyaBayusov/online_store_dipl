@@ -48,7 +48,7 @@ export const messageCount = "Нет на складе";
 export const roleAdmin = "ADMIN";
 export const roleUser = "USER";
 
-export const amountImagesInAdmin = 5;
+export const amountImagesInAdmin = 4;
 
 export const SORT_OPTIONS = [
   { value: "id,desc", label: "Более новые" },

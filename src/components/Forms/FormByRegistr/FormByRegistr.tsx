@@ -281,7 +281,7 @@ export default function FormByRegistr({ setSubmit }: Props) {
           }
         </div>
 
-        <div className="flex items-center gap-2 mt-2">
+        <div className="flex justify-center items-start gap-2 mt-2">
           <input
             type="checkbox"
             id="privacy"
